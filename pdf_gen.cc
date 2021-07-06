@@ -1,0 +1,90 @@
+//#include "likelihood.h"
+
+#include <TROOT.h>
+#include <TFile.h>
+#include <TString.h>
+#include <TTree.h>
+#include <TH1D.h>
+#include <TLeaf.h>
+
+void pdf_gen(const char* file, const char* component, int nbins, int dTank){
+
+  TFile *f = new TFile(file);
+  TTree *t = (TTree*)f->Get("data");
+  TTree *run = (TTree*)f->Get("runSummary");
+  
+  TFile *like = new TFile(Form("%s_pdfs.root",component),"RECREATE");
+   
+  int nfiles = run->GetEntries();
+  printf("%i files merged together\n",nfiles);
+  
+  int nevents = 0;
+  int events;
+  for(int i=0;i<nfiles;i++){
+    run->GetEntry(i);
+    events = run->GetLeaf("nEvents")->GetValue(0);
+    nevents += events;
+  }
+  
+  printf("There are %i MC events\n",nevents);
+  
+  int nentries = t->GetEntries();
+  printf("There are %i entries in %s\n",nentries,file);
+  
+  int nkept = 0;
+  
+  //int rPMT = 9000;
+  
+  //int nbins = 200;
+  TH1D* n100 = new TH1D("n100","n100",nbins,0,1000);
+  TH1D* n100_prev = new TH1D("n100_prev","n100_prev",nbins,0,1000);
+  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,2000);
+  TH1D* drPrevr = new TH1D("drPrevr","drPrevr",nbins,0,dTank);
+  TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,0,dTank);
+  
+  for(int i=0; i<nentries; i++){
+    t->GetEntry(i);
+    if ( t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
+	    nkept++;
+	    n100->Fill(t->GetLeaf("n100")->GetValue(0));
+	    n100_prev->Fill(t->GetLeaf("n100_prev")->GetValue(0));
+	    dt_prev_us->Fill(t->GetLeaf("dt_prev_us")->GetValue(0));
+	    drPrevr->Fill(t->GetLeaf("drPrevr")->GetValue(0));
+	    closestPMT->Fill(t->GetLeaf("closestPMT")->GetValue(0));
+    }
+  }
+  
+  printf("Kept %i events\n",nkept);
+  
+  n100->Scale(1/n100->GetEntries());
+  n100->Write();
+  n100_prev->Scale(1/n100_prev->GetEntries());
+  n100_prev->Write();
+  dt_prev_us->Scale(1/dt_prev_us->GetEntries());
+  dt_prev_us->Write();
+  drPrevr->Scale(1/drPrevr->GetEntries());
+  drPrevr->Write();
+  closestPMT->Scale(1/closestPMT->GetEntries());
+  closestPMT->Write();
+  like->Close();
+
+}
+
+int main(int argc, char** argv){
+
+  int nbins = 1000; //look at Freedman-Diaconis rule or use root n
+  //int rPMT = 9000; //change for dTank?
+  int dTank = 22000; //has large positive effect on ratio. too good?
+  const char* file = argv[1];
+  const char* component = argv[2];
+  if (argc > 3) {nbins = std::stoi(argv[3]);}
+  if (argc > 4) {dTank = std::stoi(argv[4]);}
+  
+  pdf_gen(file,component,nbins,dTank);//,pdffile);
+  
+  printf("nbins = %i\n",nbins);
+  printf("dTank = %i mm\n",dTank);
+  
+  return 0;
+
+}
