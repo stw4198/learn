@@ -38,6 +38,9 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   
   for(int i=0; i<nentries; i++){
     t->GetEntry(i);
+    if (i%100000==0){
+      printf("Generating PDFs: Event %d of %d\n",i,nentries);
+    }
     if ( t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
 	    nkept++;
 	    n100->Fill(t->GetLeaf("n100")->GetValue(0));
@@ -73,10 +76,10 @@ int main(int argc, char** argv){
   if (argc > 3) {nbins = std::stoi(argv[3]);}
   if (argc > 4) {dTank = std::stoi(argv[4]);}
   
-  pdf_gen(file,component,nbins,dTank);
-  
   printf("nbins = %i\n",nbins);
   printf("dTank = %i mm\n",dTank);
+
+  pdf_gen(file,component,nbins,dTank);
   
   return 0;
 
