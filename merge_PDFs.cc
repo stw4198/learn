@@ -1,21 +1,8 @@
-#include <TCanvas.h>
-#include <TFile.h>
-#include <TString.h>
 #include <TROOT.h>
-#include <TTree.h>
-#include <math.h>
-//#include "likelihood.h"
+#include <TFile.h>
 #include <TH1D.h>
-#include <TLeaf.h>
-
-#include <vector>
-#include <string>
 #include <sstream>
-#include <vector>
 #include <fstream>
-#include <iostream>
-
-//Likelihood,Analysis,Unbinned,Reactor,Dwell,Time
 
 void merge_PDFs(const char* sig){
 
