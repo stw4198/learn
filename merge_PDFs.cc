@@ -1,8 +1,10 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TH1D.h>
-#include <sstream>
-#include <fstream>
+//#include <TROOT.h>
+//#include <TFile.h>
+//#include <TH1D.h>
+//#include <sstream>
+//#include <fstream>
+
+#include "lance.h"
 
 void merge_PDFs(const char* sig){
 
@@ -151,15 +153,4 @@ void merge_PDFs(const char* sig){
  system(sig_hadd.c_str());
  printf("\nRunning command:\n%s\n\n",bg_hadd.c_str());
  system(bg_hadd.c_str());
-}
-
-int main(int argc, char** argv){
-
-  const char* sig = "hartlepool";
-  if (argc > 1) {sig = argv[1];}
-  
-  printf("\n\n\nScaling and merging PDFs\n\n\nSignal = %s\n\n\n",sig);
-
-  merge_PDFs(sig);
-
 }

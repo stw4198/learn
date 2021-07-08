@@ -1,8 +1,10 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1D.h>
-#include <TLeaf.h>
+//#include <TROOT.h>
+//#include <TFile.h>
+//#include <TTree.h>
+//#include <TH1D.h>
+//#include <TLeaf.h>
+
+#include "lance.h"
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank){
 
@@ -64,23 +66,5 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   closestPMT->Scale(1/closestPMT->GetEntries());
   closestPMT->Write();
   like->Close();
-
-}
-
-int main(int argc, char** argv){
-
-  int nbins = 1000; //look at Freedman-Diaconis rule or use root n
-  int dTank = 22000;
-  const char* file = argv[1];
-  const char* component = argv[2];
-  if (argc > 3) {nbins = std::stoi(argv[3]);}
-  if (argc > 4) {dTank = std::stoi(argv[4]);}
-  
-  printf("nbins = %i\n",nbins);
-  printf("dTank = %i mm\n",dTank);
-
-  pdf_gen(file,component,nbins,dTank);
-  
-  return 0;
 
 }

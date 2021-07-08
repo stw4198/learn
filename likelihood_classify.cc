@@ -1,10 +1,12 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1D.h>
-#include <TLeaf.h>
-#include <sstream>
-#include <fstream>
+//#include <TROOT.h>
+//#include <TFile.h>
+//#include <TTree.h>
+//#include <TH1D.h>
+//#include <TLeaf.h>
+//#include <sstream>
+//#include <fstream>
+
+#include "lance.h"
 
 void likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
@@ -197,18 +199,5 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   double det_rate = det_eff*rate;
   printf("Detection rate = %e per second\n",det_rate);
   printf("Detection rate = %e per day\n",det_rate*86400);
-
-}
-
-int main(int argc, char** argv){
-
-  const char* infile = argv[1];
-  const char* component = argv[2];
-  
-  //int nbins = 1000; //look at Freedman-Diaconis rule or use root n
-
-  //if (argc > 3) {nbins = std::stoi(argv[3]);}
-  
-  likehood_classify(infile,component/*,nbins*/);
 
 }

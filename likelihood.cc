@@ -1,8 +1,10 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1D.h>
-#include <TLeaf.h>
+//#include <TROOT.h>
+//#include <TFile.h>
+//#include <TTree.h>
+//#include <TH1D.h>
+//#include <TLeaf.h>
+
+#include "lance.h"
 
 void likehood(const char* infile, const char* component/*, int nbins*/){
 
@@ -96,18 +98,5 @@ void likehood(const char* infile, const char* component/*, int nbins*/){
   ratio_like->Write();
   out->Close();
   f->Close();
-
-}
-
-int main(int argc, char** argv){
-
-  const char* infile = argv[1];
-  const char* component = argv[2];
-  
-  //int nbins = 1000;
-
-  //if (argc > 3) {nbins = std::stoi(argv[3]);}
-  
-  likehood(infile,component/*,nbins*/);
 
 }
