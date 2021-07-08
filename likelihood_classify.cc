@@ -196,6 +196,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   printf("Detection efficiency = %f\n",det_eff);
   double det_rate = det_eff*rate;
   printf("Detection rate = %e per second\n",det_rate);
+  printf("Detection rate = %e per day\n",det_rate*86400);
 
 }
 
