@@ -8,18 +8,46 @@
 #include <TH1D.h>
 #include <TLeaf.h>
 
+#include <vector>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <fstream>
+#include <iostream>
+
 //Likelihood,Analysis,Unbinned,Reactor,Dwell,Time
 
 void merge_PDFs(const char* sig){
 
-  //read in pdfs
-  //big, small, world, geo, li9, n17, singles
   std::vector<std::string> signal;
   std::vector<std::string> background;
+  std::vector<std::string> components;
+  std::vector<double> rates;
+  std::vector<std::string> line_values;
+  std::ifstream theFile ("rates.csv");
+  std::string line;
+  std::getline(theFile, line); //remove header
   
-  std::vector<std::string/*const char* */> components = {"big","small","li9","n17","world","geo","singles","heysham","heysham_bg","heysham2","heysham2_bg","torness","torness_bg"};
+  while(std::getline(theFile, line))
+  {
+    std::string line_value;
+    std::stringstream ss(line);
+    while(std::getline(ss, line_value, ','))
+    {
+      line_values.push_back(line_value);
+      //printf("line_value = %s\n",line_value.c_str());
+    }
+  }
   
-  // char* sig = "hartlepool"; //set as input
+  for (int i = 0; i < line_values.size(); i = i + 2) {
+    components.push_back(line_values[i]);
+    //printf("components[%i] = %s\n",i,line_values[i].c_str());
+  }
+  
+  for (int i = 1; i < line_values.size(); i = i + 2) {
+    rates.push_back(std::stod(line_values[i]));
+    //printf("rates[%i] = %f\n",i,std::stod(line_values[i]));
+  }
   
   if(strncmp(sig, "hartlepool",10)==0){
     signal.push_back("big");
@@ -52,30 +80,6 @@ void merge_PDFs(const char* sig){
     background.push_back("torness_bg");
   }
     
-  double big_rate = 9.531e-5;
-  double small_rate = 7.126e-5;
-  double li9_rate = 7.97e-6;
-  double n17_rate = 8.01e-6;
-  double world_rate = 4.382e-6;
-  double geo_rate = 7.013e-7;
-  double singles_rate = 1.96e8;
-  double heysham_rate = 5.295e-6;
-  double heysham_bg_rate = 2.106e-5;
-  double heysham2_rate = 2.648e-6;
-  double heysham2_bg_rate = 2.106e-5;
-  double torness_rate = 1.945e-6;
-  double torness_bg_rate = 2.106e-5;
-    
-  //set proper rates -> read from csv?
-  
-  std::vector<double> rates = {big_rate,small_rate,li9_rate,n17_rate,world_rate,geo_rate,singles_rate,heysham_rate,heysham_bg_rate,heysham2_rate,heysham2_bg_rate,torness_rate,torness_bg_rate};
-  
-  //return everything above here to use in analysis
-  
-  //loop over components. if component[i] in signal, add rate[i] to signal rate. repeat for background
-  //loop over components and read in histograms, scale by rate[i]/signal(background) rate.
-  //write new file for components and merge all signal and background pdfs
-  
   double signal_rate = 0;
   double background_rate = 0;
   
@@ -153,7 +157,10 @@ void merge_PDFs(const char* sig){
 
 int main(int argc, char** argv){
 
-  const char* sig = argv[1]; //input file (FRED)
+  const char* sig = "hartlepool";
+  if (argc > 1) {sig = argv[1];}
+
+  //const char* sig = argv[1]; //input file (FRED)
   //const char* outfile = argv[2]; //output file (likehoods)
   merge_PDFs(sig);
   // have component type/rate as an input?

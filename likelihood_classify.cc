@@ -167,6 +167,7 @@ void likehood(const char* infile, const char* component, int nbins){
   //background_like->Write();
   //ratio_like->Write();
   output->Close();
+  singles_like->Close();
   f->Close();
   
   float det_eff = nkept/nentries;
