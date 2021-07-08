@@ -1,14 +1,13 @@
 #include <TROOT.h>
 #include <TFile.h>
-#include <TString.h>
 #include <TTree.h>
 #include <TH1D.h>
 #include <TLeaf.h>
-//Likelihood,Analysis,Unbinned,Reactor,Dwell,Time
+#include <sstream>
+#include <fstream>
 
-void likehood(const char* infile, const char* component, int nbins){
+void likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
-  // Component of interest
   TFile *f = new TFile(infile);
   TTree *t_in = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
@@ -29,7 +28,7 @@ void likehood(const char* infile, const char* component, int nbins){
   int nentries = t_in->GetEntries();
   printf("There are %i entries in %s\n",nentries,infile);
 
-  nbins = sqrt(nentries);
+  int nbins = sqrt(nentries);
   
   TFile *output = new TFile(Form("%s_classified.root",component),"RECREATE");
   TTree *data = new TTree("data","low-energy detector triggered events");
@@ -64,10 +63,6 @@ void likehood(const char* infile, const char* component, int nbins){
   data->Branch("u",&u,"u/D");
   data->Branch("v",&v,"v/D");
   data->Branch("w",&w,"w/D");
-  //TFile *signal = new TFile("signal_likelihoods.root");
-  //TFile *background = new TFile("background_likelihoods.root");
-  //TH1D* ratio_like_sig = (TH1D*)signal->Get("ratio_like");
-  //TH1D* ratio_like_bg = (TH1D*)background->Get("ratio_like");
 
   //signal pdfs
   TFile* signal = new TFile("signal_pdfs.root");
@@ -87,17 +82,17 @@ void likehood(const char* infile, const char* component, int nbins){
   TFile *singles_like = new TFile("singles_likelihoods.root");
   TH1D* ratio_like = (TH1D*)singles_like->Get("ratio_like");
 
-  int binmax = ratio_like->FindLastBinAbove();//GetMaximumBin();
+  int binmax = ratio_like->FindLastBinAbove();
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
   int thresh = std::ceil(max_Lr);
-  printf("Max Lr for singles = %f\nSetting Lr threshold to %i\n",max_Lr,thresh);
+  printf("Max Lr for singles = %f\nSetting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
   int nkept = 0;
   
   for(int i=0; i<nentries; i++){
     t_in->GetEntry(i);
-    if (i%50000==0){
-      printf("Evaluating event %d of %d\n",i,nentries);
+    if (i%100000==0){
+      printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
     if ( t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
@@ -125,11 +120,6 @@ void likehood(const char* infile, const char* component, int nbins){
       {if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
-      //signal_like->Fill(sig_like);
-      //background_like->Fill(bg_like);
-      //ratio_like->Fill(r_like);
-      //if(in signal and sig_like != 0 and bg_like = 0, keep)
-      //if(r_like > thresh, keep)
       if((sig_like != 0 && bg_like == 0) || (r_like>thresh)){
         x = t_in->GetLeaf("x")->GetValue(0);
         y = t_in->GetLeaf("y")->GetValue(0);
@@ -163,29 +153,62 @@ void likehood(const char* infile, const char* component, int nbins){
   
   output->cd();
   data->Write();
-  //signal_like->Write();
-  //background_like->Write();
-  //ratio_like->Write();
   output->Close();
+  singles_like->Close();
   f->Close();
   
-  float det_eff = nkept/nentries;
+  std::vector<std::string> components;
+  std::vector<double> rates;
+  std::vector<std::string> line_values;
+  std::ifstream theFile ("rates.csv");
+  std::string line;
+  std::getline(theFile, line);
   
-  printf("Detection efficiency for component %s = %i/%i\n",component,nkept,nentries);
+  while(std::getline(theFile, line))
+  {
+    std::string line_value;
+    std::stringstream ss(line);
+    while(std::getline(ss, line_value, ','))
+    {
+      line_values.push_back(line_value);
+    }
+  }
+  
+  for (int i = 0; i < line_values.size(); i = i + 2) {
+    components.push_back(line_values[i]);
+  }
+  
+  for (int i = 1; i < line_values.size(); i = i + 2) {
+    rates.push_back(std::stod(line_values[i]));
+  }
+  
+  double rate;
+  
+  for (int i = 0;i<components.size();i++){
+    if(strncmp(component, components[i].c_str(),strlen(component))==0){
+      rate = rates[i];
+    }
+  }
+
+  printf("\n\n\nComponent = %s\n\n\n",component);
+  printf("Expected interaction rate = %e per second\n",rate);
+  double det_eff = double(nkept)/double(nentries);
+  printf("Detection efficiency = %f\n",det_eff);
+  double det_rate = det_eff*rate;
+  printf("Detection rate = %e per second\n",det_rate);
+  printf("Detection rate = %e per day\n",det_rate*86400);
 
 }
 
 int main(int argc, char** argv){
 
-  const char* infile = argv[1]; //input file (FRED)
-  const char* component = argv[2]; //output file (likehoods)
+  const char* infile = argv[1];
+  const char* component = argv[2];
   
-  int nbins = 1000; //look at Freedman-Diaconis rule or use root n
+  //int nbins = 1000; //look at Freedman-Diaconis rule or use root n
 
-  if (argc > 3) {nbins = std::stoi(argv[3]);}
+  //if (argc > 3) {nbins = std::stoi(argv[3]);}
   
-  likehood(infile,component,nbins);
-  // have component type/rate as an input?
-  // need MC information for number of events simulated
+  likehood_classify(infile,component/*,nbins*/);
 
 }

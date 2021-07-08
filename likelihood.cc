@@ -1,14 +1,11 @@
 #include <TROOT.h>
 #include <TFile.h>
-#include <TString.h>
 #include <TTree.h>
 #include <TH1D.h>
 #include <TLeaf.h>
-//Likelihood,Analysis,Unbinned,Reactor,Dwell,Time
 
-void likehood(const char* infile, const char* component, int nbins){
+void likehood(const char* infile, const char* component/*, int nbins*/){
 
-  // Component of interest
   TFile *f = new TFile(infile);
   TTree *t = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
@@ -31,7 +28,7 @@ void likehood(const char* infile, const char* component, int nbins){
 
   TFile *out=new TFile(Form("%s_likelihoods.root",component),"RECREATE");
 
-  nbins = sqrt(nentries);
+  int nbins = sqrt(nentries);
 
   TH1D* signal_like = new TH1D("signal_like","signal_like",nbins,0,0);
   TH1D* background_like = new TH1D("background_like","background_like",nbins,0,0);
@@ -54,6 +51,9 @@ void likehood(const char* infile, const char* component, int nbins){
   
   for(int i=0; i<nentries; i++){
     t->GetEntry(i);
+    if (i%100000==0){
+      printf("Creating likelihoods: Event %d of %d\n",i,nentries);
+    }
     if ( t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t->GetLeaf("n100")->GetValue(0));
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
@@ -77,7 +77,7 @@ void likehood(const char* infile, const char* component, int nbins){
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
       double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
       double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
-      {if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
+      {if( std::isinf(sig_like) == true){sig_like=0;}else{}}
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
       signal_like->Fill(sig_like);
@@ -86,7 +86,6 @@ void likehood(const char* infile, const char* component, int nbins){
     }
   }
   
-  //need to scale first
   ratio_like->Scale(1/ratio_like->GetEntries());
   signal_like->Scale(1/signal_like->GetEntries());
   background_like->Scale(1/background_like->GetEntries());
@@ -102,15 +101,13 @@ void likehood(const char* infile, const char* component, int nbins){
 
 int main(int argc, char** argv){
 
-  const char* infile = argv[1]; //input file (FRED)
-  const char* component = argv[2]; //output file (likehoods)
+  const char* infile = argv[1];
+  const char* component = argv[2];
   
-  int nbins = 1000; //look at Freedman-Diaconis rule or use root n
+  //int nbins = 1000;
 
-  if (argc > 3) {nbins = std::stoi(argv[3]);}
+  //if (argc > 3) {nbins = std::stoi(argv[3]);}
   
-  likehood(infile,component,nbins);
-  // have component type/rate as an input?
-  // need MC information for number of events simulated
+  likehood(infile,component/*,nbins*/);
 
 }
