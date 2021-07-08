@@ -1,8 +1,5 @@
-//#include "likelihood.h"
-
 #include <TROOT.h>
 #include <TFile.h>
-#include <TString.h>
 #include <TTree.h>
 #include <TH1D.h>
 #include <TLeaf.h>
@@ -33,9 +30,6 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   
   int nkept = 0;
   
-  //int rPMT = 9000;
-  
-  //int nbins = 200;
   TH1D* n100 = new TH1D("n100","n100",nbins,0,1000);
   TH1D* n100_prev = new TH1D("n100_prev","n100_prev",nbins,0,1000);
   TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,2000);
@@ -73,14 +67,13 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
 int main(int argc, char** argv){
 
   int nbins = 1000; //look at Freedman-Diaconis rule or use root n
-  //int rPMT = 9000; //change for dTank?
-  int dTank = 22000; //has large positive effect on ratio. too good?
+  int dTank = 22000;
   const char* file = argv[1];
   const char* component = argv[2];
   if (argc > 3) {nbins = std::stoi(argv[3]);}
   if (argc > 4) {dTank = std::stoi(argv[4]);}
   
-  pdf_gen(file,component,nbins,dTank);//,pdffile);
+  pdf_gen(file,component,nbins,dTank);
   
   printf("nbins = %i\n",nbins);
   printf("dTank = %i mm\n",dTank);
