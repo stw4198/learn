@@ -1,8 +1,3 @@
-//#include "pdf_gen.cc"
-//#include "merge_PDFs.cc"
-//#include "likelihood.cc"
-//#include "likelihood_classify.cc"
-
 #include "lance.h"
 
 bool make_pdf(std::vector<std::string> p)

@@ -1,9 +1,3 @@
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1D.h>
-#include <TLeaf.h>
-
 #include "lance.h"
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank){
