@@ -15,7 +15,7 @@ To use, do ./lance [options]
 LANCE has 4 main steps:
 1) Generating probability density functions (PDFs) for signal/background components
 2) Scaling and merging PDFs to create signal and background PDFs
-3) Creating likelihoods based on signal and background PDFs, and dtermining likelihood ratio (log(L<sub>s</sub>/L<sub>b</sub>))
+3) Creating likelihoods based on signal and background PDFs, and determining likelihood ratio (log(L<sub>s</sub>/L<sub>b</sub>))
 4) Evaluating the likelihoods to find optimal cut on likelihood ratio to suppress backgrounds
 
 To generate PDFs, use<br>
