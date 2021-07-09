@@ -122,7 +122,7 @@ int main(int argc, char** argv){
     printf("2) Scaling and merging PDFs\nDo ./lance --merge [signal:default hartlepool]\n\n");
     printf("3) Creating likelihoods\nDo ./lance --like [input file] [component]\n\n");
     printf("4) Evaluating likelihoods and rates\nDo ./lance --eval [input file] [component]\n\n");
-    printf("\nComponent options are:\nbig\nsmall\nworld\ngeo\nli9\nn17\nsingles\nheysham\nheysham2\ntorness\n");
+    printf("\nComponent options are currently:\nbig\nsmall\nworld\ngeo\nli9\nn17\nsingles\nheysham\nheysham2\ntorness\n");
   }
 
 }
