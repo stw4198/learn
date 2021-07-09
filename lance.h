@@ -11,7 +11,7 @@
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank);
 void merge_PDFs(const char* sig);
-void likehood_classify(const char* infile, const char* component/*, int nbins*/);
-void likehood(const char* infile, const char* component/*, int nbins*/);
+void likehood_classify(const char* infile, const char* component);
+void likehood(const char* infile, const char* component);
 
 #endif

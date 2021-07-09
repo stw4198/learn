@@ -1,8 +1,8 @@
-//#include <TROOT.h>
-//#include <TFile.h>
-//#include <TH1D.h>
-//#include <sstream>
-//#include <fstream>
+#include <TROOT.h>
+#include <TFile.h>
+#include <TH1D.h>
+#include <sstream>
+#include <fstream>
 
 #include "lance.h"
 

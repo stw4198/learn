@@ -1,10 +1,10 @@
-//#include <TROOT.h>
-//#include <TFile.h>
-//#include <TTree.h>
-//#include <TH1D.h>
-//#include <TLeaf.h>
-//#include <sstream>
-//#include <fstream>
+#include <TROOT.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TH1D.h>
+#include <TLeaf.h>
+#include <sstream>
+#include <fstream>
 
 #include "lance.h"
 
