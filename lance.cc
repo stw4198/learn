@@ -122,7 +122,42 @@ int main(int argc, char** argv){
     printf("2) Scaling and merging PDFs\nDo ./lance --merge [signal:default hartlepool]\n\n");
     printf("3) Creating likelihoods\nDo ./lance --like [input file] [component]\n\n");
     printf("4) Evaluating likelihoods and rates\nDo ./lance --eval [input file] [component]\n\n");
-    printf("\nComponent options are currently:\nbig\nsmall\nworld\ngeo\nli9\nn17\nsingles\nheysham\nheysham2\ntorness\n");
+    
+    std::vector<std::string> components;
+    std::vector<double> rates;
+    std::vector<std::string> line_values;
+    std::ifstream theFile ("rates.csv");
+    if(!theFile.is_open()){
+      printf("File rates.csv does not exist, please copy to working directory from lance to see list of components and rates\n");
+      return -1;
+    }
+    std::string line;
+    std::getline(theFile, line);
+  
+    while(std::getline(theFile, line))
+    {
+      std::string line_value;
+      std::stringstream ss(line);
+      while(std::getline(ss, line_value, ','))
+      {
+        line_values.push_back(line_value);
+      }
+    }
+  
+    for (int i = 0; i < line_values.size(); i = i + 2) {
+      components.push_back(line_values[i]);
+    }
+  
+    for (int i = 1; i < line_values.size(); i = i + 2) {
+      rates.push_back(std::stod(line_values[i]));
+    }
+    
+    printf("Component options and rates are set in rates.csv\nThey are currently defined as:\n");
+    for (int i = 0; i < components.size(); i++) {
+      printf("%s: %.4e per second\n",components[i].c_str(),rates[i]);
+    }
+  
+    
   }
 
 }
