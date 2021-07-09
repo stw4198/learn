@@ -11,6 +11,10 @@
 void likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
   TFile *f = new TFile(infile);
+  if(!f->IsOpen()){
+    printf("File %s does not exist.\n",infile);
+    return;
+  }
   TTree *t_in = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
   
@@ -68,6 +72,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
 
   //signal pdfs
   TFile* signal = new TFile("signal_pdfs.root");
+  if(!signal->IsOpen()){
+    printf("File signal_pdfs.root does not exist.\n");
+    return;
+  }
   TH1D* n100_signal = (TH1D*)signal->Get("n100");
   TH1D* n100_prev_signal = (TH1D*)signal->Get("n100_prev");
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
@@ -75,6 +83,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
   //background pdfs
   TFile * background = new TFile("background_pdfs.root");
+  if(!background->IsOpen()){
+    printf("File background_pdfs.root does not exist.\n");
+    return;
+  }
   TH1D* n100_background = (TH1D*)background->Get("n100");
   TH1D* n100_prev_background = (TH1D*)background->Get("n100_prev");
   TH1D* dt_prev_us_background = (TH1D*)background->Get("dt_prev_us");
@@ -82,6 +94,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TH1D* closestPMT_background = (TH1D*)background->Get("closestPMT");
   
   TFile *singles_like = new TFile("singles_likelihoods.root");
+  if(!singles_like->IsOpen()){
+    printf("File singles_likelihoods.root does not exist.\n");
+    return;
+  }
   TH1D* ratio_like = (TH1D*)singles_like->Get("ratio_like");
 
   int binmax = ratio_like->FindLastBinAbove();
@@ -163,6 +179,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   std::vector<double> rates;
   std::vector<std::string> line_values;
   std::ifstream theFile ("rates.csv");
+  if(!theFile.is_open()){
+    printf("File rates.csv does not exist, please copy to working directory from lance\n");
+    return;
+  }
   std::string line;
   std::getline(theFile, line);
   

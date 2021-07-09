@@ -9,6 +9,10 @@
 void pdf_gen(const char* file, const char* component, int nbins, int dTank){
 
   TFile *f = new TFile(file);
+  if(!f->IsOpen()){
+    printf("File %s does not exist.\n",file);
+    return;
+  }
   TTree *t = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
   

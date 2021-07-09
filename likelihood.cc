@@ -9,6 +9,10 @@
 void likehood(const char* infile, const char* component/*, int nbins*/){
 
   TFile *f = new TFile(infile);
+  if(!f->IsOpen()){
+    printf("File %s does not exist.\n",infile);
+    return;
+  }
   TTree *t = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
   
@@ -38,6 +42,10 @@ void likehood(const char* infile, const char* component/*, int nbins*/){
 
   //signal pdfs
   TFile* signal = new TFile("signal_pdfs.root");
+  if(!signal->IsOpen()){
+    printf("File signal_pdfs.root does not exist.\n");
+    return;
+  }
   TH1D* n100_signal = (TH1D*)signal->Get("n100");
   TH1D* n100_prev_signal = (TH1D*)signal->Get("n100_prev");
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
@@ -45,6 +53,10 @@ void likehood(const char* infile, const char* component/*, int nbins*/){
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
   //background pdfs
   TFile * background = new TFile("background_pdfs.root");
+  if(!background->IsOpen()){
+    printf("File background_pdfs.root does not exist.\n");
+    return;
+  }
   TH1D* n100_background = (TH1D*)background->Get("n100");
   TH1D* n100_prev_background = (TH1D*)background->Get("n100_prev");
   TH1D* dt_prev_us_background = (TH1D*)background->Get("dt_prev_us");

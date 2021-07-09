@@ -14,6 +14,10 @@ void merge_PDFs(const char* sig){
   std::vector<double> rates;
   std::vector<std::string> line_values;
   std::ifstream theFile ("rates.csv");
+  if(!theFile.is_open()){
+    printf("File rates.csv does not exist, please copy to working directory from lance\n");
+    return;
+  }
   std::string line;
   std::getline(theFile, line);
   
@@ -88,7 +92,11 @@ void merge_PDFs(const char* sig){
   for(int i=0; i<components.size(); i++){
       if(std::find(signal.begin(), signal.end(), components[i]) != signal.end()){
       printf("Scaling signal component %s\n",components[i].c_str());
-      TFile *like = new TFile(Form("%s_pdfs.root",signal[i].c_str()));
+      TFile *like = new TFile(Form("%s_pdfs.root",components[i].c_str()));
+      if(!like->IsOpen()){
+        printf("File %s_pdfs.root does not exist.\n",components[i].c_str());
+      return;
+      }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/signal_rate);
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
@@ -111,6 +119,10 @@ void merge_PDFs(const char* sig){
     else if(std::find(background.begin(), background.end(), components[i]) != background.end()){
       printf("Scaling background component %s\n",components[i].c_str());
       TFile *like = new TFile(Form("%s_pdfs.root",components[i].c_str()));
+      if(!like->IsOpen()){
+        printf("File %s_pdfs.root does not exist.\n",components[i].c_str());
+      return;
+      }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/background_rate);
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
