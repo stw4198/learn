@@ -32,7 +32,7 @@ bool likelihood(std::vector<std::string> p)
 bool classify(std::vector<std::string> p)
 {
   for( auto v : p )
-    if( v == "--class" )
+    if( v == "--eval" )
       return true;
   return false;
 }
@@ -120,8 +120,8 @@ int main(int argc, char** argv){
     printf("There are four stages to this analysis\n\n");
     printf("1) Creating PDFs\nDo ./lance --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
     printf("2) Scaling and merging PDFs\nDo ./lance --merge [signal:default hartlepool]\n\n");
-    printf("3) Creating likelihoods\nDo ./lance --pdf [input file] [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo ./lance --pdf [input file] [component]\n\n");
+    printf("3) Creating likelihoods\nDo ./lance --like [input file] [component]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo ./lance --eval [input file] [component]\n\n");
     printf("\nComponent options are:\nbig\nsmall\nworld\ngeo\nli9\nn17\nsingles\nheysham\nheysham2\ntorness\n");
   }
 
