@@ -21,10 +21,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
     nevents += events;
   }
   
-  printf("There are %i MC events\n",nevents);
+  printf("There were %i MC events simulated\n",nevents);
   
   int nentries = t_in->GetEntries();
-  printf("There are %i entries in %s\n",nentries,infile);
+  printf("There are %i reconstructed entries in %s\n",nentries,infile);
 
   int nbins = sqrt(nentries);
   
@@ -206,10 +206,12 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
 
   printf("\n\n\nComponent = %s\n\n\n",component);
   printf("Expected interaction rate = %e per second\n",rate);
-  double det_eff = double(nkept)/double(nentries);
+  double det_eff = double(nkept)/double(nevents);
   printf("Detection efficiency = %f\n",det_eff);
   double det_rate = det_eff*rate;
-  printf("Detection rate = %e per second\n",det_rate);
-  printf("Detection rate = %e per day\n",det_rate*86400);
+  printf("Detection rate = %e per second if singles\n",det_rate);
+  printf("Detection rate = %e per second if IBD or correlated\n",0.5*det_rate);
+  printf("Detection rate = %e per day if singles\n",det_rate*86400);
+  printf("Detection rate = %e per day if IBD or correlated\n",0.5*86400*det_rate);
 
 }

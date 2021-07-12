@@ -23,10 +23,10 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
     nevents += events;
   }
   
-  printf("There are %i MC events\n",nevents);
+  printf("There were %i MC events simulated\n",nevents);
   
   int nentries = t->GetEntries();
-  printf("There are %i entries in %s\n",nentries,file);
+  printf("There are %i reconstructed entries in %s\n",nentries,file);
   
   int nkept = 0;
   
