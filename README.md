@@ -1,5 +1,7 @@
-# LANCE
-Likelihood analysis of AntiNeutrino Coincidence Events
+# LEARN
+Likelihood Event Analysis of Reactor Neutrinos
+
+Combine with machine learning for Machine LEARNing
 
 ### Dependencies
 ROOT must be installed and sourced before compiling or using
