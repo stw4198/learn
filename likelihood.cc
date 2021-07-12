@@ -1,4 +1,4 @@
-#include "lance.h"
+#include "learn.h"
 
 void likehood(const char* infile, const char* component/*, int nbins*/){
 
@@ -94,9 +94,9 @@ void likehood(const char* infile, const char* component/*, int nbins*/){
     }
   }
   
-  ratio_like->Scale(1/ratio_like->GetEntries());
-  signal_like->Scale(1/signal_like->GetEntries());
-  background_like->Scale(1/background_like->GetEntries());
+  ratio_like->Scale(1/ratio_like->Integral());
+  signal_like->Scale(1/signal_like->Integral());
+  background_like->Scale(1/background_like->Integral());
   
   out->cd();
   signal_like->Write();

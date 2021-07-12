@@ -14,10 +14,10 @@ INCLUDES := $(INCLUDES) -I. -I$(ROOTSYS)/include
 
 OBJS := likelihood.o likelihood_classify.o pdf_gen.o merge_PDFs.o
 
-all: lance
+all: learn
 
-lance: $(OBJS) lance.cc
-	$(CXX) -g -o lance $(CXXFLAGS) $(LDFLAGS) lance.cc $(INCLUDES) $(OBJS) $(LIBRARIES) $(ROOT_FLAG)
+learn: $(OBJS) learn.cc
+	$(CXX) -g -o learn $(CXXFLAGS) $(LDFLAGS) learn.cc $(INCLUDES) $(OBJS) $(LIBRARIES) $(ROOT_FLAG)
 
 %.o : %.cc
 	g++ $(ROOT_FLAG) $(INCLUDES) $(LIBRARIES) -c $*.cc
@@ -26,4 +26,4 @@ lance: $(OBJS) lance.cc
 
 clean:
 	$(RM) *.o *~ core 
-	$(RM) lance
+	$(RM) learn

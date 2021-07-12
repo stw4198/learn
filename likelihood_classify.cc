@@ -1,4 +1,4 @@
-#include "lance.h"
+#include "learn.h"
 
 void likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
@@ -172,7 +172,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   std::vector<std::string> line_values;
   std::ifstream theFile ("rates.csv");
   if(!theFile.is_open()){
-    printf("File rates.csv does not exist, please copy to working directory from lance\n");
+    printf("File rates.csv does not exist, please copy to working directory from learn\n");
     return;
   }
   std::string line;

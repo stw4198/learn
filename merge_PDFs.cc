@@ -1,4 +1,4 @@
-#include "lance.h"
+#include "learn.h"
 
 void merge_PDFs(const char* sig){
 
@@ -9,7 +9,7 @@ void merge_PDFs(const char* sig){
   std::vector<std::string> line_values;
   std::ifstream theFile ("rates.csv");
   if(!theFile.is_open()){
-    printf("File rates.csv does not exist, please copy to working directory from lance\n");
+    printf("File rates.csv does not exist, please copy to working directory from learn\n");
     return;
   }
   std::string line;

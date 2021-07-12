@@ -1,5 +1,5 @@
-#ifndef LANCE_H
-#define LANCE_H
+#ifndef LEARN_H
+#define LEARN_H
 
 #include <TROOT.h>
 #include <TFile.h>

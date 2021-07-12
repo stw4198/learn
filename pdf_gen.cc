@@ -1,4 +1,4 @@
-#include "lance.h"
+#include "learn.h"
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank){
 

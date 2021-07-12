@@ -1,4 +1,4 @@
-#include "lance.h"
+#include "learn.h"
 
 bool make_pdf(std::vector<std::string> p)
 {
@@ -111,19 +111,19 @@ int main(int argc, char** argv){
   }
   
   else{
-    printf("\n\n\nWelcome to LANCE (Likelihood analysis of AntiNeutrino Coincidence Events)\n\n\n");
+    printf("\n\n\nWelcome to LEARN (Likelihood Event Analysis of Reactor Neutrinos)\n\n\n");
     printf("There are four stages to this analysis\n\n");
-    printf("1) Creating PDFs\nDo ./lance --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
-    printf("2) Scaling and merging PDFs\nDo ./lance --merge [signal:default hartlepool]\n\n");
-    printf("3) Creating likelihoods\nDo ./lance --like [input file] [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo ./lance --eval [input file] [component]\n\n");
+    printf("1) Creating PDFs\nDo ./learn --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
+    printf("2) Scaling and merging PDFs\nDo ./learn --merge [signal:default hartlepool]\n\n");
+    printf("3) Creating likelihoods\nDo ./learn --like [input file] [component]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component]\n\n");
     
     std::vector<std::string> components;
     std::vector<double> rates;
     std::vector<std::string> line_values;
     std::ifstream theFile ("rates.csv");
     if(!theFile.is_open()){
-      printf("File rates.csv does not exist, please copy to working directory from lance to see list of components and rates\n");
+      printf("File rates.csv does not exist, please copy to working directory from learn to see list of components and rates\n");
       return -1;
     }
     std::string line;
