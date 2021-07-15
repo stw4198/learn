@@ -19,6 +19,7 @@ void stack_like(){
   TFile *world = new TFile(/*folder+*/"world_likelihoods.root");
   TFile *li9 = new TFile(/*folder+*/"li9_likelihoods.root");
   TFile *n17 = new TFile(/*folder+*/"n17_likelihoods.root");
+  TFile *fn = new TFile("fn_likelihoods.root");
   
   TH1D * ratio_b = (TH1D*)big->Get("ratio_like");
   TH1D * ratio_s = (TH1D*)small->Get("ratio_like");
@@ -27,7 +28,7 @@ void stack_like(){
   TH1D * ratio_w = (TH1D*)world->Get("ratio_like");
   TH1D * ratio_n = (TH1D*)n17->Get("ratio_like");
   TH1D * ratio_l = (TH1D*)li9->Get("ratio_like");
-  //TH1F * ratio_d = (TH1F*)f1->Get("ratio_d");
+  TH1F * ratio_f = (TH1F*)fn->Get("ratio_like");
 
 
   THStack * stack = new THStack("stack","log(likelihood) ratio");
@@ -39,7 +40,7 @@ void stack_like(){
   ratio_w->SetLineColor(5);
   ratio_n->SetLineColor(6);
   ratio_l->SetLineColor(7);
-  //ratio_d->SetLineColor(1);
+  ratio_f->SetLineColor(8);
   ratio_b->SetLineWidth(2);
   ratio_s->SetLineWidth(2);
   ratio_c->SetLineWidth(2);
@@ -47,15 +48,15 @@ void stack_like(){
   ratio_w->SetLineWidth(2);
   ratio_n->SetLineWidth(2);
   ratio_l->SetLineWidth(2);
-  //ratio_d->SetLineWidth(2);
+  ratio_f->SetLineWidth(2);
   legend->AddEntry(ratio_b,"Big Hartlepool");
   legend->AddEntry(ratio_s,"Small Hartlepool");
-  legend->AddEntry(ratio_c,"Combined Singles");
+  legend->AddEntry(ratio_c,"Singles");
   legend->AddEntry(ratio_w,"World");
   legend->AddEntry(ratio_g,"Geoneutrinos");
   legend->AddEntry(ratio_n,"Nitrogen - 17");
   legend->AddEntry(ratio_l,"Lithium - 9");
-  //legend->AddEntry(ratio_d,"Total Data");
+  legend->AddEntry(ratio_f,"Fast Neutrons");
   stack->Add(ratio_c);
   stack->Add(ratio_g);
   stack->Add(ratio_w);
@@ -63,7 +64,7 @@ void stack_like(){
   stack->Add(ratio_l);
   stack->Add(ratio_s);
   stack->Add(ratio_b);
-  //stack->Add(ratio_d);
+  stack->Add(ratio_f);
   TCanvas * c1 = new TCanvas("c1");
   int binmax = ratio_c->FindLastBinAbove();//GetMaximumBin();
   double max_Lr = ratio_c->GetXaxis()->GetBinCenter(binmax);

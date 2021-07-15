@@ -94,7 +94,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
 
   int binmax = ratio_like->FindLastBinAbove();
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
-  int thresh = std::ceil(max_Lr);
+  int thresh = std::ceil(max_Lr)+1;
   printf("Max Lr for singles = %f\nSetting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
   int nkept = 0;
