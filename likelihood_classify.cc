@@ -30,6 +30,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   
   TFile *output = new TFile(Form("%s_classified.root",component),"RECREATE");
   TTree *data = new TTree("data","low-energy detector triggered events");
+  TTree *run_summary=new TTree("runSummary","mc run summary");
 
   double innerPE;
   double n9,n9_prev,nOff,n100,n100_prev;
@@ -39,6 +40,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   int inner_hit,inner_hit_prev;
   double x,y,z,t;
   double u,v,w;
+  //Int_t n_events;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
   data->Branch("inner_hit_prev",&inner_hit_prev,"inner_hit_prev/I");//inner detector
@@ -61,6 +63,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   data->Branch("u",&u,"u/D");
   data->Branch("v",&v,"v/D");
   data->Branch("w",&w,"w/D");
+  run_summary->Branch("nevents",&nevents,"nevents/I");
 
   //signal pdfs
   TFile* signal = new TFile("signal_pdfs.root");
@@ -104,7 +107,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
     if (i%100000==0){
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
-    if ( t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
+    if (t_in->GetLeaf("n100")->GetValue(0) > 0 and t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
       double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
@@ -163,6 +166,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   
   output->cd();
   data->Write();
+  run_summary->Fill();
+  run_summary->Write();
   output->Close();
   singles_like->Close();
   f->Close();
@@ -205,7 +210,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   }
 
   printf("\n\n\nComponent = %s\n\n\n",component);
-  printf("Expected interaction rate = %e per second\n",rate);
+  printf("Expected interaction rate = %.9e per second\n",rate);
   double det_eff = double(nkept)/double(nevents);
   printf("Detection efficiency = %f\n",det_eff);
   double det_rate = det_eff*rate;

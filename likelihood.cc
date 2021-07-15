@@ -62,7 +62,7 @@ void likehood(const char* infile, const char* component/*, int nbins*/){
     if (i%100000==0){
       printf("Creating likelihoods: Event %d of %d\n",i,nentries);
     }
-    if ( t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
+    if (t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > -499) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t->GetLeaf("n100")->GetValue(0));
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
       double n100_bg_bin = n100_background->GetXaxis()->FindBin(t->GetLeaf("n100")->GetValue(0));

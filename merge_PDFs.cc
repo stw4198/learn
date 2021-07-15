@@ -105,20 +105,73 @@ void merge_PDFs(const char* sig){
       }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/signal_rate);
+      
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
       n100_prev->Scale(rates[i]/signal_rate);
+      
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/signal_rate);
+      
       TH1D* drPrevr = (TH1D*)like->Get("drPrevr");
       drPrevr->Scale(rates[i]/signal_rate);
+      
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_one = (TH1D*)like->Get("beta_one");
+      beta_one->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_one_prev = (TH1D*)like->Get("beta_one_prev");
+      beta_one_prev->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_two = (TH1D*)like->Get("beta_two");
+      beta_two->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_two_prev = (TH1D*)like->Get("beta_two_prev");
+      beta_two_prev->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_three = (TH1D*)like->Get("beta_three");
+      beta_three->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_three_prev = (TH1D*)like->Get("beta_three_prev");
+      beta_three_prev->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_four = (TH1D*)like->Get("beta_four");
+      beta_four->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_four_prev = (TH1D*)like->Get("beta_four_prev");
+      beta_four_prev->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_five = (TH1D*)like->Get("beta_five");
+      beta_five->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_five_prev = (TH1D*)like->Get("beta_five_prev");
+      beta_five_prev->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_six = (TH1D*)like->Get("beta_six");
+      beta_six->Scale(rates[i]/signal_rate);
+      
+      TH1D* beta_six_prev = (TH1D*)like->Get("beta_six_prev");
+      beta_six_prev->Scale(rates[i]/signal_rate);
+      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();
+      beta_one->Write();
+      beta_one_prev->Write();
+      beta_two->Write();
+      beta_two_prev->Write();
+      beta_three->Write();
+      beta_three_prev->Write();
+      beta_four->Write();
+      beta_four_prev->Write();
+      beta_five->Write();
+      beta_five_prev->Write();
+      beta_six->Write();
+      beta_six_prev->Write();
       like->Close();
       like_scale->Close();
     }
@@ -131,20 +184,73 @@ void merge_PDFs(const char* sig){
       }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/background_rate);
+      
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
       n100_prev->Scale(rates[i]/background_rate);
+      
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/background_rate);
+      
       TH1D* drPrevr = (TH1D*)like->Get("drPrevr");
       drPrevr->Scale(rates[i]/background_rate);
+      
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_one = (TH1D*)like->Get("beta_one");
+      beta_one->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_one_prev = (TH1D*)like->Get("beta_one_prev");
+      beta_one_prev->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_two = (TH1D*)like->Get("beta_two");
+      beta_two->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_two_prev = (TH1D*)like->Get("beta_two_prev");
+      beta_two_prev->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_three = (TH1D*)like->Get("beta_three");
+      beta_three->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_three_prev = (TH1D*)like->Get("beta_three_prev");
+      beta_three_prev->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_four = (TH1D*)like->Get("beta_four");
+      beta_four->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_four_prev = (TH1D*)like->Get("beta_four_prev");
+      beta_four_prev->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_five = (TH1D*)like->Get("beta_five");
+      beta_five->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_five_prev = (TH1D*)like->Get("beta_five_prev");
+      beta_five_prev->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_six = (TH1D*)like->Get("beta_six");
+      beta_six->Scale(rates[i]/background_rate);
+      
+      TH1D* beta_six_prev = (TH1D*)like->Get("beta_six_prev");
+      beta_six_prev->Scale(rates[i]/background_rate);
+      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();
+      beta_one->Write();
+      beta_one_prev->Write();
+      beta_two->Write();
+      beta_two_prev->Write();
+      beta_three->Write();
+      beta_three_prev->Write();
+      beta_four->Write();
+      beta_four_prev->Write();
+      beta_five->Write();
+      beta_five_prev->Write();
+      beta_six->Write();
+      beta_six_prev->Write();
       like->Close();
       like_scale->Close();
     }
