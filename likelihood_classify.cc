@@ -40,6 +40,12 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   int inner_hit,inner_hit_prev;
   double x,y,z,t;
   double u,v,w;
+  double beta_one,beta_one_prev;
+  double beta_two,beta_two_prev;
+  double beta_three,beta_three_prev;
+  double beta_four,beta_four_prev;
+  double beta_five,beta_five_prev;
+  double beta_six,beta_six_prev;
   //Int_t n_events;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
@@ -63,6 +69,18 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   data->Branch("u",&u,"u/D");
   data->Branch("v",&v,"v/D");
   data->Branch("w",&w,"w/D");
+  data->Branch("beta_one",&beta_one,"beta_one/D"); 
+  data->Branch("beta_two",&beta_two,"beta_two/D"); 
+  data->Branch("beta_three",&beta_three,"beta_three/D"); 
+  data->Branch("beta_four",&beta_four,"beta_four/D"); 
+  data->Branch("beta_five",&beta_five,"beta_five/D"); 
+  data->Branch("beta_six",&beta_six,"beta_six/D"); 
+  data->Branch("beta_one_prev",&beta_one_prev,"beta_one_prev/D"); 
+  data->Branch("beta_two_prev",&beta_two_prev,"beta_two_prev/D"); 
+  data->Branch("beta_three_prev",&beta_three_prev,"beta_three_prev/D"); 
+  data->Branch("beta_four_prev",&beta_four_prev,"beta_four_prev/D"); 
+  data->Branch("beta_five_prev",&beta_five_prev,"beta_five_prev/D"); 
+  data->Branch("beta_six_prev",&beta_six_prev,"beta_six_prev/D"); 
   run_summary->Branch("nevents",&nevents,"nevents/I");
 
   //signal pdfs
@@ -76,6 +94,19 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
   TH1D* drPrevr_signal = (TH1D*)signal->Get("drPrevr");
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
+  TH1D* beta_one_signal = (TH1D*)signal->Get("beta_one");
+  TH1D* beta_one_prev_signal = (TH1D*)signal->Get("beta_one_prev");
+  TH1D* beta_two_signal = (TH1D*)signal->Get("beta_two");
+  TH1D* beta_two_prev_signal = (TH1D*)signal->Get("beta_two_prev");
+  TH1D* beta_three_signal = (TH1D*)signal->Get("beta_three");
+  TH1D* beta_three_prev_signal = (TH1D*)signal->Get("beta_three_prev");
+  TH1D* beta_four_signal = (TH1D*)signal->Get("beta_four");
+  TH1D* beta_four_prev_signal = (TH1D*)signal->Get("beta_four_prev");
+  TH1D* beta_five_signal = (TH1D*)signal->Get("beta_five");
+  TH1D* beta_five_prev_signal = (TH1D*)signal->Get("beta_five_prev");
+  TH1D* beta_six_signal = (TH1D*)signal->Get("beta_six");
+  TH1D* beta_six_prev_signal = (TH1D*)signal->Get("beta_six_prev");
+  
   //background pdfs
   TFile * background = new TFile("background_pdfs.root");
   if(!background->IsOpen()){
@@ -87,6 +118,18 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TH1D* dt_prev_us_background = (TH1D*)background->Get("dt_prev_us");
   TH1D* drPrevr_background = (TH1D*)background->Get("drPrevr");
   TH1D* closestPMT_background = (TH1D*)background->Get("closestPMT");
+  TH1D* beta_one_background = (TH1D*)background->Get("beta_one");
+  TH1D* beta_one_prev_background = (TH1D*)background->Get("beta_one_prev");
+  TH1D* beta_two_background = (TH1D*)background->Get("beta_two");
+  TH1D* beta_two_prev_background = (TH1D*)background->Get("beta_two_prev");
+  TH1D* beta_three_background = (TH1D*)background->Get("beta_three");
+  TH1D* beta_three_prev_background = (TH1D*)background->Get("beta_three_prev");
+  TH1D* beta_four_background = (TH1D*)background->Get("beta_four");
+  TH1D* beta_four_prev_background = (TH1D*)background->Get("beta_four_prev");
+  TH1D* beta_five_background = (TH1D*)background->Get("beta_five");
+  TH1D* beta_five_prev_background = (TH1D*)background->Get("beta_five_prev");
+  TH1D* beta_six_background = (TH1D*)background->Get("beta_six");
+  TH1D* beta_six_prev_background = (TH1D*)background->Get("beta_six_prev");
   
   TFile *singles_like = new TFile("singles_likelihoods.root");
   if(!singles_like->IsOpen()){
@@ -112,24 +155,89 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
       double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
       double n100_bg_prob = n100_background->GetBinContent(n100_bg_bin);
+      
       double n100_prev_sig_bin = n100_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
       double n100_prev_sig_prob = n100_prev_signal->GetBinContent(n100_prev_sig_bin);
       double n100_prev_bg_bin = n100_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
       double n100_prev_bg_prob = n100_prev_background->GetBinContent(n100_prev_bg_bin);
+      
       double dt_prev_us_sig_bin = dt_prev_us_signal->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_sig_prob = dt_prev_us_signal->GetBinContent(dt_prev_us_sig_bin);
       double dt_prev_us_bg_bin = dt_prev_us_background->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_bg_prob = dt_prev_us_background->GetBinContent(dt_prev_us_bg_bin);
+      
       double drPrevr_sig_bin = drPrevr_signal->GetXaxis()->FindBin(t_in->GetLeaf("drPrevr")->GetValue(0));
       double drPrevr_sig_prob = drPrevr_signal->GetBinContent(drPrevr_sig_bin);
       double drPrevr_bg_bin = drPrevr_background->GetXaxis()->FindBin(t_in->GetLeaf("drPrevr")->GetValue(0));
       double drPrevr_bg_prob = drPrevr_background->GetBinContent(drPrevr_bg_bin);
+      
       double closestPMT_sig_bin = closestPMT_signal->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_sig_prob = closestPMT_signal->GetBinContent(closestPMT_sig_bin);
       double closestPMT_bg_bin = closestPMT_background->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
-      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
-      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
+      
+      double beta_one_sig_bin = beta_one_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_one")->GetValue(0));
+      double beta_one_sig_prob = beta_one_signal->GetBinContent(beta_one_sig_bin);
+      double beta_one_bg_bin = beta_one_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_one")->GetValue(0));
+      double beta_one_bg_prob = beta_one_background->GetBinContent(beta_one_bg_bin);
+      
+      double beta_one_prev_sig_bin = beta_one_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_one_prev")->GetValue(0));
+      double beta_one_prev_sig_prob = beta_one_prev_signal->GetBinContent(beta_one_prev_sig_bin);
+      double beta_one_prev_bg_bin = beta_one_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_one_prev")->GetValue(0));
+      double beta_one_prev_bg_prob = beta_one_prev_background->GetBinContent(beta_one_prev_bg_bin);
+      
+      double beta_two_sig_bin = beta_two_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_two")->GetValue(0));
+      double beta_two_sig_prob = beta_two_signal->GetBinContent(beta_two_sig_bin);
+      double beta_two_bg_bin = beta_two_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_two")->GetValue(0));
+      double beta_two_bg_prob = beta_two_background->GetBinContent(beta_two_bg_bin);
+      
+      double beta_two_prev_sig_bin = beta_two_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_two_prev")->GetValue(0));
+      double beta_two_prev_sig_prob = beta_two_prev_signal->GetBinContent(beta_two_prev_sig_bin);
+      double beta_two_prev_bg_bin = beta_two_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_two_prev")->GetValue(0));
+      double beta_two_prev_bg_prob = beta_two_prev_background->GetBinContent(beta_two_prev_bg_bin);
+      
+      double beta_three_sig_bin = beta_three_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_three")->GetValue(0));
+      double beta_three_sig_prob = beta_three_signal->GetBinContent(beta_three_sig_bin);
+      double beta_three_bg_bin = beta_three_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_three")->GetValue(0));
+      double beta_three_bg_prob = beta_three_background->GetBinContent(beta_three_bg_bin);
+      
+      double beta_three_prev_sig_bin = beta_three_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_three_prev")->GetValue(0));
+      double beta_three_prev_sig_prob = beta_three_prev_signal->GetBinContent(beta_three_prev_sig_bin);
+      double beta_three_prev_bg_bin = beta_three_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_three_prev")->GetValue(0));
+      double beta_three_prev_bg_prob = beta_three_prev_background->GetBinContent(beta_three_prev_bg_bin);
+      
+      double beta_four_sig_bin = beta_four_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_four")->GetValue(0));
+      double beta_four_sig_prob = beta_four_signal->GetBinContent(beta_four_sig_bin);
+      double beta_four_bg_bin = beta_four_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_four")->GetValue(0));
+      double beta_four_bg_prob = beta_four_background->GetBinContent(beta_four_bg_bin);
+      
+      double beta_four_prev_sig_bin = beta_four_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_four_prev")->GetValue(0));
+      double beta_four_prev_sig_prob = beta_four_prev_signal->GetBinContent(beta_four_prev_sig_bin);
+      double beta_four_prev_bg_bin = beta_four_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_four_prev")->GetValue(0));
+      double beta_four_prev_bg_prob = beta_four_prev_background->GetBinContent(beta_four_prev_bg_bin);
+      
+      double beta_five_sig_bin = beta_five_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_five")->GetValue(0));
+      double beta_five_sig_prob = beta_five_signal->GetBinContent(beta_five_sig_bin);
+      double beta_five_bg_bin = beta_five_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_five")->GetValue(0));
+      double beta_five_bg_prob = beta_five_background->GetBinContent(beta_five_bg_bin);
+      
+      double beta_five_prev_sig_bin = beta_five_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_five_prev")->GetValue(0));
+      double beta_five_prev_sig_prob = beta_five_prev_signal->GetBinContent(beta_five_prev_sig_bin);
+      double beta_five_prev_bg_bin = beta_five_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_five_prev")->GetValue(0));
+      double beta_five_prev_bg_prob = beta_five_prev_background->GetBinContent(beta_five_prev_bg_bin);
+      
+      double beta_six_sig_bin = beta_six_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_six")->GetValue(0));
+      double beta_six_sig_prob = beta_six_signal->GetBinContent(beta_six_sig_bin);
+      double beta_six_bg_bin = beta_six_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_six")->GetValue(0));
+      double beta_six_bg_prob = beta_six_background->GetBinContent(beta_six_bg_bin);
+      
+      double beta_six_prev_sig_bin = beta_six_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("beta_six_prev")->GetValue(0));
+      double beta_six_prev_sig_prob = beta_six_prev_signal->GetBinContent(beta_six_prev_sig_bin);
+      double beta_six_prev_bg_bin = beta_six_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_six_prev")->GetValue(0));
+      double beta_six_prev_bg_prob = beta_six_prev_background->GetBinContent(beta_six_prev_bg_bin);
+      
+      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob*beta_one_sig_prob*beta_one_prev_sig_prob*beta_two_sig_prob*beta_two_prev_sig_prob*beta_three_sig_prob*beta_three_prev_sig_prob*beta_four_sig_prob*beta_four_prev_sig_prob*beta_five_sig_prob*beta_five_prev_sig_prob*beta_six_sig_prob*beta_six_prev_sig_prob);
+      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob*beta_one_bg_prob*beta_one_prev_bg_prob*beta_two_bg_prob*beta_two_prev_bg_prob*beta_three_bg_prob*beta_three_prev_bg_prob*beta_four_bg_prob*beta_four_prev_bg_prob*beta_five_bg_prob*beta_five_prev_bg_prob*beta_six_bg_prob*beta_six_prev_bg_prob);
       {if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
@@ -155,6 +263,18 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
         dt_prev_us = t_in->GetLeaf("dt_prev_us")->GetValue(0);
         inner_hit = t_in->GetLeaf("inner_hit")->GetValue(0);
         inner_hit_prev = t_in->GetLeaf("inner_hit_prev")->GetValue(0);
+        beta_one = t_in->GetLeaf("beta_one")->GetValue(0);
+        beta_one_prev = t_in->GetLeaf("beta_one_prev")->GetValue(0);
+        beta_two = t_in->GetLeaf("beta_two")->GetValue(0);
+        beta_two_prev = t_in->GetLeaf("beta_two_prev")->GetValue(0);
+        beta_three = t_in->GetLeaf("beta_three")->GetValue(0);
+        beta_three_prev = t_in->GetLeaf("beta_three_prev")->GetValue(0);
+        beta_four = t_in->GetLeaf("beta_four")->GetValue(0);
+        beta_four_prev = t_in->GetLeaf("beta_four_prev")->GetValue(0);
+        beta_five = t_in->GetLeaf("beta_five")->GetValue(0);
+        beta_five_prev = t_in->GetLeaf("beta_five_prev")->GetValue(0);
+        beta_six = t_in->GetLeaf("beta_six")->GetValue(0);
+        beta_six_prev = t_in->GetLeaf("beta_six_prev")->GetValue(0);
         data->Fill();
         nkept++;
       }
