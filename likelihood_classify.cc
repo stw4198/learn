@@ -140,7 +140,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
 
   int binmax = ratio_like->FindLastBinAbove();
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
-  int thresh = std::ceil(max_Lr)+1;
+  int thresh = std::ceil(max_Lr);
   printf("Max Lr for singles = %f\nSetting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
   int nkept = 0;
@@ -236,10 +236,10 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
       double beta_six_prev_bg_bin = beta_six_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("beta_six_prev")->GetValue(0));
       double beta_six_prev_bg_prob = beta_six_prev_background->GetBinContent(beta_six_prev_bg_bin);
       
-      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob*beta_one_sig_prob*beta_one_prev_sig_prob*beta_two_sig_prob*beta_two_prev_sig_prob*beta_three_sig_prob*beta_three_prev_sig_prob*beta_four_sig_prob*beta_four_prev_sig_prob*beta_five_sig_prob*beta_five_prev_sig_prob*beta_six_sig_prob*beta_six_prev_sig_prob);
-      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob*beta_one_bg_prob*beta_one_prev_bg_prob*beta_two_bg_prob*beta_two_prev_bg_prob*beta_three_bg_prob*beta_three_prev_bg_prob*beta_four_bg_prob*beta_four_prev_bg_prob*beta_five_bg_prob*beta_five_prev_bg_prob*beta_six_bg_prob*beta_six_prev_bg_prob);
-      {if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
-      {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
+      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);//*beta_one_sig_prob*beta_one_prev_sig_prob*beta_two_sig_prob*beta_two_prev_sig_prob*beta_three_sig_prob*beta_three_prev_sig_prob*beta_four_sig_prob*beta_four_prev_sig_prob*beta_five_sig_prob*beta_five_prev_sig_prob*beta_six_sig_prob*beta_six_prev_sig_prob);
+      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);//*beta_one_bg_prob*beta_one_prev_bg_prob*beta_two_bg_prob*beta_two_prev_bg_prob*beta_three_bg_prob*beta_three_prev_bg_prob*beta_four_bg_prob*beta_four_prev_bg_prob*beta_five_bg_prob*beta_five_prev_bg_prob*beta_six_bg_prob*beta_six_prev_bg_prob);
+      //{if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
+      //{if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
       if((sig_like != 0 && bg_like == 0) || (r_like>thresh)){
         x = t_in->GetLeaf("x")->GetValue(0);

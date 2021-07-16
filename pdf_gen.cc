@@ -32,7 +32,7 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   
   TH1D* n100 = new TH1D("n100","n100",nbins,0,1000);
   TH1D* n100_prev = new TH1D("n100_prev","n100_prev",nbins,0,1000);
-  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,2000);
+  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,4000);
   TH1D* drPrevr = new TH1D("drPrevr","drPrevr",nbins,0,dTank);
   TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,0,dTank);
   TH1D* beta_one = new TH1D("beta_one","beta_one",nbins,-0.3,1.1);
