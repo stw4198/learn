@@ -37,13 +37,13 @@ void merge_PDFs(const char* sig){
     signal.push_back("hartlepool_1");
     signal.push_back("hartlepool_2");
     background.push_back("heysham_full");
-    background.push_back("torness_full");
+    //background.push_back("torness_full");
     background.push_back("singles");
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "heysham_full",strlen(sig))==0){
     signal.push_back("heysham_full");
@@ -53,7 +53,7 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "heysham_2",strlen(sig))==0){
     signal.push_back("heysham_2");
@@ -63,7 +63,7 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "torness_full",strlen(sig))==0){
     signal.push_back("torness_full");
@@ -73,7 +73,17 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "hey_tor",strlen(sig))==0){
+    signal.push_back("torness_full");
+    signal.push_back("heysham_2");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world");
+    //background.push_back("fn");
   }
     
   double signal_rate = 0;
@@ -118,60 +128,12 @@ void merge_PDFs(const char* sig){
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/signal_rate);
       
-      TH1D* beta_one = (TH1D*)like->Get("beta_one");
-      beta_one->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_one_prev = (TH1D*)like->Get("beta_one_prev");
-      beta_one_prev->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_two = (TH1D*)like->Get("beta_two");
-      beta_two->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_two_prev = (TH1D*)like->Get("beta_two_prev");
-      beta_two_prev->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_three = (TH1D*)like->Get("beta_three");
-      beta_three->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_three_prev = (TH1D*)like->Get("beta_three_prev");
-      beta_three_prev->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_four = (TH1D*)like->Get("beta_four");
-      beta_four->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_four_prev = (TH1D*)like->Get("beta_four_prev");
-      beta_four_prev->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_five = (TH1D*)like->Get("beta_five");
-      beta_five->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_five_prev = (TH1D*)like->Get("beta_five_prev");
-      beta_five_prev->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_six = (TH1D*)like->Get("beta_six");
-      beta_six->Scale(rates[i]/signal_rate);
-      
-      TH1D* beta_six_prev = (TH1D*)like->Get("beta_six_prev");
-      beta_six_prev->Scale(rates[i]/signal_rate);
-      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();
-      beta_one->Write();
-      beta_one_prev->Write();
-      beta_two->Write();
-      beta_two_prev->Write();
-      beta_three->Write();
-      beta_three_prev->Write();
-      beta_four->Write();
-      beta_four_prev->Write();
-      beta_five->Write();
-      beta_five_prev->Write();
-      beta_six->Write();
-      beta_six_prev->Write();
       like->Close();
       like_scale->Close();
     }
@@ -197,60 +159,12 @@ void merge_PDFs(const char* sig){
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/background_rate);
       
-      TH1D* beta_one = (TH1D*)like->Get("beta_one");
-      beta_one->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_one_prev = (TH1D*)like->Get("beta_one_prev");
-      beta_one_prev->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_two = (TH1D*)like->Get("beta_two");
-      beta_two->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_two_prev = (TH1D*)like->Get("beta_two_prev");
-      beta_two_prev->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_three = (TH1D*)like->Get("beta_three");
-      beta_three->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_three_prev = (TH1D*)like->Get("beta_three_prev");
-      beta_three_prev->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_four = (TH1D*)like->Get("beta_four");
-      beta_four->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_four_prev = (TH1D*)like->Get("beta_four_prev");
-      beta_four_prev->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_five = (TH1D*)like->Get("beta_five");
-      beta_five->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_five_prev = (TH1D*)like->Get("beta_five_prev");
-      beta_five_prev->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_six = (TH1D*)like->Get("beta_six");
-      beta_six->Scale(rates[i]/background_rate);
-      
-      TH1D* beta_six_prev = (TH1D*)like->Get("beta_six_prev");
-      beta_six_prev->Scale(rates[i]/background_rate);
-      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();
-      beta_one->Write();
-      beta_one_prev->Write();
-      beta_two->Write();
-      beta_two_prev->Write();
-      beta_three->Write();
-      beta_three_prev->Write();
-      beta_four->Write();
-      beta_four_prev->Write();
-      beta_five->Write();
-      beta_five_prev->Write();
-      beta_six->Write();
-      beta_six_prev->Write();
       like->Close();
       like_scale->Close();
     }

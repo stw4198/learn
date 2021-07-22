@@ -8,20 +8,16 @@
 
 void stack_like(){
 
-    //TFile* f1 = new TFile("../JA_data/likelihood_ratio_3.root");
-  
-  TString folder = "../likelihood_test/";
-  
-  TFile *h1 = new TFile(/*folder+*/"hartlepool_1_likelihoods.root");
-  TFile *h2 = new TFile(/*folder+*/"hartlepool_1_likelihoods.root");
-  TFile *singles = new TFile(/*folder+*/"singles_likelihoods.root");
-  TFile *geo = new TFile(/*folder+*/"geo_likelihoods.root");
-  TFile *world = new TFile(/*folder+*/"world_likelihoods.root");
-  TFile *li9 = new TFile(/*folder+*/"li9_likelihoods.root");
-  TFile *n17 = new TFile(/*folder+*/"n17_likelihoods.root");
+  TFile *h1 = new TFile("hartlepool_1_likelihoods.root");
+  TFile *h2 = new TFile("hartlepool_1_likelihoods.root");
+  TFile *singles = new TFile("singles_likelihoods.root");
+  TFile *geo = new TFile("geo_likelihoods.root");
+  TFile *world = new TFile("world_likelihoods.root");
+  TFile *li9 = new TFile("li9_likelihoods.root");
+  TFile *n17 = new TFile("n17_likelihoods.root");
   TFile *fn = new TFile("fn_likelihoods.root");
-  TFile *hey = new TFile(/*folder+*/"heysham_full_likelihoods.root");
-  TFile *tor = new TFile(/*folder+*/"torness_full_likelihoods.root");
+  TFile *hey = new TFile("heysham_full_likelihoods.root");
+  TFile *tor = new TFile("torness_full_likelihoods.root");
   
   TH1D * ratio_b = (TH1D*)h1->Get("ratio_like");
   TH1D * ratio_s = (TH1D*)h2->Get("ratio_like");
@@ -30,13 +26,24 @@ void stack_like(){
   TH1D * ratio_w = (TH1D*)world->Get("ratio_like");
   TH1D * ratio_n = (TH1D*)n17->Get("ratio_like");
   TH1D * ratio_l = (TH1D*)li9->Get("ratio_like");
-  TH1F * ratio_f = (TH1F*)fn->Get("ratio_like");
-  TH1F * ratio_h = (TH1F*)hey->Get("ratio_like");
-  TH1F * ratio_t = (TH1F*)tor->Get("ratio_like");
-
+  TH1D * ratio_f = (TH1D*)fn->Get("ratio_like");
+  TH1D * ratio_h = (TH1D*)hey->Get("ratio_like");
+  TH1D * ratio_t = (TH1D*)tor->Get("ratio_like");
+  
+  ratio_b->Scale(1./ratio_b->GetMaximum());
+  ratio_s->Scale(1./ratio_s->GetMaximum());
+  ratio_c->Scale(1./ratio_c->GetMaximum());
+  ratio_g->Scale(1./ratio_g->GetMaximum());
+  ratio_w->Scale(1./ratio_w->GetMaximum());
+  ratio_n->Scale(1./ratio_n->GetMaximum());
+  ratio_l->Scale(1./ratio_l->GetMaximum());
+  ratio_f->Scale(1./ratio_f->GetMaximum());
+  ratio_h->Scale(1./ratio_h->GetMaximum());
+  ratio_t->Scale(1./ratio_t->GetMaximum());
 
   THStack * stack = new THStack("stack","log(likelihood) ratio");
   TLegend *legend = new TLegend(0.85,0.5,0.98,0.98);
+  
   ratio_b->SetLineColor(2);
   ratio_s->SetLineColor(3);
   ratio_c->SetLineColor(1);
@@ -45,8 +52,9 @@ void stack_like(){
   ratio_n->SetLineColor(6);
   ratio_l->SetLineColor(7);
   ratio_f->SetLineColor(8);
-  ratio_h->SetLineColor(9);
-  ratio_t->SetLineColor(10);
+  ratio_h->SetLineColor(28);
+  ratio_t->SetLineColor(11);
+  
   ratio_b->SetLineWidth(2);
   ratio_s->SetLineWidth(2);
   ratio_c->SetLineWidth(2);
@@ -57,6 +65,7 @@ void stack_like(){
   ratio_f->SetLineWidth(2);
   ratio_h->SetLineWidth(2);
   ratio_t->SetLineWidth(2);
+  
   legend->AddEntry(ratio_b,"Hartlepool 1");
   legend->AddEntry(ratio_s,"Hartlepool 2");
   legend->AddEntry(ratio_c,"Singles");
@@ -67,6 +76,7 @@ void stack_like(){
   legend->AddEntry(ratio_f,"Fast Neutrons");
   legend->AddEntry(ratio_h,"Heysham");
   legend->AddEntry(ratio_t,"Torness");
+  
   stack->Add(ratio_c);
   stack->Add(ratio_g);
   stack->Add(ratio_w);
@@ -77,11 +87,12 @@ void stack_like(){
   stack->Add(ratio_f);
   stack->Add(ratio_h);
   stack->Add(ratio_t);
+  
   TCanvas * c1 = new TCanvas("c1");
-  int binmax = ratio_c->FindLastBinAbove();//GetMaximumBin();
+  int binmax = ratio_c->FindLastBinAbove();
   double max_Lr = ratio_c->GetXaxis()->GetBinCenter(binmax);
   printf("Max Lr for singles = %f\n",max_Lr);
-  TLine * l = new TLine(max_Lr,0,max_Lr,0.2105);
+  TLine * l = new TLine(max_Lr,0,max_Lr,1);
   stack->Draw("NOSTACK HIST");
   stack->GetXaxis()->SetTitle("\\mathscr{L}_{R}");
   stack->GetYaxis()->SetTitle("Normalised events");
@@ -89,7 +100,7 @@ void stack_like(){
   l->SetLineWidth(3);
   l->Draw();
   legend->Draw();
-  c1->SaveAs(/*folder+*/"likelihood_ratio.png");
+  c1->SaveAs("likelihood_ratio.png");
 
 
 }

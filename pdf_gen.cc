@@ -1,6 +1,6 @@
 #include "learn.h"
 
-void pdf_gen(const char* file, const char* component, int nbins, int dTank){
+void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT){
 
   TFile *f = new TFile(file);
   if(!f->IsOpen()){
@@ -32,21 +32,9 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   
   TH1D* n100 = new TH1D("n100","n100",nbins,0,1000);
   TH1D* n100_prev = new TH1D("n100_prev","n100_prev",nbins,0,1000);
-  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,4000);
+  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,10000);
   TH1D* drPrevr = new TH1D("drPrevr","drPrevr",nbins,0,dTank);
-  TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,0,dTank);
-  TH1D* beta_one = new TH1D("beta_one","beta_one",nbins,-0.3,1.1);
-  TH1D* beta_one_prev = new TH1D("beta_one_prev","beta_one_prev",nbins,-0.3,1.1);
-  TH1D* beta_two = new TH1D("beta_two","beta_two",nbins,-0.3,1.1);
-  TH1D* beta_two_prev = new TH1D("beta_two_prev","beta_two_prev",nbins,-0.3,1.1);
-  TH1D* beta_three = new TH1D("beta_three","beta_three",nbins,-0.3,1.1);
-  TH1D* beta_three_prev = new TH1D("beta_three_prev","beta_three_prev",nbins,-0.3,1.1);
-  TH1D* beta_four = new TH1D("beta_four","beta_four",nbins,-0.3,1.1);
-  TH1D* beta_four_prev = new TH1D("beta_four_prev","beta_four_prev",nbins,-0.3,1.1);
-  TH1D* beta_five = new TH1D("beta_five","beta_five",nbins,-0.3,1.1);
-  TH1D* beta_five_prev = new TH1D("beta_five_prev","beta_five_prev",nbins,-0.3,1.1);
-  TH1D* beta_six = new TH1D("beta_six","beta_six",nbins,-0.3,1.1);
-  TH1D* beta_six_prev = new TH1D("beta_six_prev","beta_six_prev",nbins,-0.3,1.1);
+  TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,-499,rPMT);
   
   for(int i=0; i<nentries; i++){
     t->GetEntry(i);
@@ -60,18 +48,6 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
 	    dt_prev_us->Fill(t->GetLeaf("dt_prev_us")->GetValue(0));
 	    drPrevr->Fill(t->GetLeaf("drPrevr")->GetValue(0));
 	    closestPMT->Fill(t->GetLeaf("closestPMT")->GetValue(0));
-	    beta_one->Fill(t->GetLeaf("beta_one")->GetValue(0));
-	    beta_one_prev->Fill(t->GetLeaf("beta_one_prev")->GetValue(0));
-	    beta_two->Fill(t->GetLeaf("beta_two")->GetValue(0));
-	    beta_two_prev->Fill(t->GetLeaf("beta_two_prev")->GetValue(0));
-	    beta_three->Fill(t->GetLeaf("beta_three")->GetValue(0));
-	    beta_three_prev->Fill(t->GetLeaf("beta_three_prev")->GetValue(0));
-	    beta_four->Fill(t->GetLeaf("beta_four")->GetValue(0));
-	    beta_four_prev->Fill(t->GetLeaf("beta_four_prev")->GetValue(0));
-	    beta_five->Fill(t->GetLeaf("beta_five")->GetValue(0));
-	    beta_five_prev->Fill(t->GetLeaf("beta_five_prev")->GetValue(0));
-	    beta_six->Fill(t->GetLeaf("beta_six")->GetValue(0));
-	    beta_six_prev->Fill(t->GetLeaf("beta_six_prev")->GetValue(0));
     }
   }
   
@@ -87,30 +63,6 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   drPrevr->Write();
   closestPMT->Scale(1/closestPMT->GetEntries());
   closestPMT->Write();
-  beta_one->Scale(1/beta_one->GetEntries());
-  beta_one->Write();
-  beta_one_prev->Scale(1/beta_one_prev->GetEntries());
-  beta_one_prev->Write();
-  beta_two->Scale(1/beta_two->GetEntries());
-  beta_two->Write();
-  beta_two_prev->Scale(1/beta_two_prev->GetEntries());
-  beta_two_prev->Write();
-  beta_three->Scale(1/beta_three->GetEntries());
-  beta_three->Write();
-  beta_three_prev->Scale(1/beta_three_prev->GetEntries());
-  beta_three_prev->Write();
-  beta_four->Scale(1/beta_four->GetEntries());
-  beta_four->Write();
-  beta_four_prev->Scale(1/beta_four_prev->GetEntries());
-  beta_four_prev->Write();
-  beta_five->Scale(1/beta_five->GetEntries());
-  beta_five->Write();
-  beta_five_prev->Scale(1/beta_five_prev->GetEntries());
-  beta_five_prev->Write();
-  beta_six->Scale(1/beta_six->GetEntries());
-  beta_six->Write();
-  beta_six_prev->Scale(1/beta_six_prev->GetEntries());
-  beta_six_prev->Write();
   like->Close();
 
 }
