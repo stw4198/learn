@@ -113,11 +113,11 @@ void merge_PDFs(const char* sig){
         printf("File %s_pdfs.root does not exist.\n",components[i].c_str());
       return;
       }
-      TH1D* n100 = (TH1D*)like->Get("n100");
-      n100->Scale(rates[i]/signal_rate);
+      TH1D* nX = (TH1D*)like->Get("nX");
+      nX->Scale(rates[i]/signal_rate);
       
-      TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
-      n100_prev->Scale(rates[i]/signal_rate);
+      TH1D* nX_prev = (TH1D*)like->Get("nX_prev");
+      nX_prev->Scale(rates[i]/signal_rate);
       
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/signal_rate);
@@ -129,8 +129,8 @@ void merge_PDFs(const char* sig){
       closestPMT->Scale(rates[i]/signal_rate);
       
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
-      n100->Write();
-      n100_prev->Write();
+      nX->Write();
+      nX_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();
@@ -144,11 +144,11 @@ void merge_PDFs(const char* sig){
         printf("File %s_pdfs.root does not exist.\n",components[i].c_str());
       return;
       }
-      TH1D* n100 = (TH1D*)like->Get("n100");
-      n100->Scale(rates[i]/background_rate);
+      TH1D* nX = (TH1D*)like->Get("nX");
+      nX->Scale(rates[i]/background_rate);
       
-      TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
-      n100_prev->Scale(rates[i]/background_rate);
+      TH1D* nX_prev = (TH1D*)like->Get("nX_prev");
+      nX_prev->Scale(rates[i]/background_rate);
       
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/background_rate);
@@ -160,8 +160,8 @@ void merge_PDFs(const char* sig){
       closestPMT->Scale(rates[i]/background_rate);
       
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
-      n100->Write();
-      n100_prev->Write();
+      nX->Write();
+      nX_prev->Write();
       dt_prev_us->Write();
       drPrevr->Write();
       closestPMT->Write();

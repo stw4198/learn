@@ -1,6 +1,6 @@
 #include "learn.h"
 
-void likehood_classify(const char* infile, const char* component/*, int nbins*/){
+void likehood_classify(const char* infile, const char* component, std::string xwin){
 
   TFile *f = new TFile(infile);
   if(!f->IsOpen()){
@@ -46,6 +46,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   double beta_four,beta_four_prev;
   double beta_five,beta_five_prev;
   double beta_six,beta_six_prev;
+  double mc_energy;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
   data->Branch("inner_hit_prev",&inner_hit_prev,"inner_hit_prev/I");//inner detector
@@ -80,6 +81,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   data->Branch("beta_four_prev",&beta_four_prev,"beta_four_prev/D"); 
   data->Branch("beta_five_prev",&beta_five_prev,"beta_five_prev/D"); 
   data->Branch("beta_six_prev",&beta_six_prev,"beta_six_prev/D");
+  data->Branch("mc_energy",&mc_energy,"mc_energy/D");
   run_summary->Branch("nevents",&nevents,"nevents/I");
 
   //signal pdfs
@@ -88,8 +90,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
     printf("File signal_pdfs.root does not exist.\n");
     return;
   }
-  TH1D* n100_signal = (TH1D*)signal->Get("n100");
-  TH1D* n100_prev_signal = (TH1D*)signal->Get("n100_prev");
+  TH1D* nX_signal = (TH1D*)signal->Get("nX");
+  TH1D* nX_prev_signal = (TH1D*)signal->Get("nX_prev");
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
   TH1D* drPrevr_signal = (TH1D*)signal->Get("drPrevr");
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
@@ -100,8 +102,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
     printf("File background_pdfs.root does not exist.\n");
     return;
   }
-  TH1D* n100_background = (TH1D*)background->Get("n100");
-  TH1D* n100_prev_background = (TH1D*)background->Get("n100_prev");
+  TH1D* nX_background = (TH1D*)background->Get("nX");
+  TH1D* nX_prev_background = (TH1D*)background->Get("nX_prev");
   TH1D* dt_prev_us_background = (TH1D*)background->Get("dt_prev_us");
   TH1D* drPrevr_background = (TH1D*)background->Get("drPrevr");
   TH1D* closestPMT_background = (TH1D*)background->Get("closestPMT");
@@ -118,21 +120,24 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   //int thresh = std::ceil(max_Lr);
   printf("Max Lr for singles = %f\n\n\n",max_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
+  TString nx = "n" + xwin;
+  TString nx_prev = nx + "_prev";
+  
   for(int i=0; i<nentries; i++){
     t_in->GetEntry(i);
     if (i%100000==0){
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
     if (t_in->GetLeaf("n100")->GetValue(0) > 0 and t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
-      double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
-      double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
-      double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
-      double n100_bg_prob = n100_background->GetBinContent(n100_bg_bin);
+      double nX_sig_bin = nX_signal->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
+      double nX_sig_prob = nX_signal->GetBinContent(nX_sig_bin);
+      double nX_bg_bin = nX_background->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
+      double nX_bg_prob = nX_background->GetBinContent(nX_bg_bin);
       
-      double n100_prev_sig_bin = n100_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
-      double n100_prev_sig_prob = n100_prev_signal->GetBinContent(n100_prev_sig_bin);
-      double n100_prev_bg_bin = n100_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
-      double n100_prev_bg_prob = n100_prev_background->GetBinContent(n100_prev_bg_bin);
+      double nX_prev_sig_bin = nX_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf(nx_prev)->GetValue(0));
+      double nX_prev_sig_prob = nX_prev_signal->GetBinContent(nX_prev_sig_bin);
+      double nX_prev_bg_bin = nX_prev_background->GetXaxis()->FindBin(t_in->GetLeaf(nx_prev)->GetValue(0));
+      double nX_prev_bg_prob = nX_prev_background->GetBinContent(nX_prev_bg_bin);
       
       double dt_prev_us_sig_bin = dt_prev_us_signal->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_sig_prob = dt_prev_us_signal->GetBinContent(dt_prev_us_sig_bin);
@@ -149,8 +154,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
       double closestPMT_bg_bin = closestPMT_background->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
       
-      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
-      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
+      double sig_like = log(nX_sig_prob*nX_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
+      double bg_like = log(nX_bg_prob*nX_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
       double r_like = sig_like-bg_like;
 
       if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr)){
@@ -187,6 +192,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
         beta_five_prev = t_in->GetLeaf("beta_five_prev")->GetValue(0);
         beta_six = t_in->GetLeaf("beta_six")->GetValue(0);
         beta_six_prev = t_in->GetLeaf("beta_six_prev")->GetValue(0);
+        mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
         data->Fill();
       }
       else{

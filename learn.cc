@@ -49,20 +49,23 @@ int main(int argc, char** argv){
       int nbins = 1000; //look at Freedman-Diaconis rule or use root n
       int dTank = 22000;
       int rPMT = 9000;
+      std::string x = "100";
     
       const char* file = argv[2];
       const char* component = argv[3];
-      if (argc > 4) {rPMT = std::stoi(argv[4]);}
-      if (argc > 5) {dTank = std::stoi(argv[5]);}
-      if (argc > 6) {nbins = std::stoi(argv[6]);}
+      if (argc > 4) {x = argv[4];}
+      if (argc > 5) {rPMT = std::stoi(argv[5]);}
+      if (argc > 6) {dTank = std::stoi(argv[6]);}
+      if (argc > 7) {nbins = std::stoi(argv[7]);}
 
       printf("\nMaking PDFs for %s\n\n\n",component);
   
+      std::cout<< "Using "<< x << " ns as time window for PMT hits\n";
       printf("rPMT = %i mm\n",rPMT);
       printf("dTank = %i mm\n",dTank);
       printf("nbins = %i\n\n\n",nbins);
 
-      pdf_gen(file,component,nbins,1.2*dTank,rPMT);   
+      pdf_gen(file,component,nbins,1.2*dTank,rPMT,x);   
       } 
   }
   
@@ -106,10 +109,13 @@ int main(int argc, char** argv){
     else{
       const char* file = argv[2];
       const char* component = argv[3];
-
-      printf("\nEvaluating likelihoods for %s\n\n\n",component);
+      
+      std::string x = "100";
+      if (argc > 4) {x = argv[4];}
+      printf("\nEvaluating likelihoods for %s\n",component);
+      std::cout<< "Using "<< x << " ns as time window for PMT hits\n\n\n";
   
-      likehood_classify(file,component);
+      likehood_classify(file,component,x);
       }
   }
   
