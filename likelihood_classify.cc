@@ -46,6 +46,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   double beta_four,beta_four_prev;
   double beta_five,beta_five_prev;
   double beta_six,beta_six_prev;
+  double mc_energy;
+  int mcid,subid;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
   data->Branch("inner_hit_prev",&inner_hit_prev,"inner_hit_prev/I");//inner detector
@@ -80,6 +82,9 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   data->Branch("beta_four_prev",&beta_four_prev,"beta_four_prev/D"); 
   data->Branch("beta_five_prev",&beta_five_prev,"beta_five_prev/D"); 
   data->Branch("beta_six_prev",&beta_six_prev,"beta_six_prev/D");
+  data->Branch("mcid",&mcid,"mcid/I");
+  data->Branch("subid",&subid,"subid/I");
+  data->Branch("mc_energy",&mc_energy,"mc_energy/D");
   run_summary->Branch("nevents",&nevents,"nevents/I");
 
   //signal pdfs
@@ -187,6 +192,9 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
         beta_five_prev = t_in->GetLeaf("beta_five_prev")->GetValue(0);
         beta_six = t_in->GetLeaf("beta_six")->GetValue(0);
         beta_six_prev = t_in->GetLeaf("beta_six_prev")->GetValue(0);
+        mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
+        subid = t_in->GetLeaf("subid")->GetValue(0);
+        mcid = t_in->GetLeaf("mcid")->GetValue(0);
         data->Fill();
       }
       else{
