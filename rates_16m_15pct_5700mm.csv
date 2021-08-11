@@ -1,12 +1,12 @@
 component,rate [per sec]
-hartlepool_1,4.0390E-05
-hartlepool_2,3.0240E-05
-heysham_full,4.6920E-06
-heysham_2,2.6520E-06
-torness_full,1.7000E-06
-geo,2.4480E-06
-world,7.5470E-06
-li9,4.0600E-06
-n17,4.0800E-06
-singles,2.0500E+07
-fn,1.8490E-02
+hartlepool_1,4.039E-05
+hartlepool_2,3.024E-05
+heysham_full,4.692E-06
+heysham_2,2.652E-06
+torness_full,1.7E-06
+geo,2.448E-06
+world,7.547E-06
+li9,1.25E-05
+n17,7.64E-06
+singles,20500000
+fn,0.01849
