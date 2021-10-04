@@ -30,6 +30,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   
   TFile *output = new TFile(Form("%s_classified.root",component),"RECREATE");
   TTree *data = new TTree("data","low-energy detector triggered events");
+  TTree *run_summary=new TTree("runSummary","mc run summary");
 
   double innerPE;
   double n9,n9_prev,nOff,n100,n100_prev;
@@ -39,6 +40,14 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   int inner_hit,inner_hit_prev;
   double x,y,z,t;
   double u,v,w;
+  double beta_one,beta_one_prev;
+  double beta_two,beta_two_prev;
+  double beta_three,beta_three_prev;
+  double beta_four,beta_four_prev;
+  double beta_five,beta_five_prev;
+  double beta_six,beta_six_prev;
+  double mc_energy;
+  int mcid,subid;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
   data->Branch("inner_hit_prev",&inner_hit_prev,"inner_hit_prev/I");//inner detector
@@ -61,6 +70,22 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   data->Branch("u",&u,"u/D");
   data->Branch("v",&v,"v/D");
   data->Branch("w",&w,"w/D");
+  data->Branch("beta_one",&beta_one,"beta_one/D"); 
+  data->Branch("beta_two",&beta_two,"beta_two/D"); 
+  data->Branch("beta_three",&beta_three,"beta_three/D"); 
+  data->Branch("beta_four",&beta_four,"beta_four/D"); 
+  data->Branch("beta_five",&beta_five,"beta_five/D"); 
+  data->Branch("beta_six",&beta_six,"beta_six/D"); 
+  data->Branch("beta_one_prev",&beta_one_prev,"beta_one_prev/D"); 
+  data->Branch("beta_two_prev",&beta_two_prev,"beta_two_prev/D"); 
+  data->Branch("beta_three_prev",&beta_three_prev,"beta_three_prev/D"); 
+  data->Branch("beta_four_prev",&beta_four_prev,"beta_four_prev/D"); 
+  data->Branch("beta_five_prev",&beta_five_prev,"beta_five_prev/D"); 
+  data->Branch("beta_six_prev",&beta_six_prev,"beta_six_prev/D");
+  data->Branch("mcid",&mcid,"mcid/I");
+  data->Branch("subid",&subid,"subid/I");
+  data->Branch("mc_energy",&mc_energy,"mc_energy/D");
+  run_summary->Branch("nevents",&nevents,"nevents/I");
 
   //signal pdfs
   TFile* signal = new TFile("signal_pdfs.root");
@@ -73,6 +98,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
   TH1D* drPrevr_signal = (TH1D*)signal->Get("drPrevr");
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
+  
   //background pdfs
   TFile * background = new TFile("background_pdfs.root");
   if(!background->IsOpen()){
@@ -94,43 +120,45 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
 
   int binmax = ratio_like->FindLastBinAbove();
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
-  int thresh = std::ceil(max_Lr)+1;
-  printf("Max Lr for singles = %f\nSetting Lr threshold to %i\n\n\n",max_Lr,thresh);
-  
-  int nkept = 0;
+  //int thresh = std::ceil(max_Lr);
+  printf("Max Lr for singles = %f\n\n\n",max_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
   for(int i=0; i<nentries; i++){
     t_in->GetEntry(i);
     if (i%100000==0){
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
-    if ( t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) > 0 && t_in->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
+    if (t_in->GetLeaf("n100")->GetValue(0) > 0 and t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
       double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
       double n100_bg_prob = n100_background->GetBinContent(n100_bg_bin);
+      
       double n100_prev_sig_bin = n100_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
       double n100_prev_sig_prob = n100_prev_signal->GetBinContent(n100_prev_sig_bin);
       double n100_prev_bg_bin = n100_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
       double n100_prev_bg_prob = n100_prev_background->GetBinContent(n100_prev_bg_bin);
+      
       double dt_prev_us_sig_bin = dt_prev_us_signal->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_sig_prob = dt_prev_us_signal->GetBinContent(dt_prev_us_sig_bin);
       double dt_prev_us_bg_bin = dt_prev_us_background->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_bg_prob = dt_prev_us_background->GetBinContent(dt_prev_us_bg_bin);
+      
       double drPrevr_sig_bin = drPrevr_signal->GetXaxis()->FindBin(t_in->GetLeaf("drPrevr")->GetValue(0));
       double drPrevr_sig_prob = drPrevr_signal->GetBinContent(drPrevr_sig_bin);
       double drPrevr_bg_bin = drPrevr_background->GetXaxis()->FindBin(t_in->GetLeaf("drPrevr")->GetValue(0));
       double drPrevr_bg_prob = drPrevr_background->GetBinContent(drPrevr_bg_bin);
+      
       double closestPMT_sig_bin = closestPMT_signal->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_sig_prob = closestPMT_signal->GetBinContent(closestPMT_sig_bin);
       double closestPMT_bg_bin = closestPMT_background->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
+      
       double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
       double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
-      {if( std::isinf(sig_like) == true){sig_like=0;}else{}} //handle in final selection by keeping ot discarding depending on signal source
-      {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
-      if((sig_like != 0 && bg_like == 0) || (r_like>thresh)){
+
+      if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr)){
         x = t_in->GetLeaf("x")->GetValue(0);
         y = t_in->GetLeaf("y")->GetValue(0);
         z = t_in->GetLeaf("z")->GetValue(0);
@@ -152,8 +180,22 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
         dt_prev_us = t_in->GetLeaf("dt_prev_us")->GetValue(0);
         inner_hit = t_in->GetLeaf("inner_hit")->GetValue(0);
         inner_hit_prev = t_in->GetLeaf("inner_hit_prev")->GetValue(0);
+        beta_one = t_in->GetLeaf("beta_one")->GetValue(0);
+        beta_one_prev = t_in->GetLeaf("beta_one_prev")->GetValue(0);
+        beta_two = t_in->GetLeaf("beta_two")->GetValue(0);
+        beta_two_prev = t_in->GetLeaf("beta_two_prev")->GetValue(0);
+        beta_three = t_in->GetLeaf("beta_three")->GetValue(0);
+        beta_three_prev = t_in->GetLeaf("beta_three_prev")->GetValue(0);
+        beta_four = t_in->GetLeaf("beta_four")->GetValue(0);
+        beta_four_prev = t_in->GetLeaf("beta_four_prev")->GetValue(0);
+        beta_five = t_in->GetLeaf("beta_five")->GetValue(0);
+        beta_five_prev = t_in->GetLeaf("beta_five_prev")->GetValue(0);
+        beta_six = t_in->GetLeaf("beta_six")->GetValue(0);
+        beta_six_prev = t_in->GetLeaf("beta_six_prev")->GetValue(0);
+        mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
+        subid = t_in->GetLeaf("subid")->GetValue(0);
+        mcid = t_in->GetLeaf("mcid")->GetValue(0);
         data->Fill();
-        nkept++;
       }
       else{
         //reject event
@@ -163,7 +205,8 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   
   output->cd();
   data->Write();
-  output->Close();
+  run_summary->Fill();
+  run_summary->Write();
   singles_like->Close();
   f->Close();
   
@@ -205,13 +248,15 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   }
 
   printf("\n\n\nComponent = %s\n\n\n",component);
-  printf("Expected interaction rate = %e per second\n",rate);
-  double det_eff = double(nkept)/double(nevents);
-  printf("Detection efficiency = %f\n",det_eff);
+  printf("Expected interaction rate = %.9e per second\n",rate);
+  double det_eff = data->GetEntries()/double(nevents);
+  printf("Kept %lli events\n",data->GetEntries());
   double det_rate = det_eff*rate;
   printf("Detection rate = %e per second if singles\n",det_rate);
   printf("Detection rate = %e per second if IBD or correlated\n",0.5*det_rate);
   printf("Detection rate = %e per day if singles\n",det_rate*86400);
   printf("Detection rate = %e per day if IBD or correlated\n",0.5*86400*det_rate);
+  
+  output->Close();
 
 }

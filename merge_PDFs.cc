@@ -43,7 +43,7 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "heysham_full",strlen(sig))==0){
     signal.push_back("heysham_full");
@@ -53,7 +53,7 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "heysham_2",strlen(sig))==0){
     signal.push_back("heysham_2");
@@ -63,7 +63,7 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
   }
   else if(strncmp(sig, "torness_full",strlen(sig))==0){
     signal.push_back("torness_full");
@@ -73,7 +73,17 @@ void merge_PDFs(const char* sig){
     background.push_back("li9");
     background.push_back("geo");
     background.push_back("world");
-    background.push_back("fn");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "hey_tor",strlen(sig))==0){
+    signal.push_back("torness_full");
+    signal.push_back("heysham_2");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world");
+    //background.push_back("fn");
   }
     
   double signal_rate = 0;
@@ -105,14 +115,19 @@ void merge_PDFs(const char* sig){
       }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/signal_rate);
+      
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
       n100_prev->Scale(rates[i]/signal_rate);
+      
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/signal_rate);
+      
       TH1D* drPrevr = (TH1D*)like->Get("drPrevr");
       drPrevr->Scale(rates[i]/signal_rate);
+      
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/signal_rate);
+      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();
@@ -131,14 +146,19 @@ void merge_PDFs(const char* sig){
       }
       TH1D* n100 = (TH1D*)like->Get("n100");
       n100->Scale(rates[i]/background_rate);
+      
       TH1D* n100_prev = (TH1D*)like->Get("n100_prev");
       n100_prev->Scale(rates[i]/background_rate);
+      
       TH1D* dt_prev_us = (TH1D*)like->Get("dt_prev_us");
       dt_prev_us->Scale(rates[i]/background_rate);
+      
       TH1D* drPrevr = (TH1D*)like->Get("drPrevr");
       drPrevr->Scale(rates[i]/background_rate);
+      
       TH1D* closestPMT = (TH1D*)like->Get("closestPMT");
       closestPMT->Scale(rates[i]/background_rate);
+      
       TFile *like_scale = new TFile(Form("%s_scaled_pdfs.root",components[i].c_str()),"RECREATE");
       n100->Write();
       n100_prev->Write();

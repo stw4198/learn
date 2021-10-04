@@ -1,6 +1,6 @@
 #include "learn.h"
 
-void pdf_gen(const char* file, const char* component, int nbins, int dTank){
+void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT){
 
   TFile *f = new TFile(file);
   if(!f->IsOpen()){
@@ -32,16 +32,16 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank){
   
   TH1D* n100 = new TH1D("n100","n100",nbins,0,1000);
   TH1D* n100_prev = new TH1D("n100_prev","n100_prev",nbins,0,1000);
-  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,2000);
+  TH1D* dt_prev_us = new TH1D("dt_prev_us","dt_prev_us",nbins,0,10000);
   TH1D* drPrevr = new TH1D("drPrevr","drPrevr",nbins,0,dTank);
-  TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,0,dTank);
+  TH1D* closestPMT = new TH1D("closestPMT","closestPMT",nbins,-499,rPMT);
   
   for(int i=0; i<nentries; i++){
     t->GetEntry(i);
     if (i%100000==0){
       printf("Generating PDFs: Event %d of %d\n",i,nentries);
     }
-    if ( t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) > 0 and t->GetLeaf("dt_prev_us")->GetValue(0) < 2000) {
+    if (t->GetLeaf("n100")->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > -499) {
 	    nkept++;
 	    n100->Fill(t->GetLeaf("n100")->GetValue(0));
 	    n100_prev->Fill(t->GetLeaf("n100_prev")->GetValue(0));

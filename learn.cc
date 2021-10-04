@@ -48,18 +48,21 @@ int main(int argc, char** argv){
     else{
       int nbins = 1000; //look at Freedman-Diaconis rule or use root n
       int dTank = 22000;
+      int rPMT = 9000;
     
       const char* file = argv[2];
       const char* component = argv[3];
-      if (argc > 4) {nbins = std::stoi(argv[4]);}
+      if (argc > 4) {rPMT = std::stoi(argv[4]);}
       if (argc > 5) {dTank = std::stoi(argv[5]);}
+      if (argc > 6) {nbins = std::stoi(argv[6]);}
 
       printf("\nMaking PDFs for %s\n\n\n",component);
   
-      printf("nbins = %i\n",nbins);
-      printf("dTank = %i mm\n\n\n",dTank);
+      printf("rPMT = %i mm\n",rPMT);
+      printf("dTank = %i mm\n",dTank);
+      printf("nbins = %i\n\n\n",nbins);
 
-      pdf_gen(file,component,nbins,dTank);   
+      pdf_gen(file,component,nbins,1.2*dTank,rPMT);   
       } 
   }
   
