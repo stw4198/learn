@@ -37,7 +37,7 @@ void merge_PDFs(const char* sig){
     signal.push_back("hartlepool_1");
     signal.push_back("hartlepool_2");
     background.push_back("heysham_full");
-    //background.push_back("torness_full");
+    background.push_back("torness_full");
     background.push_back("singles");
     background.push_back("n17");
     background.push_back("li9");
