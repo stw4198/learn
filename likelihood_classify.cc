@@ -260,5 +260,6 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   printf("Detection rate = %e per day if IBD or correlated\n",0.5*86400*det_rate);
   
   output->Close();
-
+  //Set function to return MC, kept, rate, tank size, component
+  //Load into python and write using pandas
 }

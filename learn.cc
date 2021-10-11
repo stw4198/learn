@@ -156,6 +156,8 @@ int main(int argc, char** argv){
     printf("2) Scaling and merging PDFs\nDo ./learn --merge [signal:default hartlepool]\n\n");
     printf("3) Creating likelihoods\nDo ./learn --like [input file] [component]\n\n");
     printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component]\n\n");
+    printf("5) Data reduction\nNot currently integrated into LEARN\n\n");
+    printf("6) Evaluating dwell times\nDo ./learn --veto [results csv file] [tank size] [component]\n\n");
     
     std::vector<std::string> components;
     std::vector<double> rates;
