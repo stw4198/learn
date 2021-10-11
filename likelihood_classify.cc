@@ -250,7 +250,9 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   printf("\n\n\nComponent = %s\n\n\n",component);
   printf("Expected interaction rate = %.9e per second\n",rate);
   double det_eff = data->GetEntries()/double(nevents);
-  printf("Kept %lli events\n",data->GetEntries());
+  printf("%lli kept events\n",data->GetEntries());
+  printf("%i MC events\n",nevents);
+  printf("%i MC events\n",2*nevents);
   double det_rate = det_eff*rate;
   printf("Detection rate = %e per second if singles\n",det_rate);
   printf("Detection rate = %e per second if IBD or correlated\n",0.5*det_rate);

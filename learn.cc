@@ -32,7 +32,19 @@ bool classify(std::vector<std::string> p)
   return false;
 }
 
+bool veto(std::vector<std::string> p)
+{
+  for( auto v : p )
+    if( v == "--veto" )
+      return true;
+  return false;
+}
+
 int main(int argc, char** argv){
+
+  std::string argv_str(argv[0]);
+  std::string base = argv_str.substr(0, argv_str.find_last_of("/"));
+  const char* path = base.c_str();
 
   std::vector<std::string> args(argv+1, argv+argc);
 
@@ -100,16 +112,40 @@ int main(int argc, char** argv){
       return -1;
     }
     else if(argc<4){
-      printf("No component entered\n");
+      printf("No tank size entered\n");
       return -1;
     }
     else{
       const char* file = argv[2];
       const char* component = argv[3];
 
-      printf("\nEvaluating likelihoods for %s\n\n\n",component);
+      printf("\nApplying veto for %s\n\n\n",component);
   
       likehood_classify(file,component);
+      }
+  }
+
+  else if(veto(args)){
+    if(argc<3){
+      printf("No input file or component entered\n");
+      return -1;
+    }
+    else if(argc<4){
+      printf("No tank size entered\n");
+      return -1;
+    }
+    else if(argc<5){
+      printf("No component entered\n");
+      return -1;
+    }
+    else{
+      const char* file = argv[2];
+      const char* tank = argv[3];
+      const char* component = argv[4];
+
+      printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",component,tank);
+      const char* command = Form("python3 %s/veto.py %s %s %s",path,file,tank,component);
+      std::system (command);
       }
   }
   

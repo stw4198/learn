@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "stack_like.C": "cpp"
+        "stack_like.C": "cpp",
+        "iostream": "cpp"
     }
 }

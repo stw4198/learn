@@ -8,6 +8,7 @@
 #include <TLeaf.h>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT);
 void merge_PDFs(const char* sig);
