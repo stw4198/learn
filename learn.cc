@@ -119,9 +119,12 @@ int main(int argc, char** argv){
       const char* file = argv[2];
       const char* component = argv[3];
 
-      printf("\nApplying veto for %s\n\n\n",component);
+      printf("\Evaluating likelihoods for %s\n\n\n",component);
   
-      likehood_classify(file,component);
+      std::vector<int> results = likehood_classify(file,component);
+      int kept = results[0];
+      int MC = 2*results[1];
+      //printf("%i kept\n%i MC\n",kept,MC);
       }
   }
 

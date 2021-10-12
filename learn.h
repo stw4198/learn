@@ -12,7 +12,7 @@
 
 void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT);
 void merge_PDFs(const char* sig);
-void likehood_classify(const char* infile, const char* component);
+std::vector<int> likehood_classify(const char* infile, const char* component);
 void likehood(const char* infile, const char* component);
 
 #endif

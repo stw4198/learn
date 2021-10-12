@@ -1,11 +1,15 @@
 #include "learn.h"
 
-void likehood_classify(const char* infile, const char* component/*, int nbins*/){
+std::vector<int> likehood_classify(const char* infile, const char* component/*, int nbins*/){
+
+  std::vector<int> results;
+  results.push_back(0);
+  results.push_back(0);
 
   TFile *f = new TFile(infile);
   if(!f->IsOpen()){
     printf("File %s does not exist.\n",infile);
-    return;
+    return results;
   }
   TTree *t_in = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
@@ -91,7 +95,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TFile* signal = new TFile("signal_pdfs.root");
   if(!signal->IsOpen()){
     printf("File signal_pdfs.root does not exist.\n");
-    return;
+    return results;
   }
   TH1D* n100_signal = (TH1D*)signal->Get("n100");
   TH1D* n100_prev_signal = (TH1D*)signal->Get("n100_prev");
@@ -103,7 +107,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TFile * background = new TFile("background_pdfs.root");
   if(!background->IsOpen()){
     printf("File background_pdfs.root does not exist.\n");
-    return;
+    return results;
   }
   TH1D* n100_background = (TH1D*)background->Get("n100");
   TH1D* n100_prev_background = (TH1D*)background->Get("n100_prev");
@@ -114,7 +118,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   TFile *singles_like = new TFile("singles_likelihoods.root");
   if(!singles_like->IsOpen()){
     printf("File singles_likelihoods.root does not exist.\n");
-    return;
+    return results;
   }
   TH1D* ratio_like = (TH1D*)singles_like->Get("ratio_like");
 
@@ -216,7 +220,7 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   std::ifstream theFile ("rates.csv");
   if(!theFile.is_open()){
     printf("File rates.csv does not exist, please copy to working directory from learn\n");
-    return;
+    return results;
   }
   std::string line;
   std::getline(theFile, line);
@@ -251,15 +255,20 @@ void likehood_classify(const char* infile, const char* component/*, int nbins*/)
   printf("Expected interaction rate = %.9e per second\n",rate);
   double det_eff = data->GetEntries()/double(nevents);
   printf("%lli kept events\n",data->GetEntries());
-  printf("%i MC events\n",nevents);
-  printf("%i MC events\n",2*nevents);
+  printf("%i MC events (singles)\n",nevents);
+  printf("%i MC events (correlated)\n",2*nevents);
   double det_rate = det_eff*rate;
   printf("Detection rate = %e per second if singles\n",det_rate);
   printf("Detection rate = %e per second if IBD or correlated\n",0.5*det_rate);
   printf("Detection rate = %e per day if singles\n",det_rate*86400);
   printf("Detection rate = %e per day if IBD or correlated\n",0.5*86400*det_rate);
-  
+
+  int kept = data->GetEntries();
+
+  results.clear();
+  results.push_back(kept);
+  results.push_back(nevents);
+
   output->Close();
-  //Set function to return MC, kept, rate, tank size, component
-  //Load into python and write using pandas
+  return(results);
 }
