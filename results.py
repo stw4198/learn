@@ -3,14 +3,12 @@ import pandas as pd
 import os
 import sys
 
-from pandas.core.frame import DataFrame
-
-file = sys.argv[1]#"heysham2_rates.csv"
-component = sys.argv[2]#"Heysham 2"
-tank = sys.argv[3]#"22"
-kept = sys.argv[4]#244252
-MC = sys.argv[5]#1055000
-rate = sys.argv[6]#0.000006894
+file = sys.argv[1]
+component = sys.argv[2]
+tank = sys.argv[3]
+kept = sys.argv[4]
+MC = sys.argv[5]
+rate = sys.argv[6]
 
 def results_csv(file, component,tank,kept,MC,rate):
 
