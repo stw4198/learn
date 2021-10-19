@@ -57,7 +57,6 @@ def results_csv(file, component,tank,kept,MC,rate):
         df[key_2_MC] = ""
         df[key_2_kept] = ""
         df[key_2_rate] = ""
-        print("%s not found\n\n"%component)
         new_component = [component]
         for i in range(len(df.keys())-1):
             new_component.append("")
