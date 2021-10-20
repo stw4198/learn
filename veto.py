@@ -20,90 +20,93 @@ elif tank == 28:
 df = pd.read_csv(file)
 df = df.set_index('Component')
 
-components = ["Hartlepool 1",\
-"Hartlepool 2",\
-"Heysham",\
-"Heysham 2",\
-"Torness",\
-"World",\
-"Geo",\
-"Li9",\
-"N17",\
-"FN",\
+components = ["hartlepool_1",\
+"hartlepool_2",\
+"heysham_full",\
+"heysham_2",\
+"torness_full",\
+"world",\
+"geo",\
+"li9",\
+"n17",\
+"fn",\
 ]
 
-radio = ["Li9",\
-"N17",\
+radio = ["li9",\
+"n17",\
 ]
 
-other = ["Hartlepool 1",\
-"Hartlepool 2",\
-"Heysham",\
-"Heysham 2",\
-"Torness",\
-"World",\
-"Geo",\
-"FN",\
+other = ["hartlepool_1",\
+"hartlepool_2",\
+"heysham_full",\
+"heysham_2",\
+"torness_full",\
+"world",\
+"geo",\
+"fn",\
 ]
 
 rates = []
 fn_cl = 3.69
 for i in components:
-    if i == 'FN':
+    if i == 'fn':
         if df.loc[i,"%i kept"%tank] == 0:
             df.loc[i,"%i kept"%tank]=fn_cl
             rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
     else:
-        rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+        if df.loc[i,"%i kept"%tank]==0 or df.loc[i,'%i rate'%tank]==0 or df.loc[i,'%i MC'%tank]==0:
+            rates.append(0)
+        else:
+            rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
 
 d = {'components':components,'rates':rates}
 df_analysis = pd.DataFrame(data=d)
 df_analysis = df_analysis.set_index('components')
 
 if sig == "hartlepool":
-    signal_components = ["Hartlepool 1","Hartlepool 2"]
-    background_components = ["Heysham",\
-    "Torness",\
-    "World",\
-    "Geo",\
-    "Li9",\
-    "N17",\
-    "FN",\
+    signal_components = ["hartlepool_1","hartlepool_2"]
+    background_components = ["heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
     ]
-elif sig == "heysham":
-    signal_components = ["Heysham"]
-    background_components = ["Torness",\
-    "World",\
-    "Geo",\
-    "Li9",\
-    "N17",\
-    "FN",\
+elif sig == "heysham_full":
+    signal_components = ["heysham_full"]
+    background_components = ["torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
     ]
-elif sig == "heysham2":
-    signal_components = ["Heysham 2"]
-    background_components = ["Torness",\
-    "World",\
-    "Geo",\
-    "Li9",\
-    "N17",\
-    "FN",\
+elif sig == "heysham_2":
+    signal_components = ["heysham_2"]
+    background_components = ["torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
     ]
-elif sig == "torness":
-    signal_components = ["Torness"]
-    background_components = ["Heysham 2",\
-    "World",\
-    "Geo",\
-    "Li9",\
-    "N17",\
-    "FN",\
+elif sig == "torness_full":
+    signal_components = ["torness_full"]
+    background_components = ["heysham_2",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
     ]
 elif sig == "heytor":
-    signal_components = ["Torness","Heysham 2"]
-    background_components = ["World",\
-    "Geo",\
-    "Li9",\
-    "N17",\
-    "FN",\
+    signal_components = ["heysham_2","torness_full"]
+    background_components = ["world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
     ]
 
 signal = 0
@@ -145,18 +148,18 @@ for i in range(len(t_dead)):
     for i in signal_components:
         s+=df_muon.loc[i,'rates']
     for k in background_components:
-        if k!="Li9" and k!="N17" and k!="World" and k!="Geo":
+        if k!="li9" and k!="n17" and k!="world" and k!="geo":
             b+=df_muon.loc[k,'rates']
-        elif k=="World":
+        elif k=="world":
             b+=df_muon.loc[k,'rates']
             world+=df_muon.loc[k,'rates']
-        elif k=="Geo":
+        elif k=="geo":
             b+=df_muon.loc[k,'rates']*.3
             geo+=df_muon.loc[k,'rates']*.3
-        elif k=="Li9":
+        elif k=="li9":
             b+=df_muon.loc[k,'rates']*R_li9_cor
             li9+=df_muon.loc[k,'rates']*R_li9_cor
-        elif k=="N17":
+        elif k=="n17":
             b+=df_muon.loc[k,'rates']*R_n17_cor
             n17+=df_muon.loc[k,'rates']*R_n17_cor
 
@@ -182,17 +185,18 @@ if t3sigma[1]<0:
 else:
     print("Dwell time (Gaussian) =",t3sigma[1],"days")
 
-t = np.arange(0.01,30,0.01)
-s = s_[1]
-b = b_[1]
-b_err = b_err_[1]
-sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
-     - (b**2*t**2)*np.log(1 + (b_err**2*t**2*s*t)/(b*t*(b*t + b_err**2*t**2)))/(b_err**2*t**2)))
-
-if max(sigma)<3:
-    print("Dwell time does not converge (Poisson) for veto of %f s"%t_dead[1])
-else:
-    time_index = [ n for n,i in enumerate(sigma) if i>3][0]
-    print("Dwell time (Gaussian) =",t[time_index],"days")
+if sig=='hartlepool':
+    t = np.arange(0.01,30,0.01)
+    s = s_[1]
+    b = b_[1]
+    b_err = b_err_[1]
+    sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
+        - (b**2*t**2)*np.log(1 + (b_err**2*t**2*s*t)/(b*t*(b*t + b_err**2*t**2)))/(b_err**2*t**2)))
+    if max(sigma)<3:
+        print("Dwell time does not converge (Poisson) for veto of %f s"%t_dead[1])
+    else:
+        time_index = [ n for n,i in enumerate(sigma) if i>3][0]
+        print("Dwell time (Poisson) =",t[time_index],"days")
+        
 print("Signal rate =",s,"per day")
 print("Background =",b,"+/-",b_err,"per day")

@@ -1,8 +1,9 @@
 #include "learn.h"
 
-std::vector<int> likehood_classify(const char* infile, const char* component/*, int nbins*/){
+std::vector<double> likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
-  std::vector<int> results;
+  std::vector<double> results;
+  results.push_back(0);
   results.push_back(0);
   results.push_back(0);
 
@@ -263,11 +264,12 @@ std::vector<int> likehood_classify(const char* infile, const char* component/*, 
   printf("Detection rate = %e per day if singles\n",det_rate*86400);
   printf("Detection rate = %e per day if IBD or correlated\n",0.5*86400*det_rate);
 
-  int kept = data->GetEntries();
+  double kept = data->GetEntries();
 
   results.clear();
   results.push_back(kept);
-  results.push_back(nevents);
+  results.push_back(double(nevents));
+  results.push_back(rate);
 
   output->Close();
   return(results);

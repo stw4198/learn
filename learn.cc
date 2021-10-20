@@ -118,13 +118,19 @@ int main(int argc, char** argv){
     else{
       const char* file = argv[2];
       const char* component = argv[3];
+      const char* tank = argv[4];
+      const char* results_file = argv[5];
 
-      printf("\Evaluating likelihoods for %s\n\n\n",component);
+      printf("\nEvaluating likelihoods for %s\n\n\n",component);
   
-      std::vector<int> results = likehood_classify(file,component);
-      int kept = results[0];
-      int MC = 2*results[1];
-      //printf("%i kept\n%i MC\n",kept,MC);
+      std::vector<double> results = likehood_classify(file,component);
+      double kept = results[0];
+      double MC = 2*results[1];
+      double rate = results[2];
+
+      printf("\nWriting results\n\n\n");
+      const char* command = Form("python3 %s/results.py %s %s %s %f %f %.9e",path,results_file,component,tank,kept,MC,rate);
+      std::system (command);
       }
   }
 
@@ -158,7 +164,7 @@ int main(int argc, char** argv){
     printf("1) Creating PDFs\nDo ./learn --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
     printf("2) Scaling and merging PDFs\nDo ./learn --merge [signal:default hartlepool]\n\n");
     printf("3) Creating likelihoods\nDo ./learn --like [input file] [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component name] [output file (csv)] [tank size]\n\n");
     printf("5) Data reduction\nNot currently integrated into LEARN\n\n");
     printf("6) Evaluating dwell times\nDo ./learn --veto [results csv file] [tank size] [component]\n\n");
     

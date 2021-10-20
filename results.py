@@ -47,7 +47,7 @@ def results_csv(file, component,tank,kept,MC,rate):
         df = df.set_index('Component')
         print(df)
         print("\n\nWriting dataframe to %s"%file)
-        df.to_csv(file,sep=',')
+        df.to_csv(file,sep=',',float_format='%.9e')
     else:
         print("%s not found\n\n"%path)
         df=pd.DataFrame()
@@ -69,7 +69,7 @@ def results_csv(file, component,tank,kept,MC,rate):
         df = df.set_index('Component')
         print(df)
         print("\n\nWriting dataframe to %s"%file)
-        df.to_csv(file,sep=',')
+        df.to_csv(file,sep=',',float_format='%.9e')
 
     return
 
