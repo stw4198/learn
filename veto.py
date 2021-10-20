@@ -52,13 +52,12 @@ for i in components:
     if i == 'fn':
         if df.loc[i,"%i kept"%tank] == 0:
             df.loc[i,"%i kept"%tank]=fn_cl
-            rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+        rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
     else:
         if df.loc[i,"%i kept"%tank]==0 or df.loc[i,'%i rate'%tank]==0 or df.loc[i,'%i MC'%tank]==0:
             rates.append(0)
         else:
             rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
-
 d = {'components':components,'rates':rates}
 df_analysis = pd.DataFrame(data=d)
 df_analysis = df_analysis.set_index('components')
@@ -197,6 +196,6 @@ if sig=='hartlepool':
     else:
         time_index = [ n for n,i in enumerate(sigma) if i>3][0]
         print("Dwell time (Poisson) =",t[time_index],"days")
-        
+
 print("Signal rate =",s,"per day")
 print("Background =",b,"+/-",b_err,"per day")
