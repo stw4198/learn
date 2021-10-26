@@ -52,7 +52,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
   double beta_five,beta_five_prev;
   double beta_six,beta_six_prev;
   double mc_energy;
-  int mcid,subid;
+  int mcid,mcid2,subid,subid2;
 
   data->Branch("inner_hit",&inner_hit,"inner_hit/I");//inner detector    
   data->Branch("inner_hit_prev",&inner_hit_prev,"inner_hit_prev/I");//inner detector
@@ -128,12 +128,14 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
   //int thresh = std::ceil(max_Lr);
   printf("Max Lr for singles = %f\n\n\n",max_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
-  for(int i=0; i<nentries; i++){
+  for(int i=1; i<nentries; i++){
     t_in->GetEntry(i);
+    subid = t_in->GetLeaf("subid")->GetValue(0);
+    mcid = t_in->GetLeaf("mcid")->GetValue(0);
     if (i%100000==0){
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
-    if (t_in->GetLeaf("n100")->GetValue(0) > 0 and t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
+    if (t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
       double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
       double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
       double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
@@ -201,6 +203,48 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
         subid = t_in->GetLeaf("subid")->GetValue(0);
         mcid = t_in->GetLeaf("mcid")->GetValue(0);
         data->Fill();
+        t_in->GetEntry(i-1);
+        mcid2 = t_in->GetLeaf("mcid")->GetValue(0);
+        subid2 = t_in->GetLeaf("subid")->GetValue(0);
+        if(subid == 1 && subid2==0 && mcid==mcid2){
+          x = t_in->GetLeaf("x")->GetValue(0);
+          y = t_in->GetLeaf("y")->GetValue(0);
+          z = t_in->GetLeaf("z")->GetValue(0);
+          u = t_in->GetLeaf("u")->GetValue(0);
+          v = t_in->GetLeaf("v")->GetValue(0);
+          w = t_in->GetLeaf("w")->GetValue(0);
+          t = t_in->GetLeaf("t")->GetValue(0);
+          innerPE = t_in->GetLeaf("innerPE")->GetValue(0);
+          n9 = t_in->GetLeaf("n9")->GetValue(0);
+          n9_prev = t_in->GetLeaf("n9_prev")->GetValue(0);
+          n100 = t_in->GetLeaf("n100")->GetValue(0);
+          n100_prev = t_in->GetLeaf("n100_prev")->GetValue(0);
+          nOff = t_in->GetLeaf("nOff")->GetValue(0);
+          good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
+          good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
+          closestPMT = t_in->GetLeaf("closestPMT")->GetValue(0);
+          closestPMT_prev = t_in->GetLeaf("closestPMT_prev")->GetValue(0);
+          drPrevr = t_in->GetLeaf("drPrevr")->GetValue(0);
+          dt_prev_us = t_in->GetLeaf("dt_prev_us")->GetValue(0);
+          inner_hit = t_in->GetLeaf("inner_hit")->GetValue(0);
+          inner_hit_prev = t_in->GetLeaf("inner_hit_prev")->GetValue(0);
+          beta_one = t_in->GetLeaf("beta_one")->GetValue(0);
+          beta_one_prev = t_in->GetLeaf("beta_one_prev")->GetValue(0);
+          beta_two = t_in->GetLeaf("beta_two")->GetValue(0);
+          beta_two_prev = t_in->GetLeaf("beta_two_prev")->GetValue(0);
+          beta_three = t_in->GetLeaf("beta_three")->GetValue(0);
+          beta_three_prev = t_in->GetLeaf("beta_three_prev")->GetValue(0);
+          beta_four = t_in->GetLeaf("beta_four")->GetValue(0);
+          beta_four_prev = t_in->GetLeaf("beta_four_prev")->GetValue(0);
+          beta_five = t_in->GetLeaf("beta_five")->GetValue(0);
+          beta_five_prev = t_in->GetLeaf("beta_five_prev")->GetValue(0);
+          beta_six = t_in->GetLeaf("beta_six")->GetValue(0);
+          beta_six_prev = t_in->GetLeaf("beta_six_prev")->GetValue(0);
+          mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
+          subid = t_in->GetLeaf("subid")->GetValue(0);
+          mcid = t_in->GetLeaf("mcid")->GetValue(0);
+          data->Fill();
+        }
       }
       else{
         //reject event

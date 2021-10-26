@@ -153,8 +153,8 @@ for i in range(len(t_dead)):
             b+=df_muon.loc[k,'rates']
             world+=df_muon.loc[k,'rates']
         elif k=="geo":
-            b+=df_muon.loc[k,'rates']*.3
-            geo+=df_muon.loc[k,'rates']*.3
+            b+=df_muon.loc[k,'rates']#*.5
+            geo+=df_muon.loc[k,'rates']#*.5
         elif k=="li9":
             b+=df_muon.loc[k,'rates']*R_li9_cor
             li9+=df_muon.loc[k,'rates']*R_li9_cor
