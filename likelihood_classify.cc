@@ -206,7 +206,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
         t_in->GetEntry(i-1);
         mcid2 = t_in->GetLeaf("mcid")->GetValue(0);
         subid2 = t_in->GetLeaf("subid")->GetValue(0);
-        if(subid == 1 && subid2==0 && mcid==mcid2){
+        if(subid==1 && subid2==0 && mcid==mcid2 && t_in->GetLeaf("n100")->GetValue(0)>0){
           x = t_in->GetLeaf("x")->GetValue(0);
           y = t_in->GetLeaf("y")->GetValue(0);
           z = t_in->GetLeaf("z")->GetValue(0);

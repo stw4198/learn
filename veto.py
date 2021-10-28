@@ -90,6 +90,27 @@ elif sig == "torness_full":
     "n17",\
     "fn",\
     ]
+elif sig == "torness_only":
+    components = ["torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["torness_full"]
+    background_components = ["world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
 elif sig == "heytor":
     components = ["heysham_2",\
     "torness_full",\
@@ -116,7 +137,6 @@ elif sig == "hartlepool":
     components = ["hartlepool_1",\
     "hartlepool_2",\
     "heysham_full",\
-    "heysham_2",\
     "torness_full",\
     "world",\
     "geo",\
@@ -127,7 +147,6 @@ elif sig == "hartlepool":
     other = ["hartlepool_1",\
     "hartlepool_2",\
     "heysham_full",\
-    "heysham_2",\
     "torness_full",\
     "world",\
     "geo",\
@@ -135,6 +154,35 @@ elif sig == "hartlepool":
     ]
     signal_components = ["hartlepool_1","hartlepool_2"]
     background_components = ["heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+elif sig == "hartlepool_1":
+    components = ["hartlepool_1",\
+    "hartlepool_2",\
+    "heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["hartlepool_1",\
+    "hartlepool_2",\
+    "heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["hartlepool_1"]
+    background_components = ["hartlepool_2",\
+    "heysham_full",\
     "torness_full",\
     "world",\
     "geo",\
@@ -239,7 +287,7 @@ if t3sigma[1]<0:
 else:
     print("Dwell time (Gaussian) =",t3sigma[1],"days")
 
-if sig=='hartlepool':
+if sig=='hartlepool' or sig=='hartlepool_1':
     t = np.arange(0.01,30,0.01)
     s = s_[1]
     b = b_[1]
