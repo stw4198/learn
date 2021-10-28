@@ -20,30 +20,131 @@ elif tank == 28:
 df = pd.read_csv(file)
 df = df.set_index('Component')
 
-components = ["hartlepool_1",\
-"hartlepool_2",\
-"heysham_full",\
-"heysham_2",\
-"torness_full",\
-"world",\
-"geo",\
-"li9",\
-"n17",\
-"fn",\
-]
+if sig == "heysham_2":
+    components = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["heysham_2"]
+    background_components = ["torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+elif sig == "heysham_full":
+    components = ["heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["heysham_full",\
+    "heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["heysham_full"]
+    background_components = ["torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+elif sig == "torness_full":
+    components = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["torness_full"]
+    background_components = ["heysham_2",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+elif sig == "heytor":
+    components = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["heysham_2","torness_full"]
+    background_components = ["world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+elif sig == "hartlepool":
+    components = ["hartlepool_1",\
+    "hartlepool_2",\
+    "heysham_full",\
+    "heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
+    other = ["hartlepool_1",\
+    "hartlepool_2",\
+    "heysham_full",\
+    "heysham_2",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "fn",\
+    ]
+    signal_components = ["hartlepool_1","hartlepool_2"]
+    background_components = ["heysham_full",\
+    "torness_full",\
+    "world",\
+    "geo",\
+    "li9",\
+    "n17",\
+    "fn",\
+    ]
 
 radio = ["li9",\
 "n17",\
-]
-
-other = ["hartlepool_1",\
-"hartlepool_2",\
-"heysham_full",\
-"heysham_2",\
-"torness_full",\
-"world",\
-"geo",\
-"fn",\
 ]
 
 rates = []
@@ -61,52 +162,6 @@ for i in components:
 d = {'components':components,'rates':rates}
 df_analysis = pd.DataFrame(data=d)
 df_analysis = df_analysis.set_index('components')
-
-if sig == "hartlepool":
-    signal_components = ["hartlepool_1","hartlepool_2"]
-    background_components = ["heysham_full",\
-    "torness_full",\
-    "world",\
-    "geo",\
-    "li9",\
-    "n17",\
-    "fn",\
-    ]
-elif sig == "heysham_full":
-    signal_components = ["heysham_full"]
-    background_components = ["torness_full",\
-    "world",\
-    "geo",\
-    "li9",\
-    "n17",\
-    "fn",\
-    ]
-elif sig == "heysham_2":
-    signal_components = ["heysham_2"]
-    background_components = ["torness_full",\
-    "world",\
-    "geo",\
-    "li9",\
-    "n17",\
-    "fn",\
-    ]
-elif sig == "torness_full":
-    signal_components = ["torness_full"]
-    background_components = ["heysham_2",\
-    "world",\
-    "geo",\
-    "li9",\
-    "n17",\
-    "fn",\
-    ]
-elif sig == "heytor":
-    signal_components = ["heysham_2","torness_full"]
-    background_components = ["world",\
-    "geo",\
-    "li9",\
-    "n17",\
-    "fn",\
-    ]
 
 signal = 0
 background = 0
@@ -153,8 +208,8 @@ for i in range(len(t_dead)):
             b+=df_muon.loc[k,'rates']
             world+=df_muon.loc[k,'rates']
         elif k=="geo":
-            b+=df_muon.loc[k,'rates']#*.5
-            geo+=df_muon.loc[k,'rates']#*.5
+            b+=df_muon.loc[k,'rates']#*.3
+            geo+=df_muon.loc[k,'rates']#*.3
         elif k=="li9":
             b+=df_muon.loc[k,'rates']*R_li9_cor
             li9+=df_muon.loc[k,'rates']*R_li9_cor
