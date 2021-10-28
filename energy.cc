@@ -10,6 +10,7 @@
 void energy(const char* infile, const char* outfile){
 
   double ecut = 6.;
+  double ecut2 = 1.;
 
   gROOT->SetBatch(kTRUE);
 
@@ -19,7 +20,7 @@ void energy(const char* infile, const char* outfile){
 
   int nentries = t_in->GetEntries();
 
-  t_in->Draw("mc_energy:n100>>prompt","subid == 0");
+  t_in->Draw("mc_energy:n100>>prompt","subid == 0 && n100>0");
   TH1 *prompt = (TH1*)gDirectory->Get("prompt");
   prompt->Fit("pol1","Q");
   TF1 *fitresult = prompt->GetFunction("pol1");
@@ -47,7 +48,7 @@ void energy(const char* infile, const char* outfile){
           mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
           removed++;
       }
-      else if(E>ecut && subid==0){
+      else if((E>ecut or E<ecut2) && subid==0){
           //remove event
           printf("Remove prompt entry %i\n",i-1);
           subid = t_in->GetLeaf("subid")->GetValue(0);
