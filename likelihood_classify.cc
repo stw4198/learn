@@ -125,8 +125,10 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
 
   int binmax = ratio_like->FindLastBinAbove();
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
+  int binmin = ratio_like->FindFirstBinAbove();
+  double min_Lr = ratio_like->GetXaxis()->GetBinCenter(binmin);
   //int thresh = std::ceil(max_Lr);
-  printf("Max Lr for singles = %f\n\n\n",max_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
+  printf("Max Lr for singles = %f\nMin Lr for singles = %f\n\n\n",max_Lr,min_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
   
   for(int i=1; i<nentries; i++){
     t_in->GetEntry(i);
@@ -163,9 +165,12 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
       
       double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
       double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
+      {if( std::isinf(sig_like) == true){sig_like=0;}else{}}
+      {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
-
-      if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr)){
+      if(sig_like==0){continue;}
+      else if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr) || (r_like<min_Lr)){
+        // printf("r_like = %f\nbg_like = %f\nsig_like = %f\n",r_like,bg_like,sig_like);
         x = t_in->GetLeaf("x")->GetValue(0);
         y = t_in->GetLeaf("y")->GetValue(0);
         z = t_in->GetLeaf("z")->GetValue(0);

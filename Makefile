@@ -18,6 +18,8 @@ all: learn
 
 learn: $(OBJS) learn.cc
 	$(CXX) -g -o learn $(CXXFLAGS) $(LDFLAGS) learn.cc $(INCLUDES) $(OBJS) $(LIBRARIES) $(ROOT_FLAG)
+	g++ energy.cc -o energy $(ROOT_FLAG)
+	$(shell ./configure)
 
 %.o : %.cc
 	g++ $(ROOT_FLAG) $(INCLUDES) $(LIBRARIES) -c $*.cc
@@ -25,5 +27,6 @@ learn: $(OBJS) learn.cc
 
 
 clean:
+	$(RM) env.sh
 	$(RM) *.o *~ core 
 	$(RM) learn

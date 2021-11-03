@@ -7,12 +7,13 @@
 #include <TF1.h>
 #include <TH2.h>
 
-void energy(const char* infile, const char* outfile){
+std::vector<double> energy(const char* infile, double e_lower, double e_upper){
 
-  double ecut = 6.;
-  double ecut2 = 1.;
+  double ecut = e_upper;
+  double ecut2 = e_lower;
 
   gROOT->SetBatch(kTRUE);
+  gROOT->ProcessLine( "gErrorIgnoreLevel = 1001;");
 
   TFile *f = new TFile(infile);
   TTree *t_in = (TTree*)f->Get("data");
@@ -27,7 +28,7 @@ void energy(const char* infile, const char* outfile){
   double p0 = fitresult->GetParameter(0);
   double p1 = fitresult->GetParameter(1);
   TString prompt_cut = Form("subid==0 && %f + %f*n100 < %f",p0,p1,ecut);
-  t_in->Draw("n100>>prompt_cut",prompt_cut);
+  t_in->Draw("n100>>prompt_cut",prompt_cut,"Q");
   
   int subid,n100,mcid,mcid_2;
   double E,mc_energy;
@@ -41,7 +42,7 @@ void energy(const char* infile, const char* outfile){
       n100 = t_in->GetLeaf("n100")->GetValue(0);
       mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
       E = p0 + p1*n100;
-      printf("Event %i: mcid = %i, subid = %i, E = %f, mc_energy = %f\n",i-1,mcid,subid,E,mc_energy);
+      //printf("Event %i: mcid = %i, subid = %i, E = %f, mc_energy = %f\n",i-1,mcid,subid,E,mc_energy);
       t_in->GetEntry(i);
       if(E>100){
           subid = t_in->GetLeaf("subid")->GetValue(0);
@@ -50,24 +51,29 @@ void energy(const char* infile, const char* outfile){
       }
       else if((E>ecut or E<ecut2) && subid==0){
           //remove event
-          printf("Remove prompt entry %i\n",i-1);
+          //printf("Remove prompt entry %i\n",i-1);
           subid = t_in->GetLeaf("subid")->GetValue(0);
           mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
           removed++;
           if(subid==1 && mcid==mcid_2){
               //remove
-              printf("Remove delayed entry %i\n",i);
+              //printf("Remove delayed entry %i\n",i);
               removed++;
           }
       }
   }
-  printf("Removed %i out of % i entries\n",removed+1,nentries);
+  printf("Removed %i out of %i entries\n",removed+1,nentries);
+  std::vector<double> energy_cut;
+  energy_cut.push_back(removed);
+  energy_cut.push_back(nentries);
+  return(energy_cut);
 }
 
 int main(int argc, char** argv){
 
   const char* infile = argv[1];
-  const char* outfile = "test";//argv[2];
-  energy(infile,outfile);
+  double e_lower = std::stod(argv[2]);
+  double e_upper = std::stod(argv[3]);
+  std::vector<double> energy_cut = energy(infile,e_lower,e_upper);
 
 }
