@@ -30,3 +30,4 @@ clean:
 	$(RM) env.sh
 	$(RM) *.o *~ core 
 	$(RM) learn
+	$(RM) energy

@@ -22,9 +22,8 @@ other = ["heysham_2",\
 "geo",\
 "fn",\
 ]
-signal_components = ["heysham_2"]
-background_components = ["torness_full",\
-"world",\
+signal_components = ["heysham_2","torness_full"]
+background_components = ["world",\
 "geo",\
 "li9",\
 "n17",\
@@ -46,7 +45,7 @@ R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
 E_lower = np.arange(1.5,3,0.5)
-E_upper = np.arange(3.5,4.5,0.5)
+E_upper = np.arange(3.5,7,0.5)
 dwell_times = []
 s_total = []
 b_total = []
@@ -103,9 +102,9 @@ for x in E_lower:
         f = 0
         ferr = 0.27
         li9 = 0
-        li9err = 0.002
+        li9err = 0.13#0.002
         n17 = 0
-        n17err = 0.002
+        n17err = 0.13#0.002
         world = 0
         world_err = 0.06
         geo = 0
