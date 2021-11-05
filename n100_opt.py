@@ -6,7 +6,7 @@ import numpy as np
 
 path = "../learn_test/subid_test/analysis_heysham_2"
 tank = 22
-file = path + "/results_learn.csv"
+file = path + "/results_learn3.csv"
 
 components = ["heysham_2",\
 "torness_full",\
@@ -45,8 +45,8 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(0,110,10)
-E_upper = np.arange(100,350,10)
+E_lower = np.arange(20,26,1)
+E_upper = np.arange(65,68,1)
 dwell_times = []
 s_total = []
 b_total = []
@@ -64,17 +64,18 @@ for x in E_lower:
     b_upper = []
     b_err_upper = []
     for y in E_upper:
+        print(x,y)
         sig_output_removed = []
         sig_output_total = []
 
         for i in range(len(signal_components)):
-            output = subprocess.run([os.getcwd()+"/energy",path+"/"+signal_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.getcwd()+"/n100",path+"/"+signal_components[i]+"_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
             df.loc[signal_components[i],str(tank)+" kept"]=int(output.split()[4])-int(output.split()[1])
         for i in range(len(background_components)):
-            output = subprocess.run([os.getcwd()+"/energy",path+"/"+background_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.getcwd()+"/n100",path+"/"+background_components[i]+"_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
@@ -135,6 +136,7 @@ for x in E_lower:
         b_err_frac = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
         b_err = b*b_err_frac
         t3sigma = 9*b/(s**2 - 9*(b_err)**2)
+        # print(df_analysis)
         # print("Signal rate =",s,"per day")
         # print("Background =",b,"+/-",b_err,"per day")
         # if t3sigma<0:
@@ -163,4 +165,4 @@ min_time_idx = np.unravel_index(dwell_times.argmin(), dwell_times.shape)
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
-print("E_min = %f MeV, E_max = %f MeV"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
+print("E_min = %f, E_max = %f"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
