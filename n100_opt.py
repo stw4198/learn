@@ -6,7 +6,7 @@ import numpy as np
 
 path = "../learn_test/subid_test/analysis_heysham_2"
 tank = 22
-file = path + "/results_learn3.csv"
+file = path + "/results_learn.csv"
 
 components = ["heysham_2",\
 "torness_full",\
@@ -20,7 +20,7 @@ other = ["heysham_2",\
 "torness_full",\
 "world",\
 "geo",\
-#"fn",\
+"fn",\
 ]
 signal_components = ["heysham_2"]
 background_components = ["torness_full",\
@@ -28,7 +28,7 @@ background_components = ["torness_full",\
 "geo",\
 "li9",\
 "n17",\
-#"fn",\
+"fn",\
 ]
 
 df = pd.read_csv(file)
@@ -98,7 +98,7 @@ for x in E_lower:
         df_analysis = df_analysis.set_index('components')
         df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
         df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
-
+        print(df_analysis)
         s = 0
         b = 0
         f = 0
@@ -133,8 +133,10 @@ for x in E_lower:
                 b+=df_analysis.loc[k,'rates']
                 n17+=df_analysis.loc[k,'rates']
 
-        b_err_frac = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
-        b_err = b*b_err_frac
+        #b_err_frac = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
+        #b_err = b*b_err_frac
+        b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
+        #t3sigma = 9*b/(s**2 - 9*(b_err))
         t3sigma = 9*b/(s**2 - 9*(b_err)**2)
         # print(df_analysis)
         # print("Signal rate =",s,"per day")
@@ -165,4 +167,4 @@ min_time_idx = np.unravel_index(dwell_times.argmin(), dwell_times.shape)
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
-print("E_min = %f, E_max = %f"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
+print("n100_min = %f, n100_max = %f"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))

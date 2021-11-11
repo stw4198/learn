@@ -22,12 +22,13 @@ other = ["heysham_2",\
 "geo",\
 "fn",\
 ]
-signal_components = ["heysham_2","torness_full"]
-background_components = ["world",\
+signal_components = ["heysham_2"]
+background_components = ["torness_full",\
+"world",\
 "geo",\
 "li9",\
 "n17",\
-"fn",\
+#"fn",\
 ]
 
 df = pd.read_csv(file)
@@ -67,13 +68,13 @@ for x in E_lower:
         sig_output_total = []
 
         for i in range(len(signal_components)):
-            output = subprocess.run([os.getcwd()+"/energy",path+"/"+signal_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.getcwd()+"/energy2",path+"/"+signal_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
             df.loc[signal_components[i],str(tank)+" kept"]=int(output.split()[4])-int(output.split()[1])
         for i in range(len(background_components)):
-            output = subprocess.run([os.getcwd()+"/energy",path+"/"+background_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.getcwd()+"/energy2",path+"/"+background_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
@@ -96,15 +97,15 @@ for x in E_lower:
         df_analysis = df_analysis.set_index('components')
         df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
         df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
-
+        #print(df_analysis)
         s = 0
         b = 0
         f = 0
         ferr = 0.27
         li9 = 0
-        li9err = 0.13#0.002
+        li9err = 0.002
         n17 = 0
-        n17err = 0.13#0.002
+        n17err = 0.002
         world = 0
         world_err = 0.06
         geo = 0
@@ -131,8 +132,8 @@ for x in E_lower:
                 b+=df_analysis.loc[k,'rates']
                 n17+=df_analysis.loc[k,'rates']
 
-        b_err_frac = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
-        b_err = b*b_err_frac
+        b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
+        #t3sigma = 9*b/(s**2 - 9*(b_err))
         t3sigma = 9*b/(s**2 - 9*(b_err)**2)
         # print("Signal rate =",s,"per day")
         # print("Background =",b,"+/-",b_err,"per day")
