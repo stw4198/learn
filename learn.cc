@@ -40,6 +40,14 @@ bool veto(std::vector<std::string> p)
   return false;
 }
 
+bool energy(std::vector<std::string> p)
+{
+  for( auto v : p )
+    if( v == "--energy" )
+      return true;
+  return false;
+}
+
 int main(int argc, char** argv){
 
   std::string argv_str(argv[0]);
@@ -154,6 +162,30 @@ int main(int argc, char** argv){
 
       printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",component,tank);
       const char* command = Form("python3 %s/veto.py %s %s %s",path,file,tank,component);
+      std::system (command);
+      }
+  }
+
+  else if(energy(args)){
+    if(argc<3){
+      printf("No input file or component entered\n");
+      return -1;
+    }
+    else if(argc<4){
+      printf("No tank size entered\n");
+      return -1;
+    }
+    else if(argc<5){
+      printf("No component entered\n");
+      return -1;
+    }
+    else{
+      const char* path_data = argv[2];
+      const char* tank = argv[3];
+      const char* component = argv[4];
+
+      printf("\nApplying energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",component,tank);
+      const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,path_data,tank,component);
       std::system (command);
       }
   }

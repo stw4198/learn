@@ -3,34 +3,15 @@ import os
 import pandas as pd
 from scipy import integrate
 import numpy as np
+import sys
+from sig_choice import sig_choice
 
-path = "../learn_test/subid_test/analysis_heysham_2"
-tank = 22
+path = sys.argv[1]
+tank = int(sys.argv[2])
+sig = sys.argv[3]
 file = path + "/results_learn.csv"
 
-components = ["heysham_2",\
-"torness_full",\
-"world",\
-"geo",\
-"li9",\
-"n17",\
-"fn",\
-]
-other = ["heysham_2",\
-"torness_full",\
-"world",\
-"geo",\
-"fn",\
-]
-signal_components = ["heysham_2"]
-background_components = ["torness_full",\
-"world",\
-"geo",\
-"li9",\
-"n17",\
-#"fn",\
-]
-
+components,other,signal_components,background_components,radio = sig_choice(sig)
 df = pd.read_csv(file)
 df = df.set_index('Component')
 
@@ -68,13 +49,13 @@ for x in E_lower:
         sig_output_total = []
 
         for i in range(len(signal_components)):
-            output = subprocess.run([os.getcwd()+"/energy2",path+"/"+signal_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+signal_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
             df.loc[signal_components[i],str(tank)+" kept"]=int(output.split()[4])-int(output.split()[1])
         for i in range(len(background_components)):
-            output = subprocess.run([os.getcwd()+"/energy2",path+"/"+background_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+background_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
@@ -84,8 +65,8 @@ for x in E_lower:
         fn_cl = 3.69
         for i in components:
             if i == 'fn':
-                if df.loc[i,"%i kept"%tank] == 0:
-                    df.loc[i,"%i kept"%tank]=fn_cl
+                #if df.loc[i,"%i kept"%tank] == 0: #Need to implement proper FN handling when ML and beta ready
+                df.loc[i,"%i kept"%tank]=fn_cl
                 rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
             else:
                 if df.loc[i,"%i kept"%tank]==0 or df.loc[i,'%i rate'%tank]==0 or df.loc[i,'%i MC'%tank]==0:
@@ -97,7 +78,6 @@ for x in E_lower:
         df_analysis = df_analysis.set_index('components')
         df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
         df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
-        #print(df_analysis)
         s = 0
         b = 0
         f = 0
@@ -133,14 +113,7 @@ for x in E_lower:
                 n17+=df_analysis.loc[k,'rates']
 
         b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
-        #t3sigma = 9*b/(s**2 - 9*(b_err))
         t3sigma = 9*b/(s**2 - 9*(b_err)**2)
-        # print("Signal rate =",s,"per day")
-        # print("Background =",b,"+/-",b_err,"per day")
-        # if t3sigma<0:
-        #     print("Dwell time does not converge (Gaussian) for veto of %f s"%t_veto)
-        # else:
-        #     print("Dwell time (Gaussian) =",t3sigma,"days")
         s_upper.append(s)
         b_upper.append(b)
         b_err_upper.append(b_err)
