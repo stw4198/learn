@@ -127,7 +127,7 @@ int main(int argc, char** argv){
       const char* file = argv[2];
       const char* component = argv[3];
       const char* tank = argv[4];
-      const char* results_file = argv[5];
+      const char* results_file = "results_learn.csv";
 
       printf("\nEvaluating likelihoods for %s\n\n\n",component);
   
@@ -184,7 +184,7 @@ int main(int argc, char** argv){
       const char* tank = argv[3];
       const char* component = argv[4];
 
-      printf("\nApplying energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",component,tank);
+      printf("\nOptimising energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",component,tank);
       const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,path_data,tank,component);
       std::system (command);
       }

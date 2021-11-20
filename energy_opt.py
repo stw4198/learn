@@ -10,6 +10,7 @@ path = sys.argv[1]
 tank = int(sys.argv[2])
 sig = sys.argv[3]
 file = path + "/results_learn.csv"
+energy_file = path + "/heysham_2pdf_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
 df = pd.read_csv(file)
@@ -49,13 +50,13 @@ for x in E_lower:
         sig_output_total = []
 
         for i in range(len(signal_components)):
-            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+signal_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+signal_components[i]+"_classified.root",energy_file,str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
             df.loc[signal_components[i],str(tank)+" kept"]=int(output.split()[4])-int(output.split()[1])
         for i in range(len(background_components)):
-            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+background_components[i]+"_classified.root",path+"/heysham_2pdf_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+background_components[i]+"_classified.root",energy_file,str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))

@@ -17,9 +17,23 @@ std::vector<double> energy(const char* infile, const char* fitfile, double e_low
   gROOT->ProcessLine( "gErrorIgnoreLevel = 1001;");
 
   TFile *ffit = new TFile(fitfile);
+  if(!ffit->IsOpen()){
+    printf("File %s does not exist.\n",fitfile);
+    energy_cut.push_back(0);
+    energy_cut.push_back(0);
+    printf("Removed 0 out of 0 entries\n");
+    return(energy_cut);
+  }
   TTree *tfit = (TTree*)ffit->Get("data");
 
   TFile *f = new TFile(infile);
+  if(!f->IsOpen()){
+    printf("File %s does not exist.\n",infile);
+    energy_cut.push_back(0);
+    energy_cut.push_back(0);
+    printf("Removed 0 out of 0 entries\n");
+    return(energy_cut);
+  }
   TTree *t_in = (TTree*)f->Get("data");
   TTree *run = (TTree*)f->Get("runSummary");
 
