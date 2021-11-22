@@ -2,6 +2,10 @@
 
 std::vector<double> likehood_classify(const char* infile, const char* component/*, int nbins*/){
 
+  std::string x_win = "100";
+  TString nx = "n" + x_win;
+  TString nx_prev = nx + "_prev";
+
   std::vector<double> results;
   results.push_back(0);
   results.push_back(0);
@@ -98,8 +102,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
     printf("File signal_pdfs.root does not exist.\n");
     return results;
   }
-  TH1D* n100_signal = (TH1D*)signal->Get("n100");
-  TH1D* n100_prev_signal = (TH1D*)signal->Get("n100_prev");
+  TH1D* nX_signal = (TH1D*)signal->Get("nX");
+  TH1D* nX_prev_signal = (TH1D*)signal->Get("nX_prev");
   TH1D* dt_prev_us_signal = (TH1D*)signal->Get("dt_prev_us");
   TH1D* drPrevr_signal = (TH1D*)signal->Get("drPrevr");
   TH1D* closestPMT_signal = (TH1D*)signal->Get("closestPMT");
@@ -110,8 +114,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
     printf("File background_pdfs.root does not exist.\n");
     return results;
   }
-  TH1D* n100_background = (TH1D*)background->Get("n100");
-  TH1D* n100_prev_background = (TH1D*)background->Get("n100_prev");
+  TH1D* nX_background = (TH1D*)background->Get("nX");
+  TH1D* nX_prev_background = (TH1D*)background->Get("nX_prev");
   TH1D* dt_prev_us_background = (TH1D*)background->Get("dt_prev_us");
   TH1D* drPrevr_background = (TH1D*)background->Get("drPrevr");
   TH1D* closestPMT_background = (TH1D*)background->Get("closestPMT");
@@ -138,15 +142,15 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
     if (t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
-      double n100_sig_bin = n100_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
-      double n100_sig_prob = n100_signal->GetBinContent(n100_sig_bin);
-      double n100_bg_bin = n100_background->GetXaxis()->FindBin(t_in->GetLeaf("n100")->GetValue(0));
-      double n100_bg_prob = n100_background->GetBinContent(n100_bg_bin);
+      double nX_sig_bin = nX_signal->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
+      double nX_sig_prob = nX_signal->GetBinContent(nX_sig_bin);
+      double nX_bg_bin = nX_background->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
+      double nX_bg_prob = nX_background->GetBinContent(nX_bg_bin);
       
-      double n100_prev_sig_bin = n100_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
-      double n100_prev_sig_prob = n100_prev_signal->GetBinContent(n100_prev_sig_bin);
-      double n100_prev_bg_bin = n100_prev_background->GetXaxis()->FindBin(t_in->GetLeaf("n100_prev")->GetValue(0));
-      double n100_prev_bg_prob = n100_prev_background->GetBinContent(n100_prev_bg_bin);
+      double nX_prev_sig_bin = nX_prev_signal->GetXaxis()->FindBin(t_in->GetLeaf(nx_prev)->GetValue(0));
+      double nX_prev_sig_prob = nX_prev_signal->GetBinContent(nX_prev_sig_bin);
+      double nX_prev_bg_bin = nX_prev_background->GetXaxis()->FindBin(t_in->GetLeaf(nx_prev)->GetValue(0));
+      double nX_prev_bg_prob = nX_prev_background->GetBinContent(nX_prev_bg_bin);
       
       double dt_prev_us_sig_bin = dt_prev_us_signal->GetXaxis()->FindBin(t_in->GetLeaf("dt_prev_us")->GetValue(0));
       double dt_prev_us_sig_prob = dt_prev_us_signal->GetBinContent(dt_prev_us_sig_bin);
@@ -163,8 +167,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
       double closestPMT_bg_bin = closestPMT_background->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
       
-      double sig_like = log(n100_sig_prob*n100_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
-      double bg_like = log(n100_bg_prob*n100_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
+      double sig_like = log(nX_sig_prob*nX_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
+      double bg_like = log(nX_bg_prob*nX_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
       {if( std::isinf(sig_like) == true){sig_like=0;}else{}}
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
@@ -182,7 +186,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
         n9 = t_in->GetLeaf("n9")->GetValue(0);
         n9_prev = t_in->GetLeaf("n9_prev")->GetValue(0);
         n100 = t_in->GetLeaf("n100")->GetValue(0);
-        n100_prev = t_in->GetLeaf("n100_prev")->GetValue(0);
+        n100_prev = t_in->GetLeaf("n100")->GetValue(0);
         nOff = t_in->GetLeaf("nOff")->GetValue(0);
         good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
         good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
@@ -223,7 +227,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
           n9 = t_in->GetLeaf("n9")->GetValue(0);
           n9_prev = t_in->GetLeaf("n9_prev")->GetValue(0);
           n100 = t_in->GetLeaf("n100")->GetValue(0);
-          n100_prev = t_in->GetLeaf("n100_prev")->GetValue(0);
+          n100_prev = t_in->GetLeaf("n100")->GetValue(0);
           nOff = t_in->GetLeaf("nOff")->GetValue(0);
           good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
           good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);

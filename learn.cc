@@ -120,13 +120,14 @@ int main(int argc, char** argv){
       return -1;
     }
     else if(argc<4){
-      printf("No tank size entered\n");
+      printf("No component name entered\n");
       return -1;
     }
     else{
       const char* file = argv[2];
       const char* component = argv[3];
       const char* tank = argv[4];
+      if(argc<5){tank = "22";}
       const char* results_file = "results_learn.csv";
 
       printf("\nEvaluating likelihoods for %s\n\n\n",component);
