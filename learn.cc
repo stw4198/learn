@@ -32,7 +32,27 @@ bool classify(std::vector<std::string> p)
   return false;
 }
 
+bool veto(std::vector<std::string> p)
+{
+  for( auto v : p )
+    if( v == "--veto" )
+      return true;
+  return false;
+}
+
+bool energy(std::vector<std::string> p)
+{
+  for( auto v : p )
+    if( v == "--energy" )
+      return true;
+  return false;
+}
+
 int main(int argc, char** argv){
+
+  std::string argv_str(argv[0]);
+  std::string base = argv_str.substr(0, argv_str.find_last_of("/"));
+  const char* path = base.c_str();
 
   std::vector<std::string> args(argv+1, argv+argc);
 
@@ -55,14 +75,18 @@ int main(int argc, char** argv){
       if (argc > 4) {rPMT = std::stoi(argv[4]);}
       if (argc > 5) {dTank = std::stoi(argv[5]);}
       if (argc > 6) {nbins = std::stoi(argv[6]);}
+      std::string nx = "100";//argv[4];
+      if(argc>7){nx = argv[7];}      
 
       printf("\nMaking PDFs for %s\n\n\n",component);
   
       printf("rPMT = %i mm\n",rPMT);
       printf("dTank = %i mm\n",dTank);
-      printf("nbins = %i\n\n\n",nbins);
+      printf("nbins = %i\n",nbins);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
 
-      pdf_gen(file,component,nbins,1.2*dTank,rPMT);   
+
+      pdf_gen(file,component,nbins,1.2*dTank,rPMT,nx);   
       } 
   }
   
@@ -87,10 +111,13 @@ int main(int argc, char** argv){
     else{
       const char* file = argv[2];
       const char* component = argv[3];
+      std::string nx = "100";//argv[4];
+      if(argc>4){nx = argv[4];}
 
-      printf("\nMaking likelihoods for %s\n\n\n",component);
+      printf("\nMaking likelihoods for %s\n",component);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
 
-      likehood(file,component);
+      likehood(file,component,nx);
       }
   }
 
@@ -100,16 +127,77 @@ int main(int argc, char** argv){
       return -1;
     }
     else if(argc<4){
-      printf("No component entered\n");
+      printf("No component name entered\n");
       return -1;
     }
     else{
       const char* file = argv[2];
       const char* component = argv[3];
+      std::string nx = "100";//argv[4];
+      if(argc>4){nx = argv[4];}
+      const char* tank = argv[5];
+      if(argc<6){tank = "22";}
+      const char* results_file = "results_learn.csv";
 
-      printf("\nEvaluating likelihoods for %s\n\n\n",component);
+      printf("\nEvaluating likelihoods for %s in %s m tank\n",component,tank);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
   
-      likehood_classify(file,component);
+      std::vector<double> results = likehood_classify(file,component,nx);
+      double kept = results[0];
+      double MC = 2*results[1];
+      double rate = results[2];
+
+      printf("\nWriting results\n\n\n");
+      const char* command = Form("python3 %s/results.py %s %s %s %f %f %.9e",path,results_file,component,tank,kept,MC,rate);
+      std::system (command);
+      }
+  }
+
+  else if(veto(args)){
+    if(argc<3){
+      printf("No input file or component entered\n");
+      return -1;
+    }
+    else if(argc<4){
+      printf("No tank size entered\n");
+      return -1;
+    }
+    else if(argc<5){
+      printf("No component entered\n");
+      return -1;
+    }
+    else{
+      const char* file = argv[2];
+      const char* tank = argv[3];
+      const char* component = argv[4];
+
+      printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",component,tank);
+      const char* command = Form("python3 %s/veto.py %s %s %s",path,file,tank,component);
+      std::system (command);
+      }
+  }
+
+  else if(energy(args)){
+    if(argc<3){
+      printf("No input file or component entered\n");
+      return -1;
+    }
+    else if(argc<4){
+      printf("No tank size entered\n");
+      return -1;
+    }
+    else if(argc<5){
+      printf("No component entered\n");
+      return -1;
+    }
+    else{
+      const char* path_data = argv[2];
+      const char* tank = argv[3];
+      const char* component = argv[4];
+
+      printf("\nOptimising energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",component,tank);
+      const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,path_data,tank,component);
+      std::system (command);
       }
   }
   
@@ -119,7 +207,9 @@ int main(int argc, char** argv){
     printf("1) Creating PDFs\nDo ./learn --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
     printf("2) Scaling and merging PDFs\nDo ./learn --merge [signal:default hartlepool]\n\n");
     printf("3) Creating likelihoods\nDo ./learn --like [input file] [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component name] [output file (csv)] [tank size]\n\n");
+    printf("5) Data reduction\nNot currently integrated into LEARN\n\n");
+    printf("6) Evaluating dwell times\nDo ./learn --veto [results csv file] [tank size] [component]\n\n");
     
     std::vector<std::string> components;
     std::vector<double> rates;
