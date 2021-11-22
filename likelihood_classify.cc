@@ -1,8 +1,8 @@
 #include "learn.h"
 
-std::vector<double> likehood_classify(const char* infile, const char* component/*, int nbins*/){
+std::vector<double> likehood_classify(const char* infile, const char* component, std::string x_win){
 
-  std::string x_win = "100";
+  //std::string x_win = "100";
   TString nx = "n" + x_win;
   TString nx_prev = nx + "_prev";
 
@@ -131,8 +131,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component/
   double max_Lr = ratio_like->GetXaxis()->GetBinCenter(binmax);
   int binmin = ratio_like->FindFirstBinAbove();
   double min_Lr = ratio_like->GetXaxis()->GetBinCenter(binmin);
-  //int thresh = std::ceil(max_Lr);
-  printf("Max Lr for singles = %f\nMin Lr for singles = %f\n\n\n",max_Lr,min_Lr);//Setting Lr threshold to %i\n\n\n",max_Lr,thresh);
+  printf("Max Lr for singles = %f\nMin Lr for singles = %f\n\n\n",max_Lr,min_Lr);
   
   for(int i=1; i<nentries; i++){
     t_in->GetEntry(i);

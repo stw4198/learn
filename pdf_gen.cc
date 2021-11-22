@@ -1,6 +1,6 @@
 #include "learn.h"
 
-void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT){
+void pdf_gen(const char* file, const char* component, int nbins, int dTank, int rPMT, std::string x_win){
 
   TFile *f = new TFile(file);
   if(!f->IsOpen()){
@@ -28,8 +28,8 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank, int 
   int nentries = t->GetEntries();
   printf("There are %i reconstructed entries in %s\n",nentries,file);
   
-  std::string x = "100";
-  TString nx = "n" + x;
+  //std::string x = "100";
+  TString nx = "n" + x_win;
   TString nx_prev = nx + "_prev";
 
   int nkept = 0;

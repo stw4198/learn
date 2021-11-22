@@ -75,14 +75,18 @@ int main(int argc, char** argv){
       if (argc > 4) {rPMT = std::stoi(argv[4]);}
       if (argc > 5) {dTank = std::stoi(argv[5]);}
       if (argc > 6) {nbins = std::stoi(argv[6]);}
+      std::string nx = "100";//argv[4];
+      if(argc>7){nx = argv[7];}      
 
       printf("\nMaking PDFs for %s\n\n\n",component);
   
       printf("rPMT = %i mm\n",rPMT);
       printf("dTank = %i mm\n",dTank);
-      printf("nbins = %i\n\n\n",nbins);
+      printf("nbins = %i\n",nbins);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
 
-      pdf_gen(file,component,nbins,1.2*dTank,rPMT);   
+
+      pdf_gen(file,component,nbins,1.2*dTank,rPMT,nx);   
       } 
   }
   
@@ -107,10 +111,13 @@ int main(int argc, char** argv){
     else{
       const char* file = argv[2];
       const char* component = argv[3];
+      std::string nx = "100";//argv[4];
+      if(argc>4){nx = argv[4];}
 
-      printf("\nMaking likelihoods for %s\n\n\n",component);
+      printf("\nMaking likelihoods for %s\n",component);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
 
-      likehood(file,component);
+      likehood(file,component,nx);
       }
   }
 
@@ -126,13 +133,16 @@ int main(int argc, char** argv){
     else{
       const char* file = argv[2];
       const char* component = argv[3];
-      const char* tank = argv[4];
-      if(argc<5){tank = "22";}
+      std::string nx = "100";//argv[4];
+      if(argc>4){nx = argv[4];}
+      const char* tank = argv[5];
+      if(argc<6){tank = "22";}
       const char* results_file = "results_learn.csv";
 
-      printf("\nEvaluating likelihoods for %s\n\n\n",component);
+      printf("\nEvaluating likelihoods for %s in %s m tank\n",component,tank);
+      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
   
-      std::vector<double> results = likehood_classify(file,component);
+      std::vector<double> results = likehood_classify(file,component,nx);
       double kept = results[0];
       double MC = 2*results[1];
       double rate = results[2];

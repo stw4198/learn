@@ -1,9 +1,9 @@
 #include "learn.h"
 
-void likehood(const char* infile, const char* component/*, int nbins*/){
+void likehood(const char* infile, const char* component, std::string x_win){
 
-  std::string x = "100";
-  TString nx = "n" + x;
+  //std::string x = "100";
+  TString nx = "n" + x_win;
   TString nx_prev = nx + "_prev";
 
   TFile *f = new TFile(infile);
