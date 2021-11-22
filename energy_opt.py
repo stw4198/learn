@@ -11,7 +11,7 @@ path = sys.argv[1]
 tank = int(sys.argv[2])
 sig = sys.argv[3]
 file = path + "/results_learn.csv"
-energy_file = path + "/heysham_2pdf_classified.root" #Need to create a better name/system
+energy_file = path + "/" + sig + "pdf_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
 # df = pd.read_csv(file)
@@ -125,7 +125,14 @@ for x in tqdm(E_lower):
                 n17+=df_analysis.loc[k,'rates']
 
         b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
-        t3sigma = 9*b/(s**2 - 9*(b_err)**2)
+        if sig=='hartlepool' or sig=='hartlepool_1':
+            t = np.arange(0.01,30,0.01)
+            sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
+              - (b**2*t**2)*np.log(1 + (b_err**2*t**2*s*t)/(b*t*(b*t + b_err**2*t**2)))/(b_err**2*t**2)))
+            time_index = [ n for n,i in enumerate(sigma) if i>3][0]
+            t3sigma = t[time_index]
+        else:
+            t3sigma = 9*b/(s**2 - 9*(b_err)**2)        
         s_upper.append(s)
         b_upper.append(b)
         b_err_upper.append(b_err)
@@ -146,8 +153,12 @@ b_total = np.reshape(b_total,(len(E_lower),len(E_upper)))
 b_err_total = np.reshape(b_err_total,(len(E_lower),len(E_upper)))
 min_time_idx = np.unravel_index(dwell_times.argmin(), dwell_times.shape)
 print(df_list[min_time_idx[0]][min_time_idx[1]])
-df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy.csv",sep=',',float_format='%.9e')
+df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy_"+sig+".csv",sep=',',float_format='%.9e')
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
 print("E_min = %f MeV, E_max = %f MeV"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
+resultsfile = "results_%s.txt"%sig
+results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]])
+with open(resultsfile,'a') as resfile:
+    resfile.write(results+"\n")
