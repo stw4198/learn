@@ -5,6 +5,7 @@ from scipy import integrate
 import numpy as np
 import sys
 from sig_choice import sig_choice
+from tqdm import tqdm
 
 path = sys.argv[1]
 tank = int(sys.argv[2])
@@ -37,10 +38,10 @@ b_err_total =[]
 progress = 0
 df_list = []
 
-for x in E_lower:
+for x in tqdm(E_lower):
     df_list_1 = []
-    if progress/len(E_lower) % 0.05:
-        print("%f%%"%(100*progress/len(E_lower)))
+    #if progress/len(E_lower) % 0.05:
+    #    print("%f%%"%(100*progress/len(E_lower)))
 
     dwell_times_upper = []
     s_upper = []
