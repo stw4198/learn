@@ -27,7 +27,7 @@ learn: $(OBJS) learn.cc
 
 
 clean:
-	$(RM) env.sh
+	$(RM) LEARN.sh
 	$(RM) *.o *~ core 
 	$(RM) learn
 	$(RM) energy

@@ -5,7 +5,7 @@
 ### Create environment files
 learnroot=`pwd`
 
-cat > env.sh <<EOF
+cat > LEARN.sh <<EOF
 #!/bin/sh
 LEARNENV=$learnroot
 PATH=\$LEARNENV:\$PATH

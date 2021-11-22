@@ -13,8 +13,8 @@ file = path + "/results_learn.csv"
 energy_file = path + "/heysham_2pdf_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
-df = pd.read_csv(file)
-df = df.set_index('Component')
+# df = pd.read_csv(file)
+# df = df.set_index('Component')
 
 muon_eff = 0.95
 t_veto = 1
@@ -28,16 +28,17 @@ R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
 E_lower = np.arange(1.5,3,0.5)
-E_upper = np.arange(3.5,7,0.5)
+E_upper = np.arange(3.5,5.5,0.5)
 dwell_times = []
 s_total = []
 b_total = []
 b_err_total =[]
 
 progress = 0
+df_list = []
 
 for x in E_lower:
-
+    df_list_1 = []
     if progress/len(E_lower) % 0.05:
         print("%f%%"%(100*progress/len(E_lower)))
 
@@ -46,6 +47,8 @@ for x in E_lower:
     b_upper = []
     b_err_upper = []
     for y in E_upper:
+        df = pd.read_csv(file)
+        df = df.set_index('Component')
         sig_output_removed = []
         sig_output_total = []
 
@@ -69,16 +72,23 @@ for x in E_lower:
                 #if df.loc[i,"%i kept"%tank] == 0: #Need to implement proper FN handling when ML and beta ready
                 df.loc[i,"%i kept"%tank]=fn_cl
                 rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+            elif i == 'li9':
+                df.loc[i,"%i kept"%tank]=df.loc[i,"%i kept"%tank]*R_li9_cor
+                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+            elif i == 'n17':
+                df.loc[i,"%i kept"%tank]=df.loc[i,"%i kept"%tank]*R_n17_cor
+                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
             else:
                 if df.loc[i,"%i kept"%tank]==0 or df.loc[i,'%i rate'%tank]==0 or df.loc[i,'%i MC'%tank]==0:
                     rates.append(0)
                 else:
                     rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+        df_list_1.append(df)
         d = {'components':components,'rates':rates}
         df_analysis = pd.DataFrame(data=d)
         df_analysis = df_analysis.set_index('components')
-        df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
-        df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
+        # df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
+        # df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
         s = 0
         b = 0
         f = 0
@@ -126,14 +136,16 @@ for x in E_lower:
     s_total.append(s_upper)
     b_total.append(b_upper)
     b_err_total.append(b_err_upper)
-
     progress += 1
+    df_list.append(df_list_1)
 
 dwell_times = np.reshape(dwell_times,(len(E_lower),len(E_upper)))
 s_total = np.reshape(s_total,(len(E_lower),len(E_upper)))
 b_total = np.reshape(b_total,(len(E_lower),len(E_upper)))
 b_err_total = np.reshape(b_err_total,(len(E_lower),len(E_upper)))
 min_time_idx = np.unravel_index(dwell_times.argmin(), dwell_times.shape)
+print(df_list[min_time_idx[0]][min_time_idx[1]])
+df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy.csv",sep=',',float_format='%.9e')
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
