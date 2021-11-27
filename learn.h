@@ -14,5 +14,6 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank, int 
 void merge_PDFs(const char* sig);
 std::vector<double> likehood_classify(const char* infile, const char* component, std::string nx);
 void likehood(const char* infile, const char* component, std::string x_win);
+std::vector<const char*> input_select(int argc,char** argv);
 
 #endif

@@ -102,11 +102,13 @@ void stack_like(){
   TLine * l2 = new TLine(min_Lr,0,min_Lr,1);
   stack->Draw("NOSTACK HIST");
   stack->GetXaxis()->SetTitle("\\mathscr{L}_{R}");
-  stack->GetYaxis()->SetTitle("Normalised events");
+  //stack->GetYaxis()->SetTitle("Normalised events");
   stack->GetYaxis()->SetTitleOffset(1.3);
   l->SetLineWidth(3);
+  l->SetLineColor(4);
   l->Draw();
   l2->SetLineWidth(3);
+  l2->SetLineColor(4);
   l2->Draw();
   legend->Draw();
   c1->SaveAs("likelihood_ratio.png");

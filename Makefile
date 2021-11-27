@@ -12,7 +12,7 @@ INCLUDES := $(INCLUDES) -I. -I$(ROOTSYS)/include
 #%.o : %.cc
 #	g++ $(ROOT_FLAG) $(RAT_LIBS) $(INCLUDES) $(LIBRARIES) -c $*.cc
 
-OBJS := likelihood.o likelihood_classify.o pdf_gen.o merge_PDFs.o
+OBJS := likelihood.o likelihood_classify.o pdf_gen.o merge_PDFs.o inputs.o
 
 all: learn
 

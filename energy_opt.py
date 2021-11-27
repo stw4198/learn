@@ -28,8 +28,8 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(1.5,3,0.5)
-E_upper = np.arange(3.5,5.5,0.5)
+E_lower = np.arange(0.5,3.75,0.25)
+E_upper = np.arange(3.75,8.25,0.25)
 dwell_times = []
 s_total = []
 b_total = []
@@ -38,7 +38,7 @@ b_err_total =[]
 progress = 0
 df_list = []
 
-for x in tqdm(E_lower):
+for x in tqdm(E_lower, desc='Threshold Energy'):
     df_list_1 = []
     #if progress/len(E_lower) % 0.05:
     #    print("%f%%"%(100*progress/len(E_lower)))
@@ -47,7 +47,7 @@ for x in tqdm(E_lower):
     s_upper = []
     b_upper = []
     b_err_upper = []
-    for y in E_upper:
+    for y in tqdm(E_upper,desc='Maximum Energy',leave=False):
         df = pd.read_csv(file)
         df = df.set_index('Component')
         sig_output_removed = []
@@ -129,8 +129,11 @@ for x in tqdm(E_lower):
             t = np.arange(0.01,30,0.01)
             sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
               - (b**2*t**2)*np.log(1 + (b_err**2*t**2*s*t)/(b*t*(b*t + b_err**2*t**2)))/(b_err**2*t**2)))
-            time_index = [ n for n,i in enumerate(sigma) if i>3][0]
-            t3sigma = t[time_index]
+            if max(sigma)>3:
+                time_index = [ n for n,i in enumerate(sigma) if i>3][0]
+                t3sigma = t[time_index]
+            else:
+                t3sigma = 100000
         else:
             t3sigma = 9*b/(s**2 - 9*(b_err)**2)        
         s_upper.append(s)
