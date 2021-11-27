@@ -19,7 +19,7 @@ int main(int argc, char** argv){
 
   if(!strcmp(function,"")){
     // print statment in inputs.cc
-    return 0;
+    return -1;
   }
   if(strcmp(function,"--help")){
     printf("Inputs:\nFunction = %s\nFile = %s\nComponent = %s\nSignal = %s\nrPMT = %s mm\ndTank = %s m\nnbins = %s\nnX = %s ns\nfile path = %s\n",function,file,component,signal,rPMT,dTank,nbins,nx,file_path);
@@ -28,11 +28,11 @@ int main(int argc, char** argv){
   if(!strcmp(function,"--pdf")){
     if(!strcmp(file,"")){
       printf("No file. Please specify with -f [file]\n");
-      return 0;
+      return -1;
     }
     else if(!strcmp(component,"")){
       printf("No component. Please specify with -c [component]\n");
-      return 0;
+      return -1;
     }
     printf("\nMaking PDFs for %s\n\n\n",component);
     pdf_gen(file,component,std::stoi(nbins),1.2*std::stoi(dTank),std::stoi(rPMT),nx);
@@ -41,7 +41,7 @@ int main(int argc, char** argv){
   else if(!strcmp(function,"--merge")){
     if(!strcmp(signal,"")){
       printf("No signal. Please specify with -s [signal]\n");
-      return 0;
+      return -1;
     }
     printf("\nMerging PDFs for %s\n\n\n",signal);
     merge_PDFs(signal);
@@ -50,11 +50,11 @@ int main(int argc, char** argv){
   else if(!strcmp(function,"--like")){
     if(!strcmp(file,"")){
       printf("No file. Please specify with -f [file]\n");
-      return 0;
+      return -1;
     }
     else if(!strcmp(component,"")){
       printf("No component. Please specify with -c [component]\n");
-      return 0;
+      return -1;
     }
     printf("\nCreating likelihoods for %s\n\n\n",component);
     likehood(file,component,nx);
@@ -63,11 +63,11 @@ int main(int argc, char** argv){
   else if(!strcmp(function,"--eval")){
     if(!strcmp(file,"")){
       printf("No file. Please specify with -f [file]\n");
-      return 0;
+      return -1;
     }
     else if(!strcmp(component,"")){
       printf("No component. Please specify with -c [component]\n");
-      return 0;
+      return -1;
     }
     const char* results_file = "results_learn.csv";
     printf("\nEvaluating likelihoods for %s\n\n\n",component);
@@ -85,7 +85,7 @@ int main(int argc, char** argv){
   else if(!strcmp(function,"--energy")){
     if(!strcmp(signal,"")){
       printf("No signal. Please specify with -s [signal]\n");
-      return 0;
+      return -1;
     }
     printf("\nOptimising energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",signal,dTank);
     const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,file_path,dTank,signal);
@@ -95,7 +95,7 @@ int main(int argc, char** argv){
   else if(!strcmp(function,"--veto")){
     if(!strcmp(signal,"")){
       printf("No signal. Please specify with -s [signal]\n");
-      return 0;
+      return -1;
     }
     const char* results_file = "results_learn.csv";
     printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",signal,dTank);
