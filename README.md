@@ -1,38 +1,32 @@
 # LEARN
 Likelihood Event Analysis of Reactor Neutrinos
 
-Combine with machine learning for Machine LEARNing
-
 ### Dependencies
-ROOT must be installed and sourced before compiling or using
+ROOT must be installed and sourced before compiling or using. Developed using ROOT 6.18
 
 ### Compile
 
-Use "make" to compile and "make clean" to remove binaries
+Use "make" to compile and "make clean" to remove binaries. Source LEARN.sh to export paths
 
 ### Use
 
-To use, do ./learn [options]
+Use "learn" to see input options. Use "learn --help" to print analysis steps.
 
-LEARN has 4 main steps:
-1) Generating probability density functions (PDFs) for signal/background components
-2) Scaling and merging PDFs to create signal and background PDFs
-3) Creating likelihoods based on signal and background PDFs, and determining likelihood ratio (log(L<sub>s</sub>/L<sub>b</sub>))
-4) Evaluating the likelihoods to find optimal cut on likelihood ratio to suppress backgrounds
+There are several stages to this analysis
 
-To generate PDFs, use<br>
-./learn --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]
+1) Creating PDFs: "learn --pdf -f [input file] -c [component]"
 
-To scale and merge PDFs, use<br>
-./learn --merge [signal:default hartlepool]
+2) Scaling and merging PDFs: "learn --merge -s [signal]"
 
-To create likelihoods, use<br>
-./learn --like [input file] [component]
+3) Creating likelihoods: "learn --like -f [input file] -c [component]"
 
-To Evaluate likelihoods and rates, use<br>
-./learn --eval [input file] [component]
+4) Evaluating likelihoods and rates: "learn --eval -f [input file] -c [component name]"
 
-To see help with basic list of components, use<br>
-./learn
+5) Data reduction
+Not currently integrated into LEARN
+
+6) Evaluating dwell times (energy cut): "learn --energy -s [signal]"
+
+7) Evaluating dwell times (no energy cut): "learn --veto -s [signal]"
 
 Event rates and components are defined in 'rates.csv', which needs to be in the current working directory. Example files for different detector configurations are found in this repository.
