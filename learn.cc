@@ -35,7 +35,7 @@ int main(int argc, char** argv){
       return -1;
     }
     printf("\nMaking PDFs for %s\n\n\n",component);
-    pdf_gen(file,component,std::stoi(nbins),1.2*std::stoi(dTank),std::stoi(rPMT),nx);
+    pdf_gen(file,component,std::stoi(nbins),1200*std::stoi(dTank),std::stoi(rPMT),nx);
   }
 
   else if(!strcmp(function,"--merge")){
