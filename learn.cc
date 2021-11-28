@@ -1,215 +1,118 @@
 #include "learn.h"
 
-bool make_pdf(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--pdf" )
-      return true;
-  return false;
-}
-
-bool merge(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--merge" )
-      return true;
-  return false;
-}
-
-bool likelihood(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--like" )
-      return true;
-  return false;
-}
-
-bool classify(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--eval" )
-      return true;
-  return false;
-}
-
-bool veto(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--veto" )
-      return true;
-  return false;
-}
-
-bool energy(std::vector<std::string> p)
-{
-  for( auto v : p )
-    if( v == "--energy" )
-      return true;
-  return false;
-}
-
 int main(int argc, char** argv){
 
   std::string argv_str(argv[0]);
   std::string base = argv_str.substr(0, argv_str.find_last_of("/"));
   const char* path = base.c_str();
 
-  std::vector<std::string> args(argv+1, argv+argc);
+  std::vector<const char*> inputs = input_select(argc,argv);
+  const char* function = inputs[0];
+  const char* file = inputs[1];
+  const char* component = inputs[2];
+  const char* signal = inputs[3];
+  const char* rPMT = inputs[4];
+  const char* dTank = inputs[5];
+  const char* nbins = inputs[6];
+  const char* nx = inputs[7];
+  const char* file_path = inputs[8];
 
-  if(make_pdf(args)){
-    if(argc<3){
-      printf("No input file or component entered\n");
-      return -1;
-    }
-    else if(argc<4){
-      printf("No component entered\n");
-      return -1;
-    }
-    else{
-      int nbins = 1000; //look at Freedman-Diaconis rule or use root n
-      int dTank = 22000;
-      int rPMT = 9000;
-    
-      const char* file = argv[2];
-      const char* component = argv[3];
-      if (argc > 4) {rPMT = std::stoi(argv[4]);}
-      if (argc > 5) {dTank = std::stoi(argv[5]);}
-      if (argc > 6) {nbins = std::stoi(argv[6]);}
-      std::string nx = "100";//argv[4];
-      if(argc>7){nx = argv[7];}      
-
-      printf("\nMaking PDFs for %s\n\n\n",component);
-  
-      printf("rPMT = %i mm\n",rPMT);
-      printf("dTank = %i mm\n",dTank);
-      printf("nbins = %i\n",nbins);
-      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
-
-
-      pdf_gen(file,component,nbins,1.2*dTank,rPMT,nx);   
-      } 
+  if(!strcmp(function,"")){
+    // print statment in inputs.cc
+    return -1;
+  }
+  if(strcmp(function,"--help")){
+    printf("Inputs:\nFunction = %s\nFile = %s\nComponent = %s\nSignal = %s\nrPMT = %s mm\ndTank = %s m\nnbins = %s\nnX = %s ns\nfile path = %s\n",function,file,component,signal,rPMT,dTank,nbins,nx,file_path);
   }
   
-  else if(merge(args)){
-    const char* sig = "hartlepool";
-    if (argc > 2) {sig = argv[2];}
-  
-    printf("\nScaling and merging PDFs\nSignal = %s\n\n\n",sig);
-
-    merge_PDFs(sig);
+  if(!strcmp(function,"--pdf")){
+    if(!strcmp(file,"")){
+      printf("No file. Please specify with -f [file]\n");
+      return -1;
+    }
+    else if(!strcmp(component,"")){
+      printf("No component. Please specify with -c [component]\n");
+      return -1;
+    }
+    printf("\nMaking PDFs for %s\n\n\n",component);
+    pdf_gen(file,component,std::stoi(nbins),1200*std::stoi(dTank),std::stoi(rPMT),nx);
   }
 
-  else if(likelihood(args)){
-    if(argc<3){
-      printf("No input file or component entered\n");
+  else if(!strcmp(function,"--merge")){
+    if(!strcmp(signal,"")){
+      printf("No signal. Please specify with -s [signal]\n");
       return -1;
     }
-    else if(argc<4){
-      printf("No component entered\n");
-      return -1;
-    }
-    else{
-      const char* file = argv[2];
-      const char* component = argv[3];
-      std::string nx = "100";//argv[4];
-      if(argc>4){nx = argv[4];}
-
-      printf("\nMaking likelihoods for %s\n",component);
-      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
-
-      likehood(file,component,nx);
-      }
+    printf("\nMerging PDFs for %s\n\n\n",signal);
+    merge_PDFs(signal);
   }
 
-  else if(classify(args)){
-    if(argc<3){
-      printf("No input file or component entered\n");
+  else if(!strcmp(function,"--like")){
+    if(!strcmp(file,"")){
+      printf("No file. Please specify with -f [file]\n");
       return -1;
     }
-    else if(argc<4){
-      printf("No component name entered\n");
+    else if(!strcmp(component,"")){
+      printf("No component. Please specify with -c [component]\n");
       return -1;
     }
-    else{
-      const char* file = argv[2];
-      const char* component = argv[3];
-      std::string nx = "100";//argv[4];
-      if(argc>4){nx = argv[4];}
-      const char* tank = argv[5];
-      if(argc<6){tank = "22";}
-      const char* results_file = "results_learn.csv";
-
-      printf("\nEvaluating likelihoods for %s in %s m tank\n",component,tank);
-      std::cout<< "Using "<< nx << " ns as time window for PMT hits\n\n\n";
-  
-      std::vector<double> results = likehood_classify(file,component,nx);
-      double kept = results[0];
-      double MC = 2*results[1];
-      double rate = results[2];
-
-      printf("\nWriting results\n\n\n");
-      const char* command = Form("python3 %s/results.py %s %s %s %f %f %.9e",path,results_file,component,tank,kept,MC,rate);
-      std::system (command);
-      }
+    printf("\nCreating likelihoods for %s\n\n\n",component);
+    likehood(file,component,nx);
   }
 
-  else if(veto(args)){
-    if(argc<3){
-      printf("No input file or component entered\n");
+  else if(!strcmp(function,"--eval")){
+    if(!strcmp(file,"")){
+      printf("No file. Please specify with -f [file]\n");
       return -1;
     }
-    else if(argc<4){
-      printf("No tank size entered\n");
+    else if(!strcmp(component,"")){
+      printf("No component. Please specify with -c [component]\n");
       return -1;
     }
-    else if(argc<5){
-      printf("No component entered\n");
-      return -1;
-    }
-    else{
-      const char* file = argv[2];
-      const char* tank = argv[3];
-      const char* component = argv[4];
+    const char* results_file = "results_learn.csv";
+    printf("\nEvaluating likelihoods for %s\n\n\n",component);
 
-      printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",component,tank);
-      const char* command = Form("python3 %s/veto.py %s %s %s",path,file,tank,component);
-      std::system (command);
-      }
+    std::vector<double> results = likehood_classify(file,component,nx);
+    double kept = results[0];
+    double MC = 2*results[1];
+    double rate = results[2];
+
+    printf("\nWriting results\n\n\n");
+    const char* command = Form("python3 %s/results.py %s %s %s %f %f %.9e",path,results_file,component,dTank,kept,MC,rate);
+    std::system (command);
   }
 
-  else if(energy(args)){
-    if(argc<3){
-      printf("No input file or component entered\n");
+  else if(!strcmp(function,"--energy")){
+    if(!strcmp(signal,"")){
+      printf("No signal. Please specify with -s [signal]\n");
       return -1;
     }
-    else if(argc<4){
-      printf("No tank size entered\n");
-      return -1;
-    }
-    else if(argc<5){
-      printf("No component entered\n");
-      return -1;
-    }
-    else{
-      const char* path_data = argv[2];
-      const char* tank = argv[3];
-      const char* component = argv[4];
+    printf("\nOptimising energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",signal,dTank);
+    const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,file_path,dTank,signal);
+    std::system (command);
+  }
 
-      printf("\nOptimising energy cuts and evaluating dwell time for %s in %s m tank\n\n\n",component,tank);
-      const char* command = Form("python3 %s/energy_opt.py %s %s %s",path,path_data,tank,component);
-      std::system (command);
-      }
+  else if(!strcmp(function,"--veto")){
+    if(!strcmp(signal,"")){
+      printf("No signal. Please specify with -s [signal]\n");
+      return -1;
+    }
+    const char* results_file = "results_learn.csv";
+    printf("\nEvaluating dwell time for %s in %s m tank\n\n\n",signal,dTank);
+    const char* command = Form("python3 %s/veto.py %s %s %s",path,results_file,dTank,signal);
+    std::system (command);
   }
   
-  else{
-    printf("\n\n\nWelcome to LEARN (Likelihood Event Analysis of Reactor Neutrinos)\n\n\n");
-    printf("There are four stages to this analysis\n\n");
-    printf("1) Creating PDFs\nDo ./learn --pdf [input file] [component] [nbins:default 1000] [dTank: 22000 mm]\n\n");
-    printf("2) Scaling and merging PDFs\nDo ./learn --merge [signal:default hartlepool]\n\n");
-    printf("3) Creating likelihoods\nDo ./learn --like [input file] [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo ./learn --eval [input file] [component name] [output file (csv)] [tank size]\n\n");
+  else if(!strcmp(function,"--help")){
+    printf("\nWelcome to LEARN (Likelihood Event Analysis of Reactor Neutrinos)\n\n\n");
+    printf("There are several stages to this analysis\n\n");
+    printf("1) Creating PDFs\nDo learn --pdf -f [input file] -c [component]\n\n");
+    printf("2) Scaling and merging PDFs\nDo learn --merge -s [signal]\n\n");
+    printf("3) Creating likelihoods\nDo learn --like -f [input file] -c [component]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo learn --eval -f [input file] -c [component name]\n\n");
     printf("5) Data reduction\nNot currently integrated into LEARN\n\n");
-    printf("6) Evaluating dwell times\nDo ./learn --veto [results csv file] [tank size] [component]\n\n");
+    printf("6 (1)) Evaluating dwell times (energy cut)\nDo learn --energy -s [signal]\n\n");
+    printf("6 (2)) Evaluating dwell times (no energy cut)\nDo learn --veto -s [signal]\n\n");
     
     std::vector<std::string> components;
     std::vector<double> rates;
@@ -247,5 +150,7 @@ int main(int argc, char** argv){
   
     
   }
+
+  return 0;
 
 }
