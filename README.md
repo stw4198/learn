@@ -1,5 +1,5 @@
 # LEARN
-Likelihood Event Analysis of Reactor Neutrinos
+Likelihood Event Analysis for Reactor Neutrinos
 
 ### Dependencies
 ROOT must be installed and sourced before compiling or using. Developed using ROOT 6.18
