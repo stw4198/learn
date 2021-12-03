@@ -169,6 +169,118 @@ def sig_choice(sig):
         "n17",\
         "fn",\
         ]
+    elif sig == "heysham_2_2028":
+        components = ["heysham_2",\
+        "torness_full",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+        other = ["heysham_2",\
+        "torness_full",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "fn",\
+        ]
+        signal_components = ["heysham_2"]
+        background_components = ["torness_full",\
+        "world_2028",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+    elif sig == "heytor_2028":
+        components = ["heysham_2",\
+        "torness_full",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+        other = ["heysham_2",\
+        "torness_full",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "fn",\
+        ]
+        signal_components = ["heysham_2","torness_full"]
+        background_components = ["world_2028",\
+        "hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+    elif sig == "PWR":
+        components = ["hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+        other = ["hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "fn",\
+        ]
+        signal_components = ["hinkley_c","sizewell_b","gravelines"]
+        background_components = ["world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+    elif sig == "gravhink":
+        components = ["hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
+        other = ["hinkley_c",\
+        "sizewell_b",\
+        "gravelines",\
+        "world_2028",\
+        "geo",\
+        "fn",\
+        ]
+        signal_components = ["hinkley_c","gravelines"]
+        background_components = ["sizewell_b",\
+        "world_2028",\
+        "geo",\
+        "li9",\
+        "n17",\
+        "fn",\
+        ]
 
     radio = ["li9",\
     "n17",\
