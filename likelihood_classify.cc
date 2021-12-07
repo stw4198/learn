@@ -166,8 +166,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
       double closestPMT_bg_bin = closestPMT_background->GetXaxis()->FindBin(t_in->GetLeaf("closestPMT")->GetValue(0));
       double closestPMT_bg_prob = closestPMT_background->GetBinContent(closestPMT_bg_bin);
       
-      double sig_like = log(nX_sig_prob*nX_prev_sig_prob*dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
-      double bg_like = log(nX_bg_prob*nX_prev_bg_prob*dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
+      double sig_like = log(/*nX_sig_prob*nX_prev_sig_prob**/dt_prev_us_sig_prob*drPrevr_sig_prob*closestPMT_sig_prob);
+      double bg_like = log(/*nX_bg_prob*nX_prev_bg_prob**/dt_prev_us_bg_prob*drPrevr_bg_prob*closestPMT_bg_prob);
       {if( std::isinf(sig_like) == true){sig_like=0;}else{}}
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;

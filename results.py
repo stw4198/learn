@@ -30,7 +30,7 @@ def results_csv(file, component,tank,kept,MC,rate):
             df[key_2_rate] = ""
 
         if df['Component'].str.contains(component).any():
-            print("%s found\n\n"%component)
+            print("%s found (len = %s)\n\n"%(component,df['Component'].str.contains(component).any()))
         else:
             print("%s not found\n\n"%component)
             new_component = [component]

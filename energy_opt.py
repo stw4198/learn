@@ -11,7 +11,7 @@ path = sys.argv[1]
 tank = int(sys.argv[2])
 sig = sys.argv[3]
 file = path + "/results_learn.csv"
-energy_file = path + "/" + sig + "pdf_classified.root" #Need to create a better name/system
+energy_file = path + "/energy_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
 # df = pd.read_csv(file)
@@ -28,12 +28,15 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(2,2.25,0.25)
-E_upper = np.arange(4,4.25,0.25)
+# E_lower = np.arange(0.5,3.25,0.25)
+# E_upper = np.arange(3.5,8.25,0.25)
+E_lower = np.arange(2,2.5,0.25)
+E_upper = np.arange(4,4.5,0.25)
 dwell_times = []
 s_total = []
 b_total = []
-b_err_total =[]
+b_err_total = []
+b_str_total = []
 
 progress = 0
 df_list = []
@@ -47,6 +50,7 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
     s_upper = []
     b_upper = []
     b_err_upper = []
+    b_str_upper = []
     for y in tqdm(E_upper,desc='Maximum Energy',leave=False):
         df = pd.read_csv(file)
         df = df.set_index('Component')
@@ -102,9 +106,10 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
         world_err = 0.06
         geo = 0
         geoerr = 0.25
-
+        b_str=""
         for i in signal_components:
             s+=df_analysis.loc[i,'rates']
+            b_str+="%s: %s per day\n"%(i,df_analysis.loc[i,'rates'])
         for k in background_components:
             if k!="li9" and k!="n17" and k!="world" and k!="geo" and k!="fn":
                 b+=df_analysis.loc[k,'rates']
@@ -123,6 +128,8 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
             elif k=="n17":
                 b+=df_analysis.loc[k,'rates']
                 n17+=df_analysis.loc[k,'rates']
+            b_str+="%s: %s per day\n"%(k,df_analysis.loc[k,'rates'])
+        b_str_upper.append(b_str)
 
         b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
         if sig=='hartlepool' or sig=='hartlepool_1':
@@ -149,19 +156,22 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
     b_err_total.append(b_err_upper)
     progress += 1
     df_list.append(df_list_1)
+    b_str_total.append(b_str_upper)
 
 dwell_times = np.reshape(dwell_times,(len(E_lower),len(E_upper)))
 s_total = np.reshape(s_total,(len(E_lower),len(E_upper)))
 b_total = np.reshape(b_total,(len(E_lower),len(E_upper)))
 b_err_total = np.reshape(b_err_total,(len(E_lower),len(E_upper)))
+b_str_total = np.reshape(b_str_total,(len(E_lower),len(E_upper)))
 min_time_idx = np.unravel_index(dwell_times.argmin(), dwell_times.shape)
 print(df_list[min_time_idx[0]][min_time_idx[1]])
 df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy_"+sig+".csv",sep=',',float_format='%.9e')
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
+#print(b_str_total[min_time_idx])
 print("E_min = %f MeV, E_max = %f MeV"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
 resultsfile = "results_%s.txt"%sig
-results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]])
+results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n%s"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]],b_str_total[min_time_idx])
 with open(resultsfile,'a') as resfile:
     resfile.write(results+"\n")
