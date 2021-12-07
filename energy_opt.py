@@ -14,8 +14,6 @@ file = path + "/results_learn.csv"
 energy_file = path + "/energy_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
-# df = pd.read_csv(file)
-# df = df.set_index('Component')
 
 muon_eff = 0.95
 t_veto = 1
@@ -43,8 +41,6 @@ df_list = []
 
 for x in tqdm(E_lower, desc='Threshold Energy'):
     df_list_1 = []
-    #if progress/len(E_lower) % 0.05:
-    #    print("%f%%"%(100*progress/len(E_lower)))
 
     dwell_times_upper = []
     s_upper = []
@@ -92,8 +88,6 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
         d = {'components':components,'rates':rates}
         df_analysis = pd.DataFrame(data=d)
         df_analysis = df_analysis.set_index('components')
-        # df_analysis.loc["li9"] = df_analysis.loc["li9"]*R_li9_cor
-        # df_analysis.loc["n17"] = df_analysis.loc["n17"]*R_n17_cor
         s = 0
         b = 0
         f = 0
@@ -103,6 +97,9 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
         n17 = 0
         n17err = 0.002
         world = 0
+        hinkley_c = 0
+        sizewell_b = 0
+        gravelines = 0
         world_err = 0.06
         geo = 0
         geoerr = 0.25
@@ -111,11 +108,18 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
             s+=df_analysis.loc[i,'rates']
             b_str+="%s: %s per day\n"%(i,df_analysis.loc[i,'rates'])
         for k in background_components:
-            if k!="li9" and k!="n17" and k!="world" and k!="geo" and k!="fn":
-                b+=df_analysis.loc[k,'rates']
-            elif k=="world":
+            if k=="world":
                 b+=df_analysis.loc[k,'rates']
                 world+=df_analysis.loc[k,'rates']
+            elif k=="hinkley_c":
+                b+=df_analysis.loc[k,'rates']
+                hinkley_c+=df_analysis.loc[k,'rates']
+            elif k=="gravelines":
+                b+=df_analysis.loc[k,'rates']
+                gravelines+=df_analysis.loc[k,'rates']
+            elif k=="sizewell_b":
+                b+=df_analysis.loc[k,'rates']
+                sizewell_b+=df_analysis.loc[k,'rates']
             elif k=="geo":
                 b+=df_analysis.loc[k,'rates']
                 geo+=df_analysis.loc[k,'rates']
@@ -128,10 +132,11 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
             elif k=="n17":
                 b+=df_analysis.loc[k,'rates']
                 n17+=df_analysis.loc[k,'rates']
+            else:
+                b+=df_analysis.loc[k,'rates']
             b_str+="%s: %s per day\n"%(k,df_analysis.loc[k,'rates'])
         b_str_upper.append(b_str)
-
-        b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2)
+        b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2 + (world_err*hinkley_c)**2 + (world_err*gravelines)**2 + (world_err*sizewell_b)**2)
         if sig=='hartlepool' or sig=='hartlepool_1':
             t = np.arange(0.01,30,0.01)
             sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
@@ -169,7 +174,6 @@ df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy_"+sig+".csv",se
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
-#print(b_str_total[min_time_idx])
 print("E_min = %f MeV, E_max = %f MeV"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
 resultsfile = "results_%s.txt"%sig
 results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n%s"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]],b_str_total[min_time_idx])
