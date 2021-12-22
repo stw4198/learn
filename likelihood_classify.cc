@@ -173,7 +173,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
       double r_like = sig_like-bg_like;
       if(sig_like==0){continue;}
       else if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr) || (r_like<min_Lr)){
-        // printf("r_like = %f\nbg_like = %f\nsig_like = %f\n",r_like,bg_like,sig_like);
+        //printf("r_like = %f\nbg_like = %f\nsig_like = %f\n",r_like,bg_like,sig_like);
         x = t_in->GetLeaf("x")->GetValue(0);
         y = t_in->GetLeaf("y")->GetValue(0);
         z = t_in->GetLeaf("z")->GetValue(0);
