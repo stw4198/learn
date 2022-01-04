@@ -26,10 +26,10 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(0.5,3.25,0.25)
-E_upper = np.arange(3.5,8.25,0.25)
-#E_lower = np.arange(2,2.5,0.25)
-#E_upper = np.arange(4,4.5,0.25)
+#E_lower = np.arange(0.5,3.25,0.25)
+#E_upper = np.arange(3.5,8.25,0.25)
+E_lower = np.arange(2,2.25,0.25)
+E_upper = np.arange(4,4.25,0.25)
 dwell_times = []
 s_total = []
 b_total = []
@@ -179,3 +179,10 @@ resultsfile = "results_%s.txt"%sig
 results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n%s"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]],b_str_total[min_time_idx])
 with open(resultsfile,'a') as resfile:
     resfile.write(results+"\n")
+
+for i in range(len(signal_components)):
+    output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+signal_components[i]+"_classified.root",energy_file,path+"/"+signal_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
+        stdout=subprocess.PIPE,universal_newlines = True).stdout
+for i in range(len(background_components)):
+    output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+background_components[i]+"_classified.root",energy_file,path+"/"+background_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
+        stdout=subprocess.PIPE,universal_newlines = True).stdout
