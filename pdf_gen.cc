@@ -45,7 +45,7 @@ void pdf_gen(const char* file, const char* component, int nbins, int dTank, int 
     if (i%100000==0){
       printf("Generating PDFs: Event %d of %d\n",i,nentries);
     }
-    if (t->GetLeaf(nx)->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > -499) {
+    if (t->GetLeaf(nx)->GetValue(0) > 0 and t->GetLeaf("closestPMT")->GetValue(0) > -499){
 	    nkept++;
 	    nX->Fill(t->GetLeaf(nx)->GetValue(0));
 	    nX_prev->Fill(t->GetLeaf(nx_prev)->GetValue(0));

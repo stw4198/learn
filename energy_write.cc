@@ -7,7 +7,7 @@
 #include <TF1.h>
 #include <TH2.h>
 
-std::vector<double> energy(const char* infile, double e_lower, double e_upper, int code_in){
+std::vector<double> energy(const char* infile, const char* outfile, double e_lower, double e_upper, int code_in){
 
   double ecut = e_upper;
   double ecut2 = e_lower;
@@ -42,7 +42,18 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
   int subid,n100,mcid,mcid_2;
   double innerPE,mc_energy,code;
 
+  TFile *output = new TFile(outfile,"RECREATE");
+  TTree *data = new TTree("data","low-energy detector triggered events");
+  TTree *run_summary=new TTree("runSummary","mc run summary");
+
+  data->Branch("subid",&subid,"subid/I");
+  data->Branch("mcid",&mcid,"mcid/I");
+  data->Branch("n100",&n100,"n100/I");
+  data->Branch("mc_energy",&mc_energy,"mc_energy/D");
+  data->Branch("innerPE",&innerPE,"innerPE/D");
+
   int removed = 0;
+  int kept = 0;
 
   for(int i=1; i<nentries_all; i++){ //loops all values, not singles code value
       t_in->GetEntry(i-1);
@@ -59,10 +70,19 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
           removed++;
           if(subid==1 && mcid==mcid_2){
               removed++;
+              i+=1;
           }
       }
+      else if (code==code_in){
+      kept+=1;
+      data->Fill();
+      }
   }
+  output->cd();
+  data->Write();
+  output->Close();
   printf("Removed %i out of %i entries\n",removed,nentries);
+  printf("Kept %i out of %i entries\n",kept,nentries);
   energy_cut.clear();
   energy_cut.push_back(removed);
   energy_cut.push_back(nentries);
@@ -72,9 +92,10 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
 int main(int argc, char** argv){
 
   const char* infile = argv[1];
-  double e_lower = std::stod(argv[2]);
-  double e_upper = std::stod(argv[3]);
-  int code_in = std::stoi(argv[4]);
-  std::vector<double> energy_cut = energy(infile,e_lower,e_upper,code_in);
+  const char* outfile = argv[2];
+  double e_lower = std::stod(argv[3]);
+  double e_upper = std::stod(argv[4]);
+  int code_in = std::stoi(argv[5]);
+  std::vector<double> energy_cut = energy(infile,outfile,e_lower,e_upper,code_in);
 
 }

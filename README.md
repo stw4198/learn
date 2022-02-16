@@ -50,7 +50,7 @@ learn --like -f [input file] -c [component]
 
 4) Evaluating likelihoods and rates:
 ```bash
-learn --eval -f [input file] -c [component name]
+learn --eval -f [input file] -c [component]
 ```
 
 5) Data reduction and fast neutron handling:

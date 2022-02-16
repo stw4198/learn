@@ -89,6 +89,87 @@ void merge_PDFs(const char* sig){
     background.push_back("world");
     //background.push_back("fn");
   }
+  else if(strncmp(sig, "heysham_2_2028",strlen(sig))==0){
+    signal.push_back("heysham_2");
+    background.push_back("torness_full");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "heytor_2028",strlen(sig))==0){
+    signal.push_back("heysham_2");
+    signal.push_back("torness_full");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "hinkley_c",strlen(sig))==0){
+    signal.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "sizewell_b",strlen(sig))==0){
+    signal.push_back("sizewell_b");
+    background.push_back("hinkley_c");
+    background.push_back("gravelines");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "gravelines",strlen(sig))==0){
+    signal.push_back("gravelines");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "PWR",strlen(sig))==0){
+    signal.push_back("gravelines");
+    signal.push_back("hinkley_c");
+    signal.push_back("sizewell_b");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "gravhink",strlen(sig))==0){
+    signal.push_back("gravelines");
+    signal.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world_2028");
+    //background.push_back("fn");
+  }
     
   double signal_rate = 0;
   double background_rate = 0;

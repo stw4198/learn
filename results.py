@@ -28,8 +28,7 @@ def results_csv(file, component,tank,kept,MC,rate):
             df[key_2_MC] = ""
             df[key_2_kept] = ""
             df[key_2_rate] = ""
-
-        if df['Component'].str.contains(component).any():
+        if df.isin({'Component':[component]}).any().any():
             print("%s found\n\n"%component)
         else:
             print("%s not found\n\n"%component)

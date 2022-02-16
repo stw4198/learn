@@ -104,12 +104,12 @@ int main(int argc, char** argv){
   }
   
   else if(!strcmp(function,"--help")){
-    printf("\nWelcome to LEARN (Likelihood Event Analysis of Reactor Neutrinos)\n\n\n");
+    printf("\nWelcome to LEARN (Likelihood Event Analysis for Reactor Neutrinos)\n\n\n");
     printf("There are several stages to this analysis\n\n");
     printf("1) Creating PDFs\nDo learn --pdf -f [input file] -c [component]\n\n");
     printf("2) Scaling and merging PDFs\nDo learn --merge -s [signal]\n\n");
     printf("3) Creating likelihoods\nDo learn --like -f [input file] -c [component]\n\n");
-    printf("4) Evaluating likelihoods and rates\nDo learn --eval -f [input file] -c [component name]\n\n");
+    printf("4) Evaluating likelihoods and rates\nDo learn --eval -f [input file] -c [component]\n\n");
     printf("5) Data reduction\nNot currently integrated into LEARN\n\n");
     printf("6 (1)) Evaluating dwell times (energy cut)\nDo learn --energy -s [signal]\n\n");
     printf("6 (2)) Evaluating dwell times (no energy cut)\nDo learn --veto -s [signal]\n\n");

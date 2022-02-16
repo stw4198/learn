@@ -2,6 +2,11 @@
 
 std::vector<double> likehood_classify(const char* infile, const char* component, std::string x_win){
 
+  std::ofstream mc_csvfile;
+  mc_csvfile.open ("learn_classfified.csv",std::ofstream::trunc);
+  mc_csvfile << "mcid, subid, mc_energy, Lr\n";
+  //mc_csvfile << "entry, n100, n100_prev, dt, dr, closestPMT, subid, mcid, Lr\n";
+
   //std::string x_win = "100";
   TString nx = "n" + x_win;
   TString nx_prev = nx + "_prev";
@@ -140,7 +145,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
     if (i%100000==0){
       printf("Evaluating likelihoods: Event %d of %d\n",i,nentries);
     }
-    if (t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > -499) {
+    if (t_in->GetLeaf("n100")->GetValue(0) > 0 && t_in->GetLeaf("closestPMT")->GetValue(0) > -499){
       double nX_sig_bin = nX_signal->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
       double nX_sig_prob = nX_signal->GetBinContent(nX_sig_bin);
       double nX_bg_bin = nX_background->GetXaxis()->FindBin(t_in->GetLeaf(nx)->GetValue(0));
@@ -171,9 +176,10 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
       {if( std::isinf(sig_like) == true){sig_like=0;}else{}}
       {if( std::isinf(bg_like) == true){bg_like=0;}else{}}
       double r_like = sig_like-bg_like;
+      //mc_csvfile << i << "," << t_in->GetLeaf(nx)->GetValue(0) << "," << t_in->GetLeaf(nx_prev)->GetValue(0) << "," << t_in->GetLeaf("dt_prev_us")->GetValue(0) << "," << t_in->GetLeaf("drPrevr")->GetValue(0) << "," << t_in->GetLeaf("closestPMT")->GetValue(0) << "," << subid << "," << mcid << "," << r_like << "\n";
       if(sig_like==0){continue;}
       else if((sig_like != 0 && bg_like == 0) || (r_like>max_Lr) || (r_like<min_Lr)){
-        // printf("r_like = %f\nbg_like = %f\nsig_like = %f\n",r_like,bg_like,sig_like);
+        //printf("r_like = %f\nbg_like = %f\nsig_like = %f\n",r_like,bg_like,sig_like);
         x = t_in->GetLeaf("x")->GetValue(0);
         y = t_in->GetLeaf("y")->GetValue(0);
         z = t_in->GetLeaf("z")->GetValue(0);
@@ -185,7 +191,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
         n9 = t_in->GetLeaf("n9")->GetValue(0);
         n9_prev = t_in->GetLeaf("n9_prev")->GetValue(0);
         n100 = t_in->GetLeaf("n100")->GetValue(0);
-        n100_prev = t_in->GetLeaf("n100")->GetValue(0);
+        n100_prev = t_in->GetLeaf("n100_prev")->GetValue(0);
         nOff = t_in->GetLeaf("nOff")->GetValue(0);
         good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
         good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
@@ -211,6 +217,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
         subid = t_in->GetLeaf("subid")->GetValue(0);
         mcid = t_in->GetLeaf("mcid")->GetValue(0);
         data->Fill();
+        mc_csvfile << mcid << "," << subid << "," << mc_energy << "," << r_like << "\n";
         t_in->GetEntry(i-1);
         mcid2 = t_in->GetLeaf("mcid")->GetValue(0);
         subid2 = t_in->GetLeaf("subid")->GetValue(0);
@@ -226,7 +233,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
           n9 = t_in->GetLeaf("n9")->GetValue(0);
           n9_prev = t_in->GetLeaf("n9_prev")->GetValue(0);
           n100 = t_in->GetLeaf("n100")->GetValue(0);
-          n100_prev = t_in->GetLeaf("n100")->GetValue(0);
+          n100_prev = t_in->GetLeaf("n100_prev")->GetValue(0);
           nOff = t_in->GetLeaf("nOff")->GetValue(0);
           good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
           good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
@@ -252,6 +259,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
           subid = t_in->GetLeaf("subid")->GetValue(0);
           mcid = t_in->GetLeaf("mcid")->GetValue(0);
           data->Fill();
+          i+=1;
+          mc_csvfile << mcid << "," << subid << "," << mc_energy << "," << r_like << "\n";
         }
       }
       else{
@@ -266,7 +275,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
   run_summary->Write();
   singles_like->Close();
   f->Close();
-  
+  mc_csvfile.close();
+
   std::vector<std::string> components;
   std::vector<double> rates;
   std::vector<std::string> line_values;
