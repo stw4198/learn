@@ -5,18 +5,32 @@ import uproot
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, roc_curve, roc_auc_score, confusion_matrix, auc
 import joblib
 import sys
-import os.path
 import glob
 import readline
 import shutil
+try:
+    import ROOT
+except:
+    print("Please source thisroot.sh")
+    exit()
+from array import array
+from tqdm import tqdm
+import os
+sys.path.insert(1, os.path.dirname(os.path.realpath(__file__))+"/../")
+from sig_choice import sig_choice,sig_dict
+from mlparser import mlparser
 
 #load the model
-clf_route = sys.argv[1]#input('\n\n Enter path to the classifier to begin: \n\n')
+clf_route = 'fn_finder.sav'
 clf = joblib.load(clf_route)
 #load the validation data
-input = sys.argv[2]+"/*.root" #input('\n\nEnter the path to the validation data directory.\n\n *** End the file path with "/*.root ***.\n\n')
+input = sys.argv[1]+"/*.root"
 location = os.path.join(input)
 filenames = sorted(glob.glob(location))
+
+sig = sys.argv[2]
+tank = int(sys.argv[3])
+
 d = {}
 z = {}
 
@@ -36,37 +50,37 @@ for f in filenames:
 for x, y in d.items():
   if (x == 'fn'):
     y['label'] = 1
-    y['source'] = 1
+    y['source'] = sig_dict['fn']
   elif (x == 'geo'):
     y['label'] = 0
-    y['source'] = 2
+    y['source'] = sig_dict['geo']
   elif (x == 'heysham'):
     y['label'] = 0
-    y['source'] = 3
+    y['source'] = sig_dict['heysham_2']
   elif (x == 'hinkley'):
     y['label'] = 0
-    y['source'] = 4
+    y['source'] = sig_dict['hinkley_c']
   elif (x == 'sizewell'):
     y['label'] = 0
-    y['source'] = 5
+    y['source'] = sig_dict['sizewell_b']
   elif (x == 'gravelines'):
     y['label'] = 0
-    y['source'] = 6
+    y['source'] = sig_dict['gravelines']
   elif (x == 'li9'):
     y['label'] = 0
-    y['source'] = 7
+    y['source'] = sig_dict['li9']
   elif (x == 'n17'):
     y['label'] = 0
-    y['source'] = 8
+    y['source'] = sig_dict['n17']
   elif (x == 'torness'):
     y['label'] = 0
-    y['source'] = 9
+    y['source'] = sig_dict['torness']
   elif (x == 'world'):
     y['label'] = 0
-    y['source'] = 10
+    y['source'] = sig_dict['world']
   elif (x == 'energy'):
     y['label'] = 0
-    y['source'] = 11
+    y['source'] = sig_dict['energy']
   else:
     print('Please rename your root files!')
     sys.exit()
@@ -142,34 +156,7 @@ X.loc[:,'prob_fn'] = prob[:,1]
 X.loc[:,'prob_other'] = prob[:,0]
 for i in ext_var:
   X.loc[:,i] = Z[i]
-# X_dup = X[X.duplicated(keep=False)]
-# X_dup = X_dup.iloc[::2,:]
-# X = pd.concat([X, X_dup, X_dup]).drop_duplicates(keep=False)
-# X = pd.concat([X,X_dup],ignore_index=False)
-# X = X.sort_index()
 print ('Added ML data:\n\n',X, '\n\n')
-print('Outputting X to a csv...\n\n')
+print('Outputting ML data to classified_valdata.csv...\n\n')
 X.to_csv('classified_valdata.csv')
-
-# df1 = X.loc[X.source==1]
-# df2 = X.loc[X.source==2]
-# df3 = X.loc[X.source==3]
-# df4 = X.loc[X.source==4]
-# df5 = X.loc[X.source==5]
-# df6 = X.loc[X.source==6]
-# df7 = X.loc[X.source==7]
-# df8 = X.loc[X.source==8]
-# df9 = X.loc[X.source==9]
-# df10 = X.loc[X.source==10]
-# df11 = X.loc[X.source==11]
-# print('Copying and updating ROOT files...\n\n')
-# d1 = [df1,df2,df3,df4,df5,df6,df7,df8,df9,df10]
-# for df in d1:
-#   df = df.drop(['source', 'label'], axis=1)
-#   for file in filenames:
-#     fil = shutil.copy(file, os.getcwd())
-#     with uproot.update(fil) as f3:
-#       f3.mktree("M",{"prediction":"i8","score":"f8","fn_prob":"f8","other_prob":"f8"} ,"ML_data")
-#       f3["M"].extend({"prediction":df.loc[:,"classifier"], "score":df.loc[:,"scores"], "fn_prob":df.loc[:,"prob_fn"], "other_prob":df.loc[:,"prob_other"]})
-
-# print ('END')
+mlparser('classified_valdata.csv',sig,tank)
