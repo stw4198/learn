@@ -34,3 +34,4 @@ clean:
 	$(RM) energy
 	$(RM) energy_write
 	$(RM) -r __pycache__
+	$(RM) -r MLEARN/__pycache__
