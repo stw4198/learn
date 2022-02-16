@@ -19,7 +19,7 @@ tank = sys.argv[3]
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(1)
 
-def mlparser(file,sig,tank):
+def mlparser(file,learn_file,sig,tank):
     df = pd.read_csv(file)
     f = ROOT.TFile("ML_classified.root", "RECREATE")
     tree = ROOT.TTree("data", "ML Classified Data")
@@ -325,7 +325,7 @@ def mlparser(file,sig,tank):
     components = signal_components+background_components
 
     #tank = 22
-    learn_file = 'results_learn.csv'
+    #learn_file = 'results_learn.csv'
     df = pd.read_csv(learn_file)
     df = df.set_index('Component')
 

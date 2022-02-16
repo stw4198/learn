@@ -7,24 +7,17 @@
 #include <TF1.h>
 #include <TH2.h>
 
-std::vector<double> energy_write(const char* infile, const char* fitfile, const char* outfile, double e_lower, double e_upper){
+std::vector<double> energy(const char* infile, const char* outfile, double e_lower, double e_upper, int code_in){
 
   double ecut = e_upper;
   double ecut2 = e_lower;
   std::vector<double> energy_cut;
 
+  // energy_cut.push_back(0);
+  // energy_cut.push_back(0);
+
   gROOT->SetBatch(kTRUE);
   gROOT->ProcessLine( "gErrorIgnoreLevel = 1001;");
-
-  TFile *ffit = new TFile(fitfile);
-  if(!ffit->IsOpen()){
-    printf("File %s does not exist.\n",fitfile);
-    energy_cut.push_back(0);
-    energy_cut.push_back(0);
-    printf("Removed 0 out of 0 entries\n");
-    return(energy_cut);
-  }
-  TTree *tfit = (TTree*)ffit->Get("data");
 
   TFile *f = new TFile(infile);
   if(!f->IsOpen()){
@@ -35,26 +28,19 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
     return(energy_cut);
   }
   TTree *t_in = (TTree*)f->Get("data");
-  TTree *run = (TTree*)f->Get("runSummary");
 
-  int nentries = t_in->GetEntries();
+  const char* code_str = Form("code==%i",code_in);
+  int nentries = t_in->GetEntries(code_str);
+  int nentries_all = t_in->GetEntries();
   if (nentries==0){
       energy_cut.push_back(0);
       energy_cut.push_back(0);
       printf("Removed 0 out of %i entries\n",nentries);
       return(energy_cut);
   }
-
-  tfit->Draw("mc_energy:n100>>prompt","subid == 0 && mc_energy>1");
-  TH1 *prompt = (TH1*)gDirectory->Get("prompt");
-  prompt->Fit("pol1","Q");
-  TF1 *fitresult = prompt->GetFunction("pol1");
-  double p0 = fitresult->GetParameter(0);
-  double p1 = fitresult->GetParameter(1);
-  
+  //printf("There are %i entries\n",nentries);
   int subid,n100,mcid,mcid_2;
-  double E,mc_energy,innerPE;
-  int nevents;
+  double innerPE,mc_energy,code;
 
   TFile *output = new TFile(outfile,"RECREATE");
   TTree *data = new TTree("data","low-energy detector triggered events");
@@ -65,44 +51,38 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
   data->Branch("n100",&n100,"n100/I");
   data->Branch("mc_energy",&mc_energy,"mc_energy/D");
   data->Branch("innerPE",&innerPE,"innerPE/D");
-  run_summary->Branch("nevents",&nevents,"nevents/I");
 
   int removed = 0;
+  int kept = 0;
 
-  for(int i=1; i<nentries; i++){
+  for(int i=1; i<nentries_all; i++){ //loops all values, not singles code value
       t_in->GetEntry(i-1);
       subid = t_in->GetLeaf("subid")->GetValue(0);
       mcid = t_in->GetLeaf("mcid")->GetValue(0);
       n100 = t_in->GetLeaf("n100")->GetValue(0);
-      innerPE = t_in->GetLeaf("innerPE")->GetValue(0);
       mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
-      E = p0 + p1*n100;
+      innerPE = t_in->GetLeaf("innerPE")->GetValue(0);
+      code = t_in->GetLeaf("code")->GetValue(0);
       t_in->GetEntry(i);
-      if(E>100){
-          subid = t_in->GetLeaf("subid")->GetValue(0);
-          mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
-          removed++;
-      }
-      else if((E>ecut or E<ecut2) && subid==0){
+      if((n100>ecut or n100<ecut2) && subid==0 && code==code_in){
           subid = t_in->GetLeaf("subid")->GetValue(0);
           mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
           removed++;
           if(subid==1 && mcid==mcid_2){
               removed++;
+              i+=1;
           }
       }
-      else{
-        data->Fill();
+      else if (code==code_in){
+      kept+=1;
+      data->Fill();
       }
   }
-  run->GetEntry(0);
-  nevents = run->GetLeaf("nevents")->GetValue();
   output->cd();
   data->Write();
-  run_summary->Fill();
-  run_summary->Write();
   output->Close();
-  printf("Removed %i out of %i entries\n",removed+1,nentries);
+  printf("Removed %i out of %i entries\n",removed,nentries);
+  printf("Kept %i out of %i entries\n",kept,nentries);
   energy_cut.clear();
   energy_cut.push_back(removed);
   energy_cut.push_back(nentries);
@@ -112,10 +92,10 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
 int main(int argc, char** argv){
 
   const char* infile = argv[1];
-  const char* fitfile = argv[2];
-  const char* outfile = argv[3];
-  double e_lower = std::stod(argv[4]);
-  double e_upper = std::stod(argv[5]);
-  std::vector<double> energy_cut = energy_write(infile,fitfile,outfile,e_lower,e_upper);
+  const char* outfile = argv[2];
+  double e_lower = std::stod(argv[3]);
+  double e_upper = std::stod(argv[4]);
+  int code_in = std::stoi(argv[5]);
+  std::vector<double> energy_cut = energy(infile,outfile,e_lower,e_upper,code_in);
 
 }
