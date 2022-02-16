@@ -53,7 +53,7 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
   double p1 = fitresult->GetParameter(1);
   
   int subid,n100,mcid,mcid_2;
-  double E,mc_energy;
+  double E,mc_energy,innerPE;
   int nevents;
 
   TFile *output = new TFile(outfile,"RECREATE");
@@ -61,7 +61,10 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
   TTree *run_summary=new TTree("runSummary","mc run summary");
 
   data->Branch("subid",&subid,"subid/I");
+  data->Branch("mcid",&mcid,"mcid/I");
+  data->Branch("n100",&n100,"n100/I");
   data->Branch("mc_energy",&mc_energy,"mc_energy/D");
+  data->Branch("innerPE",&innerPE,"innerPE/D");
   run_summary->Branch("nevents",&nevents,"nevents/I");
 
   int removed = 0;
@@ -71,6 +74,7 @@ std::vector<double> energy_write(const char* infile, const char* fitfile, const 
       subid = t_in->GetLeaf("subid")->GetValue(0);
       mcid = t_in->GetLeaf("mcid")->GetValue(0);
       n100 = t_in->GetLeaf("n100")->GetValue(0);
+      innerPE = t_in->GetLeaf("innerPE")->GetValue(0);
       mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
       E = p0 + p1*n100;
       t_in->GetEntry(i);

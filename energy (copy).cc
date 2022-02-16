@@ -7,7 +7,7 @@
 #include <TF1.h>
 #include <TH2.h>
 
-std::vector<double> energy(const char* infile, /*const char* fitfile,*/ double e_lower, double e_upper){
+std::vector<double> energy(const char* infile, const char* fitfile, double e_lower, double e_upper){
 
   double ecut = e_upper;
   double ecut2 = e_lower;
@@ -16,15 +16,15 @@ std::vector<double> energy(const char* infile, /*const char* fitfile,*/ double e
   gROOT->SetBatch(kTRUE);
   gROOT->ProcessLine( "gErrorIgnoreLevel = 1001;");
 
-  // TFile *ffit = new TFile(fitfile);
-  // if(!ffit->IsOpen()){
-  //   printf("File %s does not exist.\n",fitfile);
-  //   energy_cut.push_back(0);
-  //   energy_cut.push_back(0);
-  //   printf("Removed 0 out of 0 entries\n");
-  //   return(energy_cut);
-  // }
-  // TTree *tfit = (TTree*)ffit->Get("data");
+  TFile *ffit = new TFile(fitfile);
+  if(!ffit->IsOpen()){
+    printf("File %s does not exist.\n",fitfile);
+    energy_cut.push_back(0);
+    energy_cut.push_back(0);
+    printf("Removed 0 out of 0 entries\n");
+    return(energy_cut);
+  }
+  TTree *tfit = (TTree*)ffit->Get("data");
 
   TFile *f = new TFile(infile);
   if(!f->IsOpen()){
@@ -45,15 +45,15 @@ std::vector<double> energy(const char* infile, /*const char* fitfile,*/ double e
       return(energy_cut);
   }
 
-  // tfit->Draw("mc_energy:n100>>prompt","subid == 0 && mc_energy>1");
-  // TH1 *prompt = (TH1*)gDirectory->Get("prompt");
-  // prompt->Fit("pol1","Q");
-  // TF1 *fitresult = prompt->GetFunction("pol1");
-  // double p0 = fitresult->GetParameter(0);
-  // double p1 = fitresult->GetParameter(1);
+  tfit->Draw("mc_energy:n100>>prompt","subid == 0 && mc_energy>1");
+  TH1 *prompt = (TH1*)gDirectory->Get("prompt");
+  prompt->Fit("pol1","Q");
+  TF1 *fitresult = prompt->GetFunction("pol1");
+  double p0 = fitresult->GetParameter(0);
+  double p1 = fitresult->GetParameter(1);
   
   int subid,n100,mcid,mcid_2;
-  double innerPE,mc_energy;
+  double E,mc_energy;
 
   int removed = 0;
 
@@ -63,15 +63,14 @@ std::vector<double> energy(const char* infile, /*const char* fitfile,*/ double e
       mcid = t_in->GetLeaf("mcid")->GetValue(0);
       n100 = t_in->GetLeaf("n100")->GetValue(0);
       mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
-      innerPE = t_in->GetLeaf("n100")->GetValue(0);
-      //E = p0 + p1*n100;
+      E = p0 + p1*n100;
       t_in->GetEntry(i);
-      // if(E>100){
-      //     subid = t_in->GetLeaf("subid")->GetValue(0);
-      //     mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
-      //     removed++;
-      // }
-      if((innerPE>ecut or innerPE<ecut2) && subid==0){
+      if(E>100){
+          subid = t_in->GetLeaf("subid")->GetValue(0);
+          mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
+          removed++;
+      }
+      else if((E>ecut or E<ecut2) && subid==0){
           subid = t_in->GetLeaf("subid")->GetValue(0);
           mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
           removed++;
@@ -90,9 +89,9 @@ std::vector<double> energy(const char* infile, /*const char* fitfile,*/ double e
 int main(int argc, char** argv){
 
   const char* infile = argv[1];
-  //const char* fitfile = argv[2];
-  double e_lower = std::stod(argv[2]);
-  double e_upper = std::stod(argv[3]);
-  std::vector<double> energy_cut = energy(infile,/*fitfile,*/e_lower,e_upper);
+  const char* fitfile = argv[2];
+  double e_lower = std::stod(argv[3]);
+  double e_upper = std::stod(argv[4]);
+  std::vector<double> energy_cut = energy(infile,fitfile,e_lower,e_upper);
 
 }

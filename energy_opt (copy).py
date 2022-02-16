@@ -11,7 +11,7 @@ path = sys.argv[1]
 tank = int(sys.argv[2])
 sig = sys.argv[3]
 file = path + "/results_learn.csv"
-#energy_file = path + "/energy_classified.root" #Need to create a better name/system
+energy_file = path + "/energy_classified.root" #Need to create a better name/system
 
 components,other,signal_components,background_components,radio = sig_choice(sig)
 
@@ -26,10 +26,8 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(0,30,10)
-E_upper = np.arange(10,200,10)
-#E_lower = np.arange(0.5,3.25,0.25)
-#E_upper = np.arange(3.5,8.25,0.25)
+E_lower = np.arange(0.5,3.25,0.25)
+E_upper = np.arange(3.5,8.25,0.25)
 #E_lower = np.arange(2,2.25,0.25)
 #E_upper = np.arange(4,4.25,0.25)
 dwell_times = []
@@ -56,13 +54,13 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
         sig_output_total = []
 
         for i in range(len(signal_components)):
-            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+signal_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+signal_components[i]+"_classified.root",energy_file,str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
             df.loc[signal_components[i],str(tank)+" kept"]=int(output.split()[4])-int(output.split()[1])
         for i in range(len(background_components)):
-            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+background_components[i]+"_classified.root",str(x),str(y)],\
+            output = subprocess.run([os.path.dirname(__file__)+"/energy",path+"/"+background_components[i]+"_classified.root",energy_file,str(x),str(y)],\
                 stdout=subprocess.PIPE,universal_newlines = True).stdout
             sig_output_removed.append(int(output.split()[1]))
             sig_output_total.append(int(output.split()[4]))
@@ -74,19 +72,18 @@ for x in tqdm(E_lower, desc='Threshold Energy'):
             if i == 'fn':
                 if df.loc[i,"%i kept"%tank] == 0: #Need to implement proper FN handling when ML and beta ready
                     df.loc[i,"%i kept"%tank]=fn_cl
-                #rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
-                rates.append(287*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400*0.07/df.loc[i,'%i MC'%tank])
             elif i == 'li9':
                 df.loc[i,"%i kept"%tank]=df.loc[i,"%i kept"%tank]*R_li9_cor
-                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400*0.93/df.loc[i,'%i MC'%tank])
             elif i == 'n17':
                 df.loc[i,"%i kept"%tank]=df.loc[i,"%i kept"%tank]*R_n17_cor
-                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+                rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400*0.93/df.loc[i,'%i MC'%tank])
             else:
                 if df.loc[i,"%i kept"%tank]==0 or df.loc[i,'%i rate'%tank]==0 or df.loc[i,'%i MC'%tank]==0:
                     rates.append(0)
                 else:
-                    rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400/df.loc[i,'%i MC'%tank])
+                    rates.append(df.loc[i,"%i kept"%tank]*df.loc[i,'%i rate'%tank]*86400*0.93/df.loc[i,'%i MC'%tank])
         df_list_1.append(df)
         d = {'components':components,'rates':rates}
         df_analysis = pd.DataFrame(data=d)
@@ -177,15 +174,15 @@ df_list[min_time_idx[0]][min_time_idx[1]].to_csv("results_energy_"+sig+".csv",se
 print("Dwell time = %f days"%dwell_times[min_time_idx])
 print("Signal rate =",s_total[min_time_idx],"per day")
 print("Background =",b_total[min_time_idx],"+/-",b_err_total[min_time_idx],"per day")
-print("PE_min = %f, PE_max = %f"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
+print("E_min = %f MeV, E_max = %f MeV"%(E_lower[min_time_idx[0]],E_upper[min_time_idx[1]]))
 resultsfile = "results_%s.txt"%sig
 results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBackground rate = %.5f +/- %.5f per day\nE_min = %.3f MeV\nE_max = %.3f MeV\n%s"%(sig,dwell_times[min_time_idx],s_total[min_time_idx],b_total[min_time_idx],b_err_total[min_time_idx],E_lower[min_time_idx[0]],E_upper[min_time_idx[1]],b_str_total[min_time_idx])
 with open(resultsfile,'a') as resfile:
     resfile.write(results+"\n")
 
-# for i in range(len(signal_components)):
-#     output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+signal_components[i]+"_classified.root",energy_file,path+"/"+signal_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
-#         stdout=subprocess.PIPE,universal_newlines = True).stdout
-# for i in range(len(background_components)):
-#     output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+background_components[i]+"_classified.root",energy_file,path+"/"+background_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
-#         stdout=subprocess.PIPE,universal_newlines = True).stdout
+for i in range(len(signal_components)):
+    output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+signal_components[i]+"_classified.root",energy_file,path+"/"+signal_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
+        stdout=subprocess.PIPE,universal_newlines = True).stdout
+for i in range(len(background_components)):
+    output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+background_components[i]+"_classified.root",energy_file,path+"/"+background_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
+        stdout=subprocess.PIPE,universal_newlines = True).stdout
