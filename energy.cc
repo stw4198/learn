@@ -59,6 +59,7 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
           removed++;
           if(subid==1 && mcid==mcid_2){
               removed++;
+              i+=1;
           }
       }
   }
