@@ -21,7 +21,10 @@ from sig_choice import sig_choice,sig_dict
 from mlparser import mlparser
 
 #load the model
-clf_route = 'fn_finder.sav'
+try:
+  clf_route = 'fn_finder.sav'
+except:
+  exit()
 clf = joblib.load(clf_route)
 #load the validation data
 input = sys.argv[1]+"/*.root"

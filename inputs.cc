@@ -12,7 +12,7 @@ std::vector<const char*> input_select(int argc,char** argv)
     std::vector<const char*> in;
 
     // input options
-    std::vector<const char*> functions = {"--help","--pdf","--merge","--like","--eval","--energy","--veto"};
+    std::vector<const char*> functions = {"--help","--pdf","--merge","--like","--eval","--energy","--veto","--mltrain","--mlval"};
     std::vector<const char*> input_options = {"file","component","signal","rPMT","dTank","nbins","nX","file path"};
     std::vector<const char*> input_flags = {"-f","-c","-s","-rpmt","-dtank","-nbins","-nx","-path"};
     const char* file = ""; const char* component = ""; const char* signal = "";
