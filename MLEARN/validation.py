@@ -24,6 +24,7 @@ from mlparser import mlparser
 try:
   clf_route = 'fn_finder.sav'
 except:
+  print("Can not find fn_finder.sav. Exiting.")
   exit()
 clf = joblib.load(clf_route)
 #load the validation data

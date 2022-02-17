@@ -108,19 +108,21 @@ int main(int argc, char** argv){
     //   printf("No signal. Please specify with -s [signal]\n");
     //   return -1;
     // }
-    printf("\nTraining AdaBoost for fast neutrons. Insert options\n\n\n");
+    printf("\nTraining AdaBoost for fast neutrons.\n\n\n");
     //call ml training
     const char* command = Form("python3 %s/MLEARN/fn_finder.py %s",path,file_path);
     std::system (command);
   }
 
   else if(!strcmp(function,"--mlval")){
-    // if(!strcmp(signal,"")){
-    //   printf("No signal. Please specify with -s [signal]\n");
-    //   return -1;
-    // }
-    printf("\nApplying AdaBoost for fast neutron classification. Insert options\n\n\n");
-    //call ml training
+    if(!strcmp(signal,"")){
+      printf("No signal. Please specify with -s [signal]\n");
+      return -1;
+    }
+    printf("\nApplying AdaBoost for fast neutron classification.\n\n\n");
+    //call ml validation
+    const char* command = Form("python3 %s/MLEARN/validation.py %s %s %s",path,file_path,signal,dTank);
+    std::system (command);
   }
   
   else if(!strcmp(function,"--help")){
