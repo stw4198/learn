@@ -22,10 +22,7 @@ from mlparser import mlparser
 
 #load the validation data
 input = sys.argv[1]
-try:
-  sig = sys.argv[2]
-except:
-  sig = "heysham_2"
+sig = sys.argv[2]
 tank = int(sys.argv[3])
 try:
   bg = sys.argv[4]

@@ -14,10 +14,7 @@ import readline
 import uproot
 
 input = sys.argv[1]#+"/*.root"#input('Enter the path to the training data directory.\n End the file path with "/*.root".\n')
-try:
-  sig = sys.argv[2]
-except:
-  sig = "heysham_2"
+sig = sys.argv[2]
 try:
   bg = sys.argv[3]
 except:
@@ -60,20 +57,16 @@ ydf = X[['label']]
 y = ydf.to_numpy()
 y = y.flatten()
 X = X.drop(['label'], axis=1)
-print('Data:')
-print(X)
-print('Labels:')
-print(y)
 train_X, test_X, train_y, test_y = train_test_split(X, y, stratify=y)
 clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2),
                                 n_estimators=100, learning_rate=0.1)
-print('Fitting your classifier...')
+print('Fitting classifier...')
 clf.fit(train_X.values, train_y)
 pred = clf.predict(test_X.values)
 prob = clf.predict_proba(test_X.values)
 scores = clf.decision_function(test_X.values)
 
-print('Saving your classifier...')
+print('Saving classifier...')
 clf_file = bg+'_finder.sav'
 joblib.dump(clf, clf_file)
 

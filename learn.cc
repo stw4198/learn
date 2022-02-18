@@ -104,13 +104,14 @@ int main(int argc, char** argv){
   }
 
   else if(!strcmp(function,"--mltrain")){
-    // if(!strcmp(signal,"")){
-    //   printf("No signal. Please specify with -s [signal]\n");
-    //   return -1;
-    // }
+    if(!strcmp(signal,"")){
+      printf("No signal. Please specify with -s [signal]\n");
+      return -1;
+    }
     printf("\nTraining AdaBoost for fast neutrons.\n\n\n");
     //call ml training
-    const char* command = Form("python3 %s/MLEARN/fn_finder.py %s",path,file_path);
+    const char* bg = "fn";
+    const char* command = Form("python3 %s/MLEARN/fn_finder.py %s %s %s",path,file_path,signal,bg);
     std::system (command);
   }
 
@@ -121,7 +122,8 @@ int main(int argc, char** argv){
     }
     printf("\nApplying AdaBoost for fast neutron classification.\n\n\n");
     //call ml validation
-    const char* command = Form("python3 %s/MLEARN/validation.py %s %s %s",path,file_path,signal,dTank);
+    const char* bg = "fn";
+    const char* command = Form("python3 %s/MLEARN/validation.py %s %s %s %s",path,file_path,signal,dTank,bg);
     std::system (command);
   }
   
