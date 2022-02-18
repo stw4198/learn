@@ -13,9 +13,28 @@ import glob
 import readline
 import uproot
 
-input = sys.argv[1]+"/*.root"#input('Enter the path to the training data directory.\n End the file path with "/*.root".\n')
-location = os.path.join(input)
-filenames = glob.glob(location)
+input = sys.argv[1]#+"/*.root"#input('Enter the path to the training data directory.\n End the file path with "/*.root".\n')
+try:
+  sig = sys.argv[2]
+except:
+  sig = "heysham_2"
+try:
+  bg = sys.argv[3]
+except:
+  bg = "fn"
+filenames = []
+for file in glob.glob(input+"/"+sig+"*.root"):
+    filenames.append(file)
+for file in glob.glob(input+"/"+bg+"*.root"):
+    filenames.append(file)
+if len(filenames)<2:
+  print("Not enough files found to train. Found: %s"%filenames)
+  exit()
+#sig_file = input+"/"+sig+"_classified.root"
+#input+="/*.root"
+#location = os.path.join(input)
+#filenames = glob.glob(location)
+#print(input,filenames)
 d = {}
 
 var = ['n100','n100_prev','n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'good_pos', 'good_pos_prev', 'subid']
@@ -26,10 +45,11 @@ for f in filenames:
   with uproot.open(f) as f1:
     data = f1["data"]
     b, a = f.rsplit('/',1)
-    c, e = a.split('_',1)
+    c, e = a.split('_classified.root',1)
     d[c] = data.arrays(var,cond,library='pd')
 for x, y in d.items():
-  if (x == 'fn'):
+  print("Found:",x)
+  if (x == bg):
     y['label'] = 1
   else:
     y['label'] = 0
@@ -54,7 +74,7 @@ prob = clf.predict_proba(test_X.values)
 scores = clf.decision_function(test_X.values)
 
 print('Saving your classifier...')
-clf_file = 'fn_finder.sav'
+clf_file = bg+'_finder.sav'
 joblib.dump(clf, clf_file)
 
 cm= confusion_matrix(test_y, pred, labels=clf.classes_)
@@ -65,7 +85,7 @@ print(classification_report(test_y, pred))
 print('Creating Figures...')
 ConfusionMatrixDisplay.from_predictions(test_y, pred)
 plt.title("Fast Neutron finder, training")
-plt.savefig('cm_fnfinder_training.pdf')
+plt.savefig('cm_%sfinder_training.pdf'%bg)
 #plt.show(block=False)
 #plt.pause(3)
 plt.clf()
@@ -85,7 +105,7 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.legend(loc='best')
 plt.title('Fast Neutron finder, training')
-plt.savefig('roc_fnfinder_training.pdf')
+plt.savefig('roc_%sfinder_training.pdf'%bg)
 #plt.show(block=False)
 #plt.pause(3)
 plt.clf()
@@ -104,7 +124,7 @@ plt.title('Fast Neutron Finder scores, training')
 plt.legend(loc='best')
 plt.xlabel('Decision scores')
 plt.ylabel('Frequency (log)')
-plt.savefig('df_fnfinder_training.pdf')
+plt.savefig('df_%sfinder_training.pdf'%bg)
 #plt.show(block=False)
 #plt.pause(3)
 plt.clf()

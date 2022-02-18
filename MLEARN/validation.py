@@ -20,20 +20,42 @@ sys.path.insert(1, os.path.dirname(os.path.realpath(__file__))+"/../")
 from sig_choice import sig_choice,sig_dict
 from mlparser import mlparser
 
+#load the validation data
+input = sys.argv[1]
+try:
+  sig = sys.argv[2]
+except:
+  sig = "heysham_2"
+tank = int(sys.argv[3])
+try:
+  bg = sys.argv[4]
+except:
+  bg = "fn"
+
 #load the model
 try:
-  clf_route = 'fn_finder.sav'
+  clf_route = '%s_finder.sav'%bg
 except:
-  print("Can not find fn_finder.sav. Exiting.")
+  print("Can not find %s_finder.sav. Exiting."%bg)
   exit()
 clf = joblib.load(clf_route)
-#load the validation data
-input = sys.argv[1]+"/*.root"
-location = os.path.join(input)
-filenames = sorted(glob.glob(location))
 
-sig = sys.argv[2]
-tank = int(sys.argv[3])
+signal_components,background_components = sig_choice(sig)
+components = signal_components+background_components
+
+filenames = []
+for i in components:
+  for file in glob.glob(input+"/"+i+"*.root"):
+      filenames.append(file)
+# for file in glob.glob(input+"/"+bg+"*.root"):
+#     print("Found",file)
+#     filenames.append(file)
+#print(filenames)
+
+# input+="/*.root"
+# location = os.path.join(input)
+# filenames = sorted(glob.glob(location))
+# print(filenames)
 
 d = {}
 z = {}
@@ -46,25 +68,25 @@ for f in filenames:
   with uproot.open(f) as f1:
     data = f1["data"]
     b, a = f.rsplit('/',1)
-    c, e = a.split('_',1)
+    c, e = a.split('_classified.root',1)
     d[c] = data.arrays(var,cond,library='pd')
     z[c] = data.arrays(ext_var,cond,library='pd')
-    #d[c] = data.arrays(['n100', 'n100_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'good_pos', 'good_pos_prev','subid'], '(n100>0)&(n100_prev>0)',library='pd')
 
 for x, y in d.items():
+  print("Found:",x)
   if (x == 'fn'):
     y['label'] = 1
     y['source'] = sig_dict['fn']
   elif (x == 'geo'):
     y['label'] = 0
     y['source'] = sig_dict['geo']
-  elif (x == 'heysham'):
+  elif (x == 'heysham_2'):
     y['label'] = 0
     y['source'] = sig_dict['heysham_2']
-  elif (x == 'hinkley'):
+  elif (x == 'hinkley_c'):
     y['label'] = 0
     y['source'] = sig_dict['hinkley_c']
-  elif (x == 'sizewell'):
+  elif (x == 'sizewell_b'):
     y['label'] = 0
     y['source'] = sig_dict['sizewell_b']
   elif (x == 'gravelines'):
@@ -76,17 +98,17 @@ for x, y in d.items():
   elif (x == 'n17'):
     y['label'] = 0
     y['source'] = sig_dict['n17']
-  elif (x == 'torness'):
+  elif (x == 'torness_full'):
     y['label'] = 0
     y['source'] = sig_dict['torness']
-  elif (x == 'world'):
+  elif (x == 'world_2028'):
     y['label'] = 0
     y['source'] = sig_dict['world']
-  elif (x == 'energy'):
-    y['label'] = 0
-    y['source'] = sig_dict['energy']
+  # elif (x == 'energy'):
+  #   y['label'] = 0
+  #   y['source'] = sig_dict['energy']
   else:
-    print('Please rename your root files!')
+    print("%s not used, please move file"%x)
     sys.exit()
 
 #neutron model

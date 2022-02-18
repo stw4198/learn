@@ -53,14 +53,14 @@ def mlparser(file,learn_file,sig,tank):
     hartlepool_2_tot = hartlepool_2_keep = 0
     energy_tot = energy_keep = 0
 
-    for i in tqdm(range(len(df)-1),desc='Parsing %s'%file):
+    for i in tqdm(range(len(df)),desc='Parsing %s'%file):
         if df['source'][i]==sig_dict['fn']:
             fn_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 fn_keep+=1
@@ -76,13 +76,12 @@ def mlparser(file,learn_file,sig,tank):
             geo_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 geo_keep+=1
-                # df_geo = df_geo.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -95,13 +94,12 @@ def mlparser(file,learn_file,sig,tank):
             heysham_2_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 heysham_2_keep+=1
-                # df_hey = df_hey.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -114,13 +112,12 @@ def mlparser(file,learn_file,sig,tank):
             hinkley_c_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 hinkley_c_keep+=1
-                # df_hink = df_hink.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 subid[0] = df['subid'][i]
@@ -132,13 +129,12 @@ def mlparser(file,learn_file,sig,tank):
             sizewell_b_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 sizewell_b_keep+=1
-                # df_size = df_size.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -151,13 +147,12 @@ def mlparser(file,learn_file,sig,tank):
             gravelines_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 gravelines_keep+=1
-                # df_grav = df_grav.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -170,13 +165,12 @@ def mlparser(file,learn_file,sig,tank):
             li9_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 li9_keep+=1
-                # df_li9 = df_li9.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -189,13 +183,12 @@ def mlparser(file,learn_file,sig,tank):
             n17_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 n17_keep+=1
-                # df_n17 = df_n17.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -208,13 +201,12 @@ def mlparser(file,learn_file,sig,tank):
             torness_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1] and i<len(df):
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 torness_keep+=1
-                # df_tor = df_tor.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -227,13 +219,12 @@ def mlparser(file,learn_file,sig,tank):
             world_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 world_keep+=1
-                # df_world = df_world.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -246,13 +237,12 @@ def mlparser(file,learn_file,sig,tank):
             hartlepool_1_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 hartlepool_1_keep+=1
-                # df_hartlepool_1 = df_hartlepool_1.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -265,13 +255,12 @@ def mlparser(file,learn_file,sig,tank):
             hartlepool_2_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 hartlepool_2_keep+=1
-                # df_hartlepool_2 = df_hartlepool_2.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -284,13 +273,12 @@ def mlparser(file,learn_file,sig,tank):
             heysham_full_tot+=1
             if df['classifier'][i]==1:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1] and i>0:
+            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
                 continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
+            elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
                 continue
             else:
                 heysham_full_keep+=1
-                # df_heysham_full = df_heysham_full.append(df.loc[[i]])
                 mc_energy[0] = df['mc_energy'][i]
                 n100[0] = df['n100'][i]
                 n100_prev[0] = df['n100_prev'][i]
@@ -299,24 +287,24 @@ def mlparser(file,learn_file,sig,tank):
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
                 tree.Fill()
-        elif df['source'][i]==sig_dict['energy']:
-            energy_tot+=1
-            if df['classifier'][i]==1:
-                continue
-            elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
-                continue
-            elif df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
-                continue
-            else:
-                energy_keep+=1
-                mc_energy[0] = df['mc_energy'][i]
-                n100[0] = df['n100'][i]
-                n100_prev[0] = df['n100_prev'][i]
-                subid[0] = df['subid'][i]
-                mcid[0] = df['mcid'][i]
-                innerPE[0] = df['innerPE'][i]
-                code[0] = df['source'][i]
-                tree.Fill()
+        # elif df['source'][i]==sig_dict['energy']:
+        #     energy_tot+=1
+        #     if df['classifier'][i]==1:
+        #         continue
+        #     elif i>0 and df['classifier'][i]==0 and df['classifier'][i-1]==1 and df['mcid'][i]==df['mcid'][i-1]:
+        #         continue
+        #     elif i<len(df)-1 and df['classifier'][i]==0 and df['classifier'][i+1]==1 and df['mcid'][i]==df['mcid'][i+1]:
+        #         continue
+        #     else:
+        #         energy_keep+=1
+        #         mc_energy[0] = df['mc_energy'][i]
+        #         n100[0] = df['n100'][i]
+        #         n100_prev[0] = df['n100_prev'][i]
+        #         subid[0] = df['subid'][i]
+        #         mcid[0] = df['mcid'][i]
+        #         innerPE[0] = df['innerPE'][i]
+        #         code[0] = df['source'][i]
+        #         tree.Fill()
     tree.Write("data", ROOT.TObject.kOverwrite)
     f.Close()
 
@@ -352,3 +340,10 @@ def mlparser(file,learn_file,sig,tank):
     print(df)
     df.to_csv("results_ML.csv",sep=',',float_format='%.9e')
     return
+
+if __name__ == "__main__":
+    file = sys.argv[1]
+    learn_file = 'results_learn.csv'
+    sig = sys.argv[2]
+    tank = int(sys.argv[3])
+    mlparser(file,learn_file,sig,tank)

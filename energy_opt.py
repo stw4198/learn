@@ -171,12 +171,6 @@ results = "Signal = %s\nDwell time = %.3f days\nSignal rate = %.5f per day\nBack
 with open(resultsfile,'a') as resfile:
     resfile.write(results+"\n")
 
-# for i in range(len(signal_components)):
-#     output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+signal_components[i]+"_classified.root",path+"/"+signal_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
-#         stdout=subprocess.PIPE,universal_newlines = True).stdout
-# for i in range(len(background_components)):
-#     output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+background_components[i]+"_classified.root",path+"/"+background_components[i]+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]])],\
-#         stdout=subprocess.PIPE,universal_newlines = True).stdout
 for i in components:
     output = subprocess.run([os.path.dirname(__file__)+"/energy_write",path+"/"+"ML_classified.root",path+"/"+i+"_classified_energy.root",str(E_lower[min_time_idx[0]]),str(E_upper[min_time_idx[1]]),str(sig_dict[i])],\
         stdout=subprocess.PIPE,universal_newlines = True).stdout
