@@ -25,8 +25,8 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(23,25,1)
-E_upper = np.arange(63,65,1)
+E_lower = np.arange(0,5,1)
+E_upper = np.arange(102,106,1)
 dwell_times = []
 s_total = []
 b_total = []

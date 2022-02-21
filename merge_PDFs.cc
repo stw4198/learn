@@ -41,7 +41,25 @@ void merge_PDFs(const char* sig){
     signal.push_back("hartlepool_1");
     signal.push_back("hartlepool_2");
     background.push_back("heysham_full");
-    background.push_back("torness_full");
+    background.push_back("torness");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
+    background.push_back("singles");
+    background.push_back("n17");
+    background.push_back("li9");
+    background.push_back("geo");
+    background.push_back("world");
+    //background.push_back("fn");
+  }
+  else if(strncmp(sig, "hartlepool_1",strlen(sig))==0){
+    signal.push_back("hartlepool_1");
+    background.push_back("hartlepool_2");
+    background.push_back("heysham_full");
+    background.push_back("torness");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
     background.push_back("singles");
     background.push_back("n17");
     background.push_back("li9");
@@ -51,7 +69,10 @@ void merge_PDFs(const char* sig){
   }
   else if(strncmp(sig, "heysham_full",strlen(sig))==0){
     signal.push_back("heysham_full");
-    background.push_back("torness_full");
+    background.push_back("torness");
+    background.push_back("hinkley_c");
+    background.push_back("sizewell_b");
+    background.push_back("gravelines");
     background.push_back("singles");
     background.push_back("n17");
     background.push_back("li9");
@@ -61,37 +82,7 @@ void merge_PDFs(const char* sig){
   }
   else if(strncmp(sig, "heysham_2",strlen(sig))==0){
     signal.push_back("heysham_2");
-    background.push_back("torness_full");
-    background.push_back("singles");
-    background.push_back("n17");
-    background.push_back("li9");
-    background.push_back("geo");
-    background.push_back("world");
-    //background.push_back("fn");
-  }
-  else if(strncmp(sig, "torness_full",strlen(sig))==0){
-    signal.push_back("torness_full");
-    background.push_back("heysham_2");
-    background.push_back("singles");
-    background.push_back("n17");
-    background.push_back("li9");
-    background.push_back("geo");
-    background.push_back("world");
-    //background.push_back("fn");
-  }
-  else if(strncmp(sig, "hey_tor",strlen(sig))==0){
-    signal.push_back("torness_full");
-    signal.push_back("heysham_2");
-    background.push_back("singles");
-    background.push_back("n17");
-    background.push_back("li9");
-    background.push_back("geo");
-    background.push_back("world");
-    //background.push_back("fn");
-  }
-  else if(strncmp(sig, "heysham_2_2028",strlen(sig))==0){
-    signal.push_back("heysham_2");
-    background.push_back("torness_full");
+    background.push_back("torness");
     background.push_back("hinkley_c");
     background.push_back("sizewell_b");
     background.push_back("gravelines");
@@ -99,12 +90,12 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
-  else if(strncmp(sig, "heytor_2028",strlen(sig))==0){
+  else if(strncmp(sig, "heytor",strlen(sig))==0){
     signal.push_back("heysham_2");
-    signal.push_back("torness_full");
+    signal.push_back("torness");
     background.push_back("hinkley_c");
     background.push_back("sizewell_b");
     background.push_back("gravelines");
@@ -112,7 +103,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
   else if(strncmp(sig, "hinkley_c",strlen(sig))==0){
@@ -123,7 +114,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
   else if(strncmp(sig, "sizewell_b",strlen(sig))==0){
@@ -134,7 +125,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
   else if(strncmp(sig, "gravelines",strlen(sig))==0){
@@ -145,7 +136,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
   else if(strncmp(sig, "PWR",strlen(sig))==0){
@@ -156,7 +147,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
   else if(strncmp(sig, "gravhink",strlen(sig))==0){
@@ -167,7 +158,7 @@ void merge_PDFs(const char* sig){
     background.push_back("n17");
     background.push_back("li9");
     background.push_back("geo");
-    background.push_back("world_2028");
+    background.push_back("world");
     //background.push_back("fn");
   }
     

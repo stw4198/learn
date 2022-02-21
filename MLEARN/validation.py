@@ -77,9 +77,15 @@ for x, y in d.items():
   elif (x == 'geo'):
     y['label'] = 0
     y['source'] = sig_dict['geo']
-  elif (x == 'heysham_2'):
+  elif (x == 'heysham_full'):
     y['label'] = 0
-    y['source'] = sig_dict['heysham_2']
+    y['source'] = sig_dict['heysham_full']
+  elif (x == 'hartlepool_1'):
+    y['label'] = 0
+    y['source'] = sig_dict['hartlepool_1']
+  elif (x == 'hartlepool_2'):
+    y['label'] = 0
+    y['source'] = sig_dict['hartlepool_2']
   elif (x == 'hinkley_c'):
     y['label'] = 0
     y['source'] = sig_dict['hinkley_c']
@@ -95,10 +101,10 @@ for x, y in d.items():
   elif (x == 'n17'):
     y['label'] = 0
     y['source'] = sig_dict['n17']
-  elif (x == 'torness_full'):
+  elif (x == 'torness'):
     y['label'] = 0
     y['source'] = sig_dict['torness']
-  elif (x == 'world_2028'):
+  elif (x == 'world'):
     y['label'] = 0
     y['source'] = sig_dict['world']
   # elif (x == 'energy'):

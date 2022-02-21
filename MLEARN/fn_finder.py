@@ -12,6 +12,8 @@ import os
 import glob
 import readline
 import uproot
+sys.path.insert(1, os.path.dirname(os.path.realpath(__file__))+"/../")
+from sig_choice import sig_choice,sig_dict
 
 input = sys.argv[1]#+"/*.root"#input('Enter the path to the training data directory.\n End the file path with "/*.root".\n')
 sig = sys.argv[2]
@@ -20,8 +22,11 @@ try:
 except:
   bg = "fn"
 filenames = []
-for file in glob.glob(input+"/"+sig+"*.root"):
-    filenames.append(file)
+signal_components, background_components = sig_choice(sig)
+#print(signal_components)
+for i in signal_components:
+  for file in glob.glob(input+"/"+i+"*.root"):
+      filenames.append(file)
 for file in glob.glob(input+"/"+bg+"*.root"):
     filenames.append(file)
 if len(filenames)<2:

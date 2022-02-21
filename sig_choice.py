@@ -17,6 +17,15 @@ def sig_choice(sig):
     if sig == "heysham_2":
         signal_components = ["heysham_2"]
         background_components = ["torness","world","hinkley_c","sizewell_b","gravelines","geo","li9","n17","fn"]
+    elif sig == "heysham_full":
+        signal_components = ["heysham_full"]
+        background_components = ["torness","world","hinkley_c","sizewell_b","gravelines","geo","li9","n17","fn"]
+    elif sig == "hartlepool":
+        signal_components = ["hartlepool_1","hartlepool_2"]
+        background_components = ["heysham_full","torness","world","hinkley_c","sizewell_b","gravelines","geo","li9","n17","fn"]
+    elif sig == "hartlepool_1":
+        signal_components = ["hartlepool_1"]
+        background_components = ["hartlepool_2","heysham_full","torness","world","hinkley_c","sizewell_b","gravelines","geo","li9","n17","fn"]
     elif sig == "heytor":
         signal_components = ["heysham_2","torness"]
         background_components = ["world","hinkley_c","sizewell_b","gravelines","geo","li9","n17","fn"]
