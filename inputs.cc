@@ -16,7 +16,7 @@ std::vector<const char*> input_select(int argc,char** argv)
     std::vector<const char*> input_options = {"file","component","signal","rPMT","dTank","nbins","nX","file path"};
     std::vector<const char*> input_flags = {"-f","-c","-s","-rpmt","-dtank","-nbins","-nx","-path"};
     const char* file = ""; const char* component = ""; const char* signal = "";
-    const char* rPMT = "9000"; const char* dTank = "22"; const char* nbins = "1000"; const char* nx = "100"; const char* path =".";
+    const char* rPMT = "9000"; const char* dTank = "22"; const char* nbins = "250"; const char* nx = "100"; const char* path =".";
     
     // check for inputs
     inputs.push_back(""); inputs.push_back(file); inputs.push_back(component); inputs.push_back(signal); inputs.push_back(rPMT);

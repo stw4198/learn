@@ -1,3 +1,4 @@
+from cmath import tan
 import subprocess
 import os
 import pandas as pd
@@ -25,8 +26,8 @@ def integrand_li9(t):
 R_n17_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_n17,t_veto,np.infty)[0]/integrate.quad(integrand_n17,0,np.infty)[0]
 R_li9_cor = 1-muon_eff+muon_eff*integrate.quad(integrand_li9,t_veto,np.infty)[0]/integrate.quad(integrand_li9,0,np.infty)[0]
 
-E_lower = np.arange(0,5,1)
-E_upper = np.arange(102,106,1)
+E_lower = np.arange(21,22,1)
+E_upper = np.arange(66,67,1)
 dwell_times = []
 s_total = []
 b_total = []
@@ -115,8 +116,10 @@ for x in tqdm(E_lower, desc='Total'):
                 b+=df_analysis.loc[k,'rates']
                 geo+=df_analysis.loc[k,'rates']
             elif k=="fn":
-                b+=df_analysis.loc[k,'rates']
-                f+=df_analysis.loc[k,'rates']
+                b+=df_analysis.loc[k,'rates']#/2
+                f+=df_analysis.loc[k,'rates']#/2
+                #b+=0.04645677948717948*0.254
+                #f+=0.04645677948717948*0.254
             elif k=="li9":
                 b+=df_analysis.loc[k,'rates']
                 li9+=df_analysis.loc[k,'rates']
@@ -128,7 +131,8 @@ for x in tqdm(E_lower, desc='Total'):
             b_str+="%s: %s per day\n"%(k,df_analysis.loc[k,'rates'])
         b_str_upper.append(b_str)
         b_err = np.sqrt((li9err*li9)**2 + (n17err*n17)**2 + (world_err*world)**2 + (geoerr*geo)**2 + (ferr*f)**2 + (world_err*hinkley_c)**2 + (world_err*gravelines)**2 + (world_err*sizewell_b)**2)
-        if sig=='hartlepool' or sig=='hartlepool_1':
+        #if (sig=='hartlepool') or (sig=='hartlepool_1' and tank==22):
+        if (sig=='hartlepool' or sig=='hartlepool_1'):
             t = np.arange(0.01,30,0.01)
             sigma = np.sqrt(2*((s*t + b*t)*np.log((s*t + b*t)*(b*t + b_err**2*t**2)/(b**2*t**2 + (s*t + b*t)*b_err**2*t**2))\
               - (b**2*t**2)*np.log(1 + (b_err**2*t**2*s*t)/(b*t*(b*t + b_err**2*t**2)))/(b_err**2*t**2)))
@@ -138,6 +142,7 @@ for x in tqdm(E_lower, desc='Total'):
             else:
                 t3sigma = 100000
         else:
+            #t3sigma = 9*(b+s)/(s**2 - 9*(world_err*s)**2 - 9*(b_err)**2)
             t3sigma = 9*b/(s**2 - 9*(b_err)**2)   
         s_upper.append(s)
         b_upper.append(b)

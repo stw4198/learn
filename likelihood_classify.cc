@@ -48,7 +48,7 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
 
   double innerPE;
   double n9,n9_prev,nOff,n100,n100_prev;
-  double good_pos,good_pos_prev;
+  double good_pos,good_pos_prev,good_dir,good_dir_prev;
   double closestPMT,closestPMT_prev;
   double drPrevr,dt_prev_us;
   int inner_hit,inner_hit_prev;
@@ -73,6 +73,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
   data->Branch("n100_prev",&n100_prev,"n100_prev/D");
   data->Branch("good_pos",&good_pos,"good_pos/D");
   data->Branch("good_pos_prev",&good_pos_prev,"good_pos_prev/D");
+  data->Branch("good_dir",&good_dir,"good_dir/D");
+  data->Branch("good_dir_prev",&good_dir_prev,"good_dir_prev/D");
   data->Branch("closestPMT",&closestPMT,"closestPMT/D");
   data->Branch("closestPMT_prev",&closestPMT_prev,"closestPMT_prev/D");
   data->Branch("drPrevr",&drPrevr,"drPrevr/D");
@@ -195,6 +197,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
         nOff = t_in->GetLeaf("nOff")->GetValue(0);
         good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
         good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
+        good_dir = t_in->GetLeaf("good_dir")->GetValue(0);
+        good_dir_prev = t_in->GetLeaf("good_dir_prev")->GetValue(0);
         closestPMT = t_in->GetLeaf("closestPMT")->GetValue(0);
         closestPMT_prev = t_in->GetLeaf("closestPMT_prev")->GetValue(0);
         drPrevr = t_in->GetLeaf("drPrevr")->GetValue(0);
@@ -237,6 +241,8 @@ std::vector<double> likehood_classify(const char* infile, const char* component,
           nOff = t_in->GetLeaf("nOff")->GetValue(0);
           good_pos = t_in->GetLeaf("good_pos")->GetValue(0);
           good_pos_prev = t_in->GetLeaf("good_pos_prev")->GetValue(0);
+          good_dir = t_in->GetLeaf("good_dir")->GetValue(0);
+          good_dir_prev = t_in->GetLeaf("good_dir_prev")->GetValue(0);
           closestPMT = t_in->GetLeaf("closestPMT")->GetValue(0);
           closestPMT_prev = t_in->GetLeaf("closestPMT_prev")->GetValue(0);
           drPrevr = t_in->GetLeaf("drPrevr")->GetValue(0);

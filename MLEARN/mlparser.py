@@ -30,6 +30,7 @@ def mlparser(file,learn_file,sig,tank):
     mcid = array('f', [0.])
     innerPE = array('f', [0.])
     code = array('i', [0])
+    closestPMT = array('f', [0.])
     tree.Branch("mc_energy", mc_energy, 'mc_energy/F')
     tree.Branch("subid", subid, 'subid/F')
     tree.Branch("n100", n100, 'n100/F')
@@ -37,6 +38,7 @@ def mlparser(file,learn_file,sig,tank):
     tree.Branch("mcid", mcid, 'mcid/F')
     tree.Branch("innerPE", innerPE, 'innerPE/F')
     tree.Branch("code", code, 'code/I')
+    tree.Branch("closestPMT", closestPMT, 'closestPMT/F')
 
     fn_tot = fn_keep = 0
     heysham_2_tot = heysham_2_keep = 0
@@ -71,6 +73,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['geo']:
             geo_tot+=1
@@ -89,6 +92,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['heysham_2']:
             heysham_2_tot+=1
@@ -107,6 +111,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['hinkley_c']:
             hinkley_c_tot+=1
@@ -124,6 +129,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['sizewell_b']:
             sizewell_b_tot+=1
@@ -142,6 +148,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['gravelines']:
             gravelines_tot+=1
@@ -160,6 +167,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['li9']:
             li9_tot+=1
@@ -178,6 +186,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['n17']:
             n17_tot+=1
@@ -196,6 +205,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['torness']:
             torness_tot+=1
@@ -214,6 +224,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['world']:
             world_tot+=1
@@ -232,6 +243,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['hartlepool_1']:
             hartlepool_1_tot+=1
@@ -250,6 +262,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['hartlepool_2']:
             hartlepool_2_tot+=1
@@ -268,6 +281,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         elif df['source'][i]==sig_dict['heysham_full']:
             heysham_full_tot+=1
@@ -286,6 +300,7 @@ def mlparser(file,learn_file,sig,tank):
                 mcid[0] = df['mcid'][i]
                 innerPE[0] = df['innerPE'][i]
                 code[0] = df['source'][i]
+                closestPMT[0] = df['closestPMT'][i]
                 tree.Fill()
         # elif df['source'][i]==sig_dict['energy']:
         #     energy_tot+=1

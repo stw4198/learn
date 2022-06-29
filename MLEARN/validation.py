@@ -57,8 +57,12 @@ for i in components:
 d = {}
 z = {}
 
-var = ['n100','n100_prev','n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'good_pos', 'good_pos_prev', 'subid']
-ext_var = ['mcid','mc_energy']
+#var = ['n100','n100_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'good_pos_prev', 'subid']
+var = ['n100','n100_prev','n9','n9_prev','innerPE','dt_prev_us','drPrevr','x','y','z','closestPMT','good_pos','good_pos_prev','subid']
+
+#var = ['n100','n100_prev','n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'good_pos_prev', 'good_dir', 'good_dir_prev', 'subid']
+#var = ['n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'subid']
+ext_var = ['mcid','mc_energy']#,'n100','n100_prev','good_pos', 'good_pos_prev', 'good_dir', 'good_dir_prev']
 cond = '(n100>0)&(n100_prev>0)'#&(subid==0)'
 
 for f in filenames:
@@ -77,15 +81,18 @@ for x, y in d.items():
   elif (x == 'geo'):
     y['label'] = 0
     y['source'] = sig_dict['geo']
-  elif (x == 'heysham_full'):
+  elif (x == 'heysham_2'):
     y['label'] = 0
-    y['source'] = sig_dict['heysham_full']
-  elif (x == 'hartlepool_1'):
-    y['label'] = 0
-    y['source'] = sig_dict['hartlepool_1']
-  elif (x == 'hartlepool_2'):
-    y['label'] = 0
-    y['source'] = sig_dict['hartlepool_2']
+    y['source'] = sig_dict['heysham_2']
+  # elif (x == 'heysham_full'):
+  #   y['label'] = 0
+  #   y['source'] = sig_dict['heysham_full']
+  # elif (x == 'hartlepool_1'):
+  #   y['label'] = 0
+  #   y['source'] = sig_dict['hartlepool_1']
+  # elif (x == 'hartlepool_2'):
+  #   y['label'] = 0
+  #   y['source'] = sig_dict['hartlepool_2']
   elif (x == 'hinkley_c'):
     y['label'] = 0
     y['source'] = sig_dict['hinkley_c']
@@ -139,7 +146,7 @@ print ('\n\nConfusion Matrix: ')
 print(cm)
 print ('\n\nCreating figures ...')
 ConfusionMatrixDisplay.from_predictions(y, pred)
-plt.title("Fast Neutron finder Validation")
+#plt.title("Fast Neutron finder Validation")
 plt.savefig('cm_fnfinder_validation.pdf')
 #plt.show(block=False)
 #plt.pause(3)
@@ -152,7 +159,7 @@ plt.plot(fpr, tpr, marker=',', label='Fast Neutrons (area = {:.2f})'.format(auc)
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.legend(loc='best')
-plt.title('Fast Neutron finder Validation')
+#plt.title('Fast Neutron finder Validation')
 plt.savefig('roc_fnfinder_validation.pdf')
 #plt.show(block=False)
 #plt.pause(3)
@@ -171,7 +178,7 @@ plt.hist(tb.scores.values.flatten(), bins=50, label='True Fast Neutron', alpha=.
 plt.hist(fs.scores.values.flatten(), bins=50, label='False Other', alpha=.5)
 plt.hist(fb.scores.values.flatten(), bins=50, label='False Fast Neutron', alpha=.5)
 plt.yscale('log')
-plt.title('Fast Neutron Finder scores, validation')
+#plt.title('Fast Neutron Finder scores, validation')
 plt.legend(loc='best')
 plt.xlabel('Decision scores')
 plt.ylabel('Frequency (log)')

@@ -39,8 +39,10 @@ if len(filenames)<2:
 #print(input,filenames)
 d = {}
 
-var = ['n100','n100_prev','n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'good_pos', 'good_pos_prev', 'subid']
+var = ['n100','n100_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'good_pos_prev', 'subid']
+#var = ['n100','n100_prev','n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'good_pos_prev', 'good_dir', 'good_dir_prev', 'subid']
 #var = ['n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'good_pos', 'good_pos_prev', 'subid']
+#var = ['n9', 'n9_prev', 'innerPE', 'dt_prev_us', 'drPrevr', 'x', 'y', 'z', 'closestPMT', 'closestPMT_prev', 'good_pos', 'subid']
 cond = '(n100>0)&(n100_prev>0)'#&(subid==0)'
 
 for f in filenames:

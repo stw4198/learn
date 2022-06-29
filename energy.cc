@@ -39,7 +39,7 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
       return(energy_cut);
   }
   //printf("There are %i entries\n",nentries);
-  int subid,n100,mcid,mcid_2;
+  int subid,n100,mcid,mcid_2,closestPMT;
   double innerPE,mc_energy,code;
 
   int removed = 0;
@@ -52,8 +52,9 @@ std::vector<double> energy(const char* infile, double e_lower, double e_upper, i
       mc_energy = t_in->GetLeaf("mc_energy")->GetValue(0);
       innerPE = t_in->GetLeaf("innerPE")->GetValue(0);
       code = t_in->GetLeaf("code")->GetValue(0);
+      closestPMT = t_in->GetLeaf("closestPMT")->GetValue(0);
       t_in->GetEntry(i);
-      if((n100>ecut or n100<ecut2) && subid==0 && code==code_in){
+      if(((n100>ecut or n100<ecut2) && subid==0 && code==code_in) || (closestPMT<0 && code==code_in)){
           subid = t_in->GetLeaf("subid")->GetValue(0);
           mcid_2 = t_in->GetLeaf("mcid")->GetValue(0);
           removed++;

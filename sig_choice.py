@@ -35,4 +35,7 @@ def sig_choice(sig):
     elif sig == "gravhink":
         signal_components = ["hinkley_c","gravelines"]
         background_components = ["sizewell_b","world","geo","li9","n17","fn"]
+    elif sig == "sizehink":
+        signal_components = ["hinkley_c","sizewell_b"]
+        background_components = ["gravelines","world","geo","li9","n17","fn"]
     return (signal_components,background_components)
